@@ -139,7 +139,14 @@ PWD=/home/lingceng
 
 <p>The demo shell script <strong>just runs at 0, 5, 15, 20 o&#8217;clock</strong>, 20 to 0 is just 4 hours.</p>
 
-<h3>get more help</h3>
+<h4>Check Cron log</h4>
+
+<p>Cron log default put <em>/var/log/syslog</em>, use following command to monitor it:</p>
+
+<pre><code>tail -f /var/log/syslog | grep CRON
+</code></pre>
+
+<h4>Get More Help</h4>
 
 <p>> <a href="http://unixhelp.ed.ac.uk/CGI/man-cgi?crontab+5">man 5 crontab</a></p>
 </div>
