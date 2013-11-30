@@ -4,7 +4,7 @@
   <title><![CDATA[lingceng]]></title>
   <link href="http://lingceng.github.io/atom.xml" rel="self"/>
   <link href="http://lingceng.github.io/"/>
-  <updated>2013-11-30T19:07:12+08:00</updated>
+  <updated>2013-11-30T19:22:55+08:00</updated>
   <id>http://lingceng.github.io/</id>
   <author>
     <name><![CDATA[lingceng]]></name>
@@ -58,7 +58,7 @@ PWD=/home/lingceng
 
 <h4>Not Really Every 5 Hours</h4>
 
-<p>The demo shell script <strong>just runs at 0, 5, 15, 20 o&#8217;clock</strong>, 20 to 0 is just 4 hour.</p>
+<p>The demo shell script <strong>just runs at 0, 5, 15, 20 o&#8217;clock</strong>, 20 to 0 is just 4 hours.</p>
 
 <h3>get more help</h3>
 
