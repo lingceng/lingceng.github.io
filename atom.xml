@@ -4,7 +4,7 @@
   <title><![CDATA[lingceng]]></title>
   <link href="http://lingceng.github.io/atom.xml" rel="self"/>
   <link href="http://lingceng.github.io/"/>
-  <updated>2013-11-30T19:05:35+08:00</updated>
+  <updated>2013-11-30T19:07:12+08:00</updated>
   <id>http://lingceng.github.io/</id>
   <author>
     <name><![CDATA[lingceng]]></name>
@@ -20,7 +20,7 @@
     <id>http://lingceng.github.io/blog/2013/11/30/run-cron-every-5-hours</id>
     <content type="html"><![CDATA[<p>> crontab -e</p>
 
-<figure class='code'><figcaption><span>run cron every 5 hours </span></figcaption>
+<figure class='code'><figcaption><span>Run Cron Every 5 Hours </span></figcaption>
  <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
