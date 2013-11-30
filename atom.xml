@@ -4,7 +4,7 @@
   <title><![CDATA[lingceng]]></title>
   <link href="http://lingceng.github.io/atom.xml" rel="self"/>
   <link href="http://lingceng.github.io/"/>
-  <updated>2013-10-08T23:28:13+08:00</updated>
+  <updated>2013-11-30T18:02:38+08:00</updated>
   <id>http://lingceng.github.io/</id>
   <author>
     <name><![CDATA[lingceng]]></name>
@@ -12,6 +12,47 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Run Cron Every 5 Hour]]></title>
+    <link href="http://lingceng.github.io/blog/2013/11/30/run-cron-every-5-hour/"/>
+    <updated>2013-11-30T16:56:00+08:00</updated>
+    <id>http://lingceng.github.io/blog/2013/11/30/run-cron-every-5-hour</id>
+    <content type="html"><![CDATA[<p>> crontab -e</p>
+
+<pre><code># set the shell
+SHELL=/bin/sh
+PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+
+# m h dom mon dow usercommand
+0 */5 * * * /path/hello.sh &gt;&gt; /path/hello.log 2&gt;&amp;1
+</code></pre>
+
+<!-- more -->
+
+
+<h4>Setting the PATH is Always Necessary</h4>
+
+<p><em>Crontab ignores login configuration</em>, which leads to a command not found.
+I have tested <em>env</em> command with crontab on my Ubuntu12.04 and I got the following result:</p>
+
+<pre><code>HOME=/home/lingceng
+LOGNAME=lingceng
+PATH=/usr/bin:/bin
+LANG=en_US.UTF-8
+SHELL=/bin/sh
+PWD=/home/lingceng
+</code></pre>
+
+<h4>Not Really Every 5 Hour</h4>
+
+<p>The demo shell script <strong>just runs at 0, 5, 15, 20 o&#8217;clock</strong>, 20 to 0 is just 4 hour.</p>
+
+<h3>get more help</h3>
+
+<p>> <a href="http://unixhelp.ed.ac.uk/CGI/man-cgi?crontab+5">man 5 crontab</a></p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Hello World]]></title>

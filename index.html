@@ -9,8 +9,10 @@
   <meta name="author" content="lingceng">
 
   
-  <meta name="description" content="Hello everyone! Here&rsquo;s my first post on my blog!
-">
+  <meta name="description" content="> crontab -e # set the shell
+SHELL=/bin/sh
+PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin # m h dom mon dow usercommand
+0 */5 &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -72,6 +74,55 @@
       
   <header>
     
+      <h1 class="entry-title"><a href="/blog/2013/11/30/run-cron-every-5-hour/">Run Cron Every 5 Hour</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-11-30T16:56:00+08:00" pubdate data-updated="true">Nov 30<span>th</span>, 2013</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>> crontab -e</p>
+
+<pre><code># set the shell
+SHELL=/bin/sh
+PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+
+# m h dom mon dow usercommand
+0 */5 * * * /path/hello.sh &gt;&gt; /path/hello.log 2&gt;&amp;1
+</code></pre>
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2013/11/30/run-cron-every-5-hour/">Read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
       <h1 class="entry-title"><a href="/blog/2013/10/08/hello-world/">Hello World</a></h1>
     
     
@@ -114,6 +165,10 @@
     <section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2013/11/30/run-cron-every-5-hour/">Run Cron Every 5 Hour</a>
+      </li>
     
       <li class="post">
         <a href="/blog/2013/10/08/hello-world/">Hello World</a>
