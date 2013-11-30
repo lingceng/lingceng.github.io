@@ -4,7 +4,7 @@
   <title><![CDATA[lingceng]]></title>
   <link href="http://lingceng.github.io/atom.xml" rel="self"/>
   <link href="http://lingceng.github.io/"/>
-  <updated>2013-11-30T18:43:08+08:00</updated>
+  <updated>2013-11-30T19:05:35+08:00</updated>
   <id>http://lingceng.github.io/</id>
   <author>
     <name><![CDATA[lingceng]]></name>
@@ -20,13 +20,25 @@
     <id>http://lingceng.github.io/blog/2013/11/30/run-cron-every-5-hours</id>
     <content type="html"><![CDATA[<p>> crontab -e</p>
 
-<pre><code># set the shell
-SHELL=/bin/sh
-PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+<figure class='code'><figcaption><span>run cron every 5 hours </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>    <span class="c"># set the shell</span>
+</span><span class='line'>    <span class="nv">SHELL</span><span class="o">=</span>/bin/sh
+</span><span class='line'>    <span class="nv">PATH</span><span class="o">=</span>/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+</span><span class='line'>
+</span><span class='line'>    <span class="c"># m h dom mon dow usercommand</span>
+</span><span class='line'>    0 */5 * * * /path/hello.sh &gt;&gt; /path/hello.log 2&gt;&amp;1
+</span><span class='line'>
+</span></code></pre></td></tr></table></div></figure>
 
-# m h dom mon dow usercommand
-0 */5 * * * /path/hello.sh &gt;&gt; /path/hello.log 2&gt;&amp;1
-</code></pre>
+
+
 
 <!-- more -->
 
