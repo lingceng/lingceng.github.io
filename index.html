@@ -9,13 +9,9 @@
   <meta name="author" content="lingceng">
 
   
-  <meta name="description" content="> crontab -e Run Cron Every 5 Hours 1
-2
-3
-4
-5
-6
-7 # set the shell SHELL=/bin/sh PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin # m &hellip;">
+  <meta name="description" content="config git config --global user.name "John Doe"
+git config --global user.email "johndoe@example.com" how to get help git config --help
+git help &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -44,7 +40,7 @@
   <header role="banner"><hgroup>
   <h1><a href="/">lingceng</a></h1>
   
-    <h2>javascript web ruby java</h2>
+    <h2>have fun with code</h2>
   
 </hgroup>
 
@@ -71,6 +67,88 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/03/13/git-get-start/">Git Get Start</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-03-13T07:21:00+08:00" pubdate data-updated="true">Mar 13<span>th</span>, 2014</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>config</p>
+
+<pre><code>git config --global user.name "John Doe"
+git config --global user.email "johndoe@example.com"
+</code></pre>
+
+<p>how to get help</p>
+
+<pre><code>git config --help
+git help config
+man git-config
+</code></pre>
+
+<p>start up</p>
+
+<pre><code>git init
+git add .
+git commit -m "Depot Scaffold"
+
+add and commit
+git commit -a -m "Depot Scaffold"
+</code></pre>
+
+<p>compare with version before last commit and last commit</p>
+
+<pre><code>git diff HEAD^ HEAD
+</code></pre>
+
+<p>specify the file path</p>
+
+<pre><code>git diff HEAD^ HEAD app/models/product.rb
+</code></pre>
+
+<p>git ammend the last commit</p>
+
+<pre><code>git commit -amend
+</code></pre>
+
+<p>powerful edit commit command</p>
+
+<pre><code>git rebase --interactive HEAD^5
+</code></pre>
+
+<p>git include delelted files</p>
+
+<pre><code>git add -A
+</code></pre>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -120,14 +198,35 @@
 </span></code></pre></td></tr></table></div></figure>
 
 
+<h4>Setting the PATH is Always Necessary</h4>
 
+<p><em>Crontab ignores login configuration</em>, which leads to a command not found.
+I have tested <em>env</em> command with crontab on my Ubuntu12.04 and I got the following result:</p>
 
+<pre><code>HOME=/home/lingceng
+LOGNAME=lingceng
+PATH=/usr/bin:/bin
+LANG=en_US.UTF-8
+SHELL=/bin/sh
+PWD=/home/lingceng
+</code></pre>
+
+<h4>Not Really Every 5 Hours</h4>
+
+<p>The demo shell script <strong>just runs at 0, 5, 15, 20 o&#8217;clock</strong>, 20 to 0 is just 4 hours.</p>
+
+<h4>Check Cron log</h4>
+
+<p>Cron log default put <em>/var/log/syslog</em>, use following command to monitor it:</p>
+
+<pre><code>tail -f /var/log/syslog | grep CRON
+</code></pre>
+
+<h4>Get More Help</h4>
+
+<p>> <a href="http://unixhelp.ed.ac.uk/CGI/man-cgi?crontab+5">man 5 crontab</a></p>
 </div>
   
-  
-    <footer>
-      <a rel="full-article" href="/blog/2013/11/30/run-cron-every-5-hours/">Read on &rarr;</a>
-    </footer>
   
 
 
@@ -182,6 +281,10 @@
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2014/03/13/git-get-start/">Git Get Start</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2013/11/30/run-cron-every-5-hours/">Run Cron Every 5 Hours</a>
       </li>
     
@@ -190,6 +293,35 @@
       </li>
     
   </ul>
+</section>
+
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating&#8230;</li>
+  </ul>
+  
+  <a href="https://github.com/lingceng">@lingceng</a> on GitHub
+  
+  <script type="text/javascript">
+    $(document).ready(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'lingceng',
+            count: 0,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
 </section>
 
 
@@ -202,7 +334,7 @@
     </div>
   </div>
   <footer role="contentinfo"><p>
-  Copyright &copy; 2013 - lingceng -
+  Copyright &copy; 2014 - lingceng -
   <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
 </p>
 
