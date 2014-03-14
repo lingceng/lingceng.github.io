@@ -4,7 +4,7 @@
   <title><![CDATA[lingceng]]></title>
   <link href="http://lingceng.github.io/atom.xml" rel="self"/>
   <link href="http://lingceng.github.io/"/>
-  <updated>2014-03-13T07:53:11+08:00</updated>
+  <updated>2014-03-14T23:21:59+08:00</updated>
   <id>http://lingceng.github.io/</id>
   <author>
     <name><![CDATA[lingceng]]></name>
@@ -12,6 +12,90 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[vim tips]]></title>
+    <link href="http://lingceng.github.io/blog/2014/03/14/vim-tips/"/>
+    <updated>2014-03-14T22:39:00+08:00</updated>
+    <id>http://lingceng.github.io/blog/2014/03/14/vim-tips</id>
+    <content type="html"><![CDATA[<p>HERE IS MY <a href="https://gist.github.com/lingceng/6097985">vimrc</a></p>
+
+<h3>wonderful block insert</h3>
+
+<pre><code>in Visual block mode:
+|v_b_I|    I    insert the same text in front of all the selected lines
+|v_b_A|    A    append the same text after all the selected lines
+</code></pre>
+
+<h3>search word under cursor</h3>
+
+<pre><code>* to search current word, n to next, N to previous
+</code></pre>
+
+<h3>arround tag</h3>
+
+<pre><code>:help v_a
+at  # arround tag
+it  # inner tag
+</code></pre>
+
+<h3>use mark</h3>
+
+<pre><code>ma # mark a
+`a # go to a
+`A # go to A between buffers
+</code></pre>
+
+<!--more-->
+
+
+<h3>autocomplete with filesystem</h3>
+
+<pre><code>ctrl-x ctrl-f
+</code></pre>
+
+<h3>jump between windows</h3>
+
+<pre><code>:help window
+
+# make the only window
+CTRL-W o
+
+# split
+CTRL-W s 
+# split vertically
+CTRL-W v 
+
+# navigate with h j k l
+# go to left
+CTRL-W h
+
+# resize with &lt; &gt; + -
+# add 10 width
+CTRL-W 10&gt;
+</code></pre>
+
+<h3>show white space</h3>
+
+<pre><code>:set list
+
+# close list
+:set nolist
+</code></pre>
+
+<h3>buffer change</h3>
+
+<pre><code>CTRL-I
+CTRL-O
+</code></pre>
+
+<h3>scroll page</h3>
+
+<pre><code>N  CTRL-D   window N lines Downwards (default: 1/2 window)
+N  CTRL-U   window N lines Upwards (default: 1/2 window)
+</code></pre>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[git get start]]></title>

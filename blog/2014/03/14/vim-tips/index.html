@@ -5,13 +5,13 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>git get start - lingceng</title>
+  <title>vim tips - lingceng</title>
   <meta name="author" content="lingceng">
 
   
-  <meta name="description" content="config git config --global user.name "John Doe"
-git config --global user.email "johndoe@example.com" how to get help git config --help
-git help &hellip;">
+  <meta name="description" content="HERE IS MY vimrc wonderful block insert in Visual block mode:
+|v_b_I| I insert the same text in front of all the selected lines
+|v_b_A| A append the &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -20,7 +20,7 @@ git help &hellip;">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://lingceng.github.io/blog/2014/03/13/git-get-start">
+  <link rel="canonical" href="http://lingceng.github.io/blog/2014/03/14/vim-tips">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/atom.xml" rel="alternate" title="lingceng" type="application/atom+xml">
@@ -70,7 +70,7 @@ git help &hellip;">
   
   <header>
     
-      <h1 class="entry-title">Git Get Start</h1>
+      <h1 class="entry-title">Vim Tips</h1>
     
     
       <p class="meta">
@@ -86,59 +86,88 @@ git help &hellip;">
   
 
 
-<time datetime="2014-03-13T07:21:00+08:00" pubdate data-updated="true">Mar 13<span>th</span>, 2014</time>
+<time datetime="2014-03-14T22:39:00+08:00" pubdate data-updated="true">Mar 14<span>th</span>, 2014</time>
         
       </p>
     
   </header>
 
 
-<div class="entry-content"><p>config</p>
+<div class="entry-content"><p>HERE IS MY <a href="https://gist.github.com/lingceng/6097985">vimrc</a></p>
 
-<pre><code>git config --global user.name "John Doe"
-git config --global user.email "johndoe@example.com"
+<h3>wonderful block insert</h3>
+
+<pre><code>in Visual block mode:
+|v_b_I|    I    insert the same text in front of all the selected lines
+|v_b_A|    A    append the same text after all the selected lines
 </code></pre>
 
-<p>how to get help</p>
+<h3>search word under cursor</h3>
 
-<pre><code>git config --help
-git help config
-man git-config
+<pre><code>* to search current word, n to next, N to previous
 </code></pre>
 
-<p>start up</p>
+<h3>arround tag</h3>
 
-<pre><code>git init
-git add .
-git commit -m "Depot Scaffold"
-
-add and commit
-git commit -a -m "Depot Scaffold"
+<pre><code>:help v_a
+at  # arround tag
+it  # inner tag
 </code></pre>
 
-<p>compare with version before last commit and last commit</p>
+<h3>use mark</h3>
 
-<pre><code>git diff HEAD^ HEAD
+<pre><code>ma # mark a
+`a # go to a
+`A # go to A between buffers
 </code></pre>
 
-<p>specify the file path</p>
+<!--more-->
 
-<pre><code>git diff HEAD^ HEAD app/models/product.rb
+
+<h3>autocomplete with filesystem</h3>
+
+<pre><code>ctrl-x ctrl-f
 </code></pre>
 
-<p>git ammend the last commit</p>
+<h3>jump between windows</h3>
 
-<pre><code>git commit -amend
+<pre><code>:help window
+
+# make the only window
+CTRL-W o
+
+# split
+CTRL-W s 
+# split vertically
+CTRL-W v 
+
+# navigate with h j k l
+# go to left
+CTRL-W h
+
+# resize with &lt; &gt; + -
+# add 10 width
+CTRL-W 10&gt;
 </code></pre>
 
-<p>powerful edit commit command</p>
+<h3>show white space</h3>
 
-<pre><code>git rebase --interactive HEAD^5
+<pre><code>:set list
+
+# close list
+:set nolist
 </code></pre>
 
-<p>git include delelted files</p>
+<h3>buffer change</h3>
 
-<pre><code>git add -A
+<pre><code>CTRL-I
+CTRL-O
+</code></pre>
+
+<h3>scroll page</h3>
+
+<pre><code>N  CTRL-D   window N lines Downwards (default: 1/2 window)
+N  CTRL-U   window N lines Upwards (default: 1/2 window)
 </code></pre>
 </div>
 
@@ -162,7 +191,7 @@ git commit -a -m "Depot Scaffold"
   
 
 
-<time datetime="2014-03-13T07:21:00+08:00" pubdate data-updated="true">Mar 13<span>th</span>, 2014</time>
+<time datetime="2014-03-14T22:39:00+08:00" pubdate data-updated="true">Mar 14<span>th</span>, 2014</time>
       
 
 
@@ -170,7 +199,7 @@ git commit -a -m "Depot Scaffold"
     
       <div class="sharing">
   
-  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://lingceng.github.io/blog/2014/03/13/git-get-start/" data-via="" data-counturl="http://lingceng.github.io/blog/2014/03/13/git-get-start/" >Tweet</a>
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://lingceng.github.io/blog/2014/03/14/vim-tips/" data-via="" data-counturl="http://lingceng.github.io/blog/2014/03/14/vim-tips/" >Tweet</a>
   
   
   
@@ -179,10 +208,8 @@ git commit -a -m "Depot Scaffold"
     
     <p class="meta">
       
-        <a class="basic-alignment left" href="/blog/2013/11/30/run-cron-every-5-hours/" title="Previous Post: Run Cron Every 5 Hours">&laquo; Run Cron Every 5 Hours</a>
+        <a class="basic-alignment left" href="/blog/2014/03/13/git-get-start/" title="Previous Post: git get start">&laquo; git get start</a>
       
-      
-        <a class="basic-alignment right" href="/blog/2014/03/14/vim-tips/" title="Next Post: vim tips">vim tips &raquo;</a>
       
     </p>
   </footer>
