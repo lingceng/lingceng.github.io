@@ -5,13 +5,13 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>vim tips - lingceng</title>
+  <title>basics about minitest - lingceng</title>
   <meta name="author" content="lingceng">
 
   
-  <meta name="description" content="HERE IS MY vimrc wonderful block insert in Visual block mode:
-|v_b_I| I insert the same text in front of all the selected lines
-|v_b_A| A append the &hellip;">
+  <meta name="description" content="home :: https://github.com/seattlerb/minitest
+rdoc :: http://docs.seattlerb.org/minitest
+vim :: https://github.com/sunaku/vim-ruby-minitest With &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -20,7 +20,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://lingceng.github.io/blog/2014/03/14/vim-tips">
+  <link rel="canonical" href="http://lingceng.github.io/blog/2014/03/17/basics-about-minitest">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/atom.xml" rel="alternate" title="lingceng" type="application/atom+xml">
@@ -70,7 +70,7 @@
   
   <header>
     
-      <h1 class="entry-title">Vim Tips</h1>
+      <h1 class="entry-title">Basics About Minitest</h1>
     
     
       <p class="meta">
@@ -86,88 +86,125 @@
   
 
 
-<time datetime="2014-03-14T22:39:00+08:00" pubdate data-updated="true">Mar 14<span>th</span>, 2014</time>
+<time datetime="2014-03-17T07:58:00+08:00" pubdate data-updated="true">Mar 17<span>th</span>, 2014</time>
         
       </p>
     
   </header>
 
 
-<div class="entry-content"><p>HERE IS MY <a href="https://gist.github.com/lingceng/6097985">vimrc</a></p>
+<div class="entry-content"><ul>
+<li>home :: <a href="https://github.com/seattlerb/minitest">https://github.com/seattlerb/minitest</a></li>
+<li>rdoc :: <a href="http://docs.seattlerb.org/minitest">http://docs.seattlerb.org/minitest</a></li>
+<li>vim  :: <a href="https://github.com/sunaku/vim-ruby-minitest">https://github.com/sunaku/vim-ruby-minitest</a></li>
+</ul>
 
-<h3>wonderful block insert</h3>
 
-<pre><code>in Visual block mode:
-|v_b_I|    I    insert the same text in front of all the selected lines
-|v_b_A|    A    append the same text after all the selected lines
+<p>With Ruby 1.9, MiniTest entered standard lib.
+MiniTest is pretty small and readable, here is all source file list:</p>
+
+<blockquote><p>lib:
+hoe  minitest</p>
+
+<p>lib/hoe:
+minitest.rb</p>
+
+<p>lib/minitest:
+autorun.rb  benchmark.rb  hell.rb  mock.rb  parallel_each.rb  pride.rb  spec.rb  unit.rb</p></blockquote>
+
+<h3>Assert Methods</h3>
+
+<p>See  Minitest::Assertions doc or unit.rb source</p>
+
+<pre><code>assert assert_equal assert_raises
+capture_io
+refute refute_empty
+...
 </code></pre>
 
-<h3>search word under cursor</h3>
+<h3>Specs Expections</h3>
 
-<pre><code>* to search current word, n to next, N to previous
+<p>See Minitest::Expectations doc or spec.rb source</p>
+
+<pre><code>must_be must_be_close_to
+wont_be_empty
+...
 </code></pre>
 
-<h3>arround tag</h3>
+<p>Most methods just redirect to assert methods internally.
+<strong>describe</strong> method is added to <strong>Kernel</strong> to start the DSL road;
+expectations method is added to <strong>Object</strong></p>
 
-<pre><code>:help v_a
-at  # arround tag
-it  # inner tag
+<pre><code>class Object 
+  include MiniTest::Expectations unless ENV["MT_NO_EXPECTATIONS"]
+end
 </code></pre>
 
-<h3>use mark</h3>
+<h3>Simple Start</h3>
 
-<pre><code>ma # mark a
-`a # go to a
-`A # go to A between buffers
+<p>Given that you&rsquo;d like to test the following class:</p>
+
+<pre><code>class Meme
+  def i_can_has_cheezburger?
+    "OHAI!"
+  end
+
+  def will_it_blend?
+    "YES!"
+  end
+end
 </code></pre>
 
-<!--more-->
+<p>Unit tests</p>
 
+<pre><code>require 'minitest/autorun'
 
-<h3>autocomplete with filesystem</h3>
+class TestMeme &lt; MiniTest::Unit::TestCase
+  def setup
+    @meme = Meme.new
+  end
 
-<pre><code>ctrl-x ctrl-f
+  def test_that_kitty_can_eat
+    assert_equal "OHAI!", @meme.i_can_has_cheezburger?
+  end
+
+  def test_that_it_will_not_blend
+    refute_match /^no/i, @meme.will_it_blend?
+  end
+
+  def test_that_will_be_skipped
+    skip "test this later"
+  end
+end
 </code></pre>
 
-<h3>jump between windows</h3>
+<p>Specs</p>
 
-<pre><code>:help window
+<pre><code># the following have required in autorun 
+# no need to repeat !
+# require 'minitest/unit'
+# require 'minitest/spec'
+# require 'minitest/mock'
 
-# make the only window
-CTRL-W o
+require 'minitest/autorun'
 
-# split
-CTRL-W s 
-# split vertically
-CTRL-W v 
+describe Meme do
+  before do
+    @meme = Meme.new
+  end
 
-# navigate with h j k l
-# go to left
-CTRL-W h
+  describe "when asked about cheeseburgers" do
+    it "must respond positively" do
+      @meme.i_can_has_cheezburger?.must_equal "OHAI!"
+    end
+  end
 
-# resize with &lt; &gt; + -
-# add 10 width
-CTRL-W 10&gt;
-</code></pre>
-
-<h3>show white space</h3>
-
-<pre><code>:set list
-
-# close list
-:set nolist
-</code></pre>
-
-<h3>buffer change</h3>
-
-<pre><code>CTRL-I
-CTRL-O
-</code></pre>
-
-<h3>scroll page</h3>
-
-<pre><code>N  CTRL-D   window N lines Downwards (default: 1/2 window)
-N  CTRL-U   window N lines Upwards (default: 1/2 window)
+  describe "when asked about blending possibilities" do
+    it "won't say no" do
+      @meme.will_it_blend?.wont_match /^no/i
+    end
+  end
+end
 </code></pre>
 </div>
 
@@ -191,7 +228,7 @@ N  CTRL-U   window N lines Upwards (default: 1/2 window)
   
 
 
-<time datetime="2014-03-14T22:39:00+08:00" pubdate data-updated="true">Mar 14<span>th</span>, 2014</time>
+<time datetime="2014-03-17T07:58:00+08:00" pubdate data-updated="true">Mar 17<span>th</span>, 2014</time>
       
 
 
@@ -199,7 +236,7 @@ N  CTRL-U   window N lines Upwards (default: 1/2 window)
     
       <div class="sharing">
   
-  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://lingceng.github.io/blog/2014/03/14/vim-tips/" data-via="" data-counturl="http://lingceng.github.io/blog/2014/03/14/vim-tips/" >Tweet</a>
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://lingceng.github.io/blog/2014/03/17/basics-about-minitest/" data-via="" data-counturl="http://lingceng.github.io/blog/2014/03/17/basics-about-minitest/" >Tweet</a>
   
   
   
@@ -208,10 +245,8 @@ N  CTRL-U   window N lines Upwards (default: 1/2 window)
     
     <p class="meta">
       
-        <a class="basic-alignment left" href="/blog/2014/03/13/git-get-start/" title="Previous Post: git get start">&laquo; git get start</a>
+        <a class="basic-alignment left" href="/blog/2014/03/14/vim-tips/" title="Previous Post: vim tips">&laquo; vim tips</a>
       
-      
-        <a class="basic-alignment right" href="/blog/2014/03/17/basics-about-minitest/" title="Next Post: basics about minitest">basics about minitest &raquo;</a>
       
     </p>
   </footer>
