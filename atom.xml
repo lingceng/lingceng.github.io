@@ -4,7 +4,7 @@
   <title><![CDATA[lingceng]]></title>
   <link href="http://lingceng.github.io/atom.xml" rel="self"/>
   <link href="http://lingceng.github.io/"/>
-  <updated>2014-03-17T09:27:09+08:00</updated>
+  <updated>2014-03-23T21:37:26+08:00</updated>
   <id>http://lingceng.github.io/</id>
   <author>
     <name><![CDATA[lingceng]]></name>
@@ -12,6 +12,140 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[minitest mock and stud]]></title>
+    <link href="http://lingceng.github.io/blog/2014/03/18/minitest-mock-and-stud/"/>
+    <updated>2014-03-18T08:28:00+08:00</updated>
+    <id>http://lingceng.github.io/blog/2014/03/18/minitest-mock-and-stud</id>
+    <content type="html"><![CDATA[<h3>capture io</h3>
+
+<p>Use <code>capture_io</code> to test output.</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'>    <span class="n">out</span><span class="p">,</span> <span class="n">err</span> <span class="o">=</span> <span class="n">capture_io</span> <span class="k">do</span>
+</span><span class='line'>      <span class="nb">puts</span> <span class="s2">&quot;Some info&quot;</span>
+</span><span class='line'>      <span class="nb">warn</span> <span class="s2">&quot;You did a bad thing&quot;</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">assert_match</span> <span class="sr">%r%info%</span><span class="p">,</span> <span class="n">out</span>
+</span><span class='line'>    <span class="n">assert_match</span> <span class="sr">%r%bad%</span><span class="p">,</span> <span class="n">err</span>
+</span><span class='line'>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>mock</h3>
+
+<p><code>capture_io</code> uses StringIO to wrap $stdout and $stderr.<br/>
+How to simulate user input or socket talks? Mock may do the job.</p>
+
+<figure class='code'><figcaption><span>stupidc.rb </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'>    <span class="k">class</span> <span class="nc">Stupidc</span>
+</span><span class='line'>      <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="n">input</span><span class="o">=</span><span class="no">STDIN</span><span class="p">,</span> <span class="n">output</span><span class="o">=</span><span class="no">STDOUT</span><span class="p">)</span>
+</span><span class='line'>        <span class="vi">@input</span> <span class="o">=</span> <span class="n">input</span>
+</span><span class='line'>        <span class="vi">@output</span> <span class="o">=</span> <span class="n">output</span>
+</span><span class='line'>      <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="k">def</span> <span class="nf">say_hello</span><span class="p">()</span>
+</span><span class='line'>        <span class="vi">@output</span><span class="o">.</span><span class="n">puts</span> <span class="s1">&#39;hello&#39;</span>
+</span><span class='line'>      <span class="k">end</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span>stupidc_spec.rb </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'>    <span class="nb">require</span> <span class="s1">&#39;minitest/autorun&#39;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">describe</span> <span class="no">Stupidc</span> <span class="k">do</span>
+</span><span class='line'>      <span class="n">before</span> <span class="k">do</span>
+</span><span class='line'>        <span class="vi">@input</span> <span class="o">=</span> <span class="ss">MiniTest</span><span class="p">:</span><span class="ss">:Mock</span><span class="o">.</span><span class="n">new</span>
+</span><span class='line'>        <span class="vi">@output</span> <span class="o">=</span> <span class="ss">MiniTest</span><span class="p">:</span><span class="ss">:Mock</span><span class="o">.</span><span class="n">new</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="vi">@stupidc</span> <span class="o">=</span> <span class="no">Stupidc</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="vi">@input</span><span class="p">,</span> <span class="vi">@output</span><span class="p">)</span>
+</span><span class='line'>      <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>      <span class="n">it</span> <span class="s2">&quot;should copy file to source when file is target&quot;</span> <span class="k">do</span>
+</span><span class='line'>        <span class="vi">@output</span><span class="o">.</span><span class="n">expect</span> <span class="ss">:puts</span><span class="p">,</span> <span class="kp">nil</span><span class="p">,</span> <span class="o">[</span><span class="s1">&#39;hello&#39;</span><span class="o">]</span>
+</span><span class='line'>        <span class="vi">@stupidc</span><span class="o">.</span><span class="n">say_hello</span><span class="p">()</span>
+</span><span class='line'>        <span class="vi">@output</span><span class="o">.</span><span class="n">verify</span>
+</span><span class='line'>      <span class="k">end</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>stub</h3>
+
+<p>Stub has similar function with mock, but no need to inject a property. <br/>
+Stub can simulate module methods or instance methods (They are the same in ruby, all class is the instance of Class) with ease. <br/>
+see <a href="https://github.com/seattlerb/minitest/blob/master/test/minitest/test_minitest_mock.rb">test</a></p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'>     <span class="k">def</span> <span class="nf">test_stub_yield_self</span>
+</span><span class='line'>        <span class="n">obj</span> <span class="o">=</span> <span class="s2">&quot;foo&quot;</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="n">val</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">stub</span> <span class="ss">:to_s</span><span class="p">,</span> <span class="s2">&quot;bar&quot;</span> <span class="k">do</span> <span class="o">|</span><span class="n">s</span><span class="o">|</span>
+</span><span class='line'>          <span class="n">s</span><span class="o">.</span><span class="n">to_s</span>
+</span><span class='line'>        <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="vi">@tc</span><span class="o">.</span><span class="n">assert_equal</span> <span class="s2">&quot;bar&quot;</span><span class="p">,</span> <span class="n">val</span>
+</span><span class='line'>      <span class="k">end</span>
+</span><span class='line'>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[basics about minitest]]></title>
@@ -214,6 +348,12 @@ CTRL-O
 
 <pre><code>N  CTRL-D   window N lines Downwards (default: 1/2 window)
 N  CTRL-U   window N lines Upwards (default: 1/2 window)
+</code></pre>
+
+<h3>set highlight when search</h3>
+
+<pre><code>set hlsearch
+set nohlsearch
 </code></pre>
 ]]></content>
   </entry>

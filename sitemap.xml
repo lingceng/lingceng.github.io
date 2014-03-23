@@ -14,11 +14,15 @@
     </url>
     <url>
         <loc>http://lingceng.github.io/blog/2014/03/14/vim-tips/</loc>
-        <lastmod>2014-03-14T23:15:06+08:00</lastmod>
+        <lastmod>2014-03-23T18:15:49+08:00</lastmod>
     </url>
     <url>
         <loc>http://lingceng.github.io/blog/2014/03/17/basics-about-minitest/</loc>
         <lastmod>2014-03-17T09:25:22+08:00</lastmod>
+    </url>
+    <url>
+        <loc>http://lingceng.github.io/blog/2014/03/18/minitest-mock-and-stud/</loc>
+        <lastmod>2014-03-23T21:34:37+08:00</lastmod>
     </url>
     <url>
         <loc>http://lingceng.github.io/robots.txt</loc>
@@ -26,10 +30,10 @@
     </url>
     <url>
         <loc>http://lingceng.github.io/</loc>
-        <lastmod>2014-03-17T09:25:22+08:00</lastmod>
+        <lastmod>2014-03-23T21:34:37+08:00</lastmod>
     </url>
     <url>
         <loc>http://lingceng.github.io/blog/archives/</loc>
-        <lastmod>2014-03-17T09:25:22+08:00</lastmod>
+        <lastmod>2014-03-23T21:34:37+08:00</lastmod>
     </url>
 </urlset>
