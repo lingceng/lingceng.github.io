@@ -9,14 +9,7 @@
   <meta name="author" content="lingceng">
 
   
-  <meta name="description" content="capture io Use capture_io to test output. 1
-2
-3
-4
-5
-6
-7
-8 out, err = capture_io do puts &quot;Some info&quot; warn &quot;You did a bad thing&quot; &hellip;">
+  <meta name="description" content="I&rsquo;m puzzled when I first see the jQuery source code. I finaly find a clue after several attempts. Put aside other modules, we can find out that &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -72,6 +65,171 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/03/26/jquery-source-structure-tip/">jQuery Source Structure Tip</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-03-26T09:12:00+08:00" pubdate data-updated="true">Mar 26<span>th</span>, 2014</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>I&rsquo;m puzzled when I first see the jQuery source code. <br/>
+I finaly find a clue after several attempts.</p>
+
+<p>Put aside other modules, we can find out that jQuery has the ordinary JS class structrue.</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'>    <span class="nx">jQuery</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="nx">jQuery</span><span class="p">.</span><span class="nx">prototype</span> <span class="o">=</span> <span class="p">{</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>It seems not that same with how we use jQuery. secret is the aliases.</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'>    <span class="c1">// we can use the dollar sign to call the jQuery function</span>
+</span><span class='line'>    <span class="nx">$</span> <span class="o">=</span> <span class="nx">jQuery</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// we can use the `jQuery.fn.newFeature = function() {}` to extend the jQuery instance function</span>
+</span><span class='line'>    <span class="nx">jQuery</span><span class="p">.</span><span class="nx">fn</span> <span class="o">=</span> <span class="nx">jQuery</span><span class="p">.</span><span class="nx">prototype</span><span class="p">;</span>
+</span><span class='line'>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>But when <code>$("#someid")</code> always return a jQuery instance, where the <code>new</code> keyword?</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'>    <span class="nx">jQuery</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>        <span class="c1">// jQuery.prototype.init is the actually creator function         </span>
+</span><span class='line'>        <span class="k">return</span> <span class="k">new</span> <span class="nx">jQuery</span><span class="p">.</span><span class="nx">fn</span><span class="p">.</span><span class="nx">init</span><span class="p">(</span> <span class="nx">selector</span><span class="p">,</span> <span class="nx">context</span> <span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">//  mount prototype on jQuery to jQuery.fn.init</span>
+</span><span class='line'>    <span class="nx">jQuery</span><span class="p">.</span><span class="nx">fn</span><span class="p">.</span><span class="nx">init</span><span class="p">.</span><span class="nx">prototype</span> <span class="o">=</span> <span class="nx">jquery</span><span class="p">.</span><span class="nx">fn</span>
+</span><span class='line'>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Let&rsquo;s see the complete struture now.</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'>    <span class="c1">// utils</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// class structure</span>
+</span><span class='line'>    <span class="nx">jQuery</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="k">new</span> <span class="nx">jQuery</span><span class="p">.</span><span class="nx">fn</span><span class="p">.</span><span class="nx">init</span><span class="p">(</span> <span class="nx">selector</span><span class="p">,</span> <span class="nx">context</span> <span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="nx">jQuery</span><span class="p">.</span><span class="nx">fn</span> <span class="o">=</span> <span class="p">{</span>
+</span><span class='line'>       <span class="nx">init</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">selector</span><span class="p">,</span> <span class="nx">context</span><span class="p">)</span> <span class="p">{}</span>
+</span><span class='line'>       <span class="c1">// other core instance methods </span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="nx">jQuery</span><span class="p">.</span><span class="nx">fn</span> <span class="o">=</span> <span class="nx">jQuery</span><span class="p">.</span><span class="nx">prototype</span><span class="p">;</span>
+</span><span class='line'>    <span class="nx">jQuery</span><span class="p">.</span><span class="nx">fn</span><span class="p">.</span><span class="nx">init</span><span class="p">.</span><span class="nx">prototype</span> <span class="o">=</span> <span class="nx">jquery</span><span class="p">.</span><span class="nx">fn</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// instance methods extend</span>
+</span><span class='line'>    <span class="c1">// or use this style: jQuery.fn.hello = funtion() {}</span>
+</span><span class='line'>    <span class="nx">jQuery</span><span class="p">.</span><span class="nx">extend</span><span class="p">(</span><span class="nx">jQuery</span><span class="p">.</span><span class="nx">fn</span><span class="p">,</span> <span class="p">{</span>
+</span><span class='line'>       <span class="c1">// ...  </span>
+</span><span class='line'>    <span class="p">});</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// class methods extend</span>
+</span><span class='line'>    <span class="c1">// or use this style: jQuery.hello = funtion() {}</span>
+</span><span class='line'>    <span class="c1">// maybe some utils</span>
+</span><span class='line'>    <span class="nx">jQuery</span><span class="p">.</span><span class="nx">extend</span><span class="p">(</span><span class="nx">jQuery</span><span class="p">,</span> <span class="p">{</span>
+</span><span class='line'>      <span class="nx">isFunction</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span> <span class="nx">obj</span> <span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="nx">jQuery</span><span class="p">.</span><span class="nx">type</span><span class="p">(</span><span class="nx">obj</span><span class="p">)</span> <span class="o">===</span> <span class="s2">&quot;function&quot;</span><span class="p">;</span>
+</span><span class='line'>      <span class="p">}</span>
+</span><span class='line'>      <span class="c1">// ...  </span>
+</span><span class='line'>    <span class="p">});</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// module export or AMD</span>
+</span><span class='line'>    <span class="nb">window</span><span class="p">.</span><span class="nx">$</span> <span class="o">=</span> <span class="nb">window</span><span class="p">.</span><span class="nx">jQuery</span> <span class="o">=</span> <span class="nx">jQuery</span>
+</span><span class='line'>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -503,6 +661,12 @@ git commit -a -m "Depot Scaffold"
 <p>compare with version before last commit and last commit</p>
 
 <pre><code>git diff HEAD^ HEAD
+
+# show diff stat
+git diff --stat
+
+# show the tree-like view
+git log --graph --oneline --all
 </code></pre>
 
 <p>specify the file path</p>
@@ -677,6 +841,10 @@ PWD=/home/lingceng
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2014/03/26/jquery-source-structure-tip/">jQuery Source Structure Tip</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2014/03/18/minitest-mock-and-stud/">Minitest Mock and Stud</a>
       </li>
     
@@ -690,10 +858,6 @@ PWD=/home/lingceng
     
       <li class="post">
         <a href="/blog/2014/03/13/git-get-start/">Git Get Start</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2013/11/30/run-cron-every-5-hours/">Run Cron Every 5 Hours</a>
       </li>
     
   </ul>
