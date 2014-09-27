@@ -6,10 +6,10 @@
 
 ## How to post
 
-  rake new_post["Zombie Ninjas Attack: A survivor's retrospective"]
+  rake new\_post["Zombie Ninjas Attack: A survivor's retrospective"]
   rake generate   # Generates posts and pages into the public directory
   rake preview    # Watches, and mounts a webserver at http://localhost:4000
-  rake deploy     # push _deploy to the master branch
+  rake deploy     # push \_deploy to the master branch
 
 ## What is Octopress?
 

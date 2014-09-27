@@ -4,10 +4,10 @@
 
 url: http://lingceng.github.io
 title: lingceng
-subtitle: javascript web ruby java 
+subtitle: have fun with code 
 author: lingceng 
 simple_search: http://google.com/search
-description:
+description: This is my personal blog. I'm a vim fan, rubist, and familar with javascript and java.
 
 # Default date format is "ordinal" (resulting in "July 22nd 2007")
 # You can customize the format as defined in
@@ -63,7 +63,7 @@ default_asides: [asides/recent_posts.html, asides/github.html, asides/delicious.
 # ----------------------- #
 
 # Github repositories
-github_user:
+github_user: lingceng
 github_repo_count: 0
 github_show_profile_link: true
 github_skip_forks: true
