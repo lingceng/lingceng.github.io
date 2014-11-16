@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Rails | Lingceng's Blog]]></title>
+  <link href="http://lingceng.github.io/blog/categories/rails/atom.xml" rel="self"/>
+  <link href="http://lingceng.github.io/"/>
+  <updated>2014-11-16T16:18:54+08:00</updated>
+  <id>http://lingceng.github.io/</id>
+  <author>
+    <name><![CDATA[Lingceng]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Turbolink Best Practice]]></title>
+    <link href="http://lingceng.github.io/blog/2014/10/16/turbolink-best-practice/"/>
+    <updated>2014-10-16T12:12:00+08:00</updated>
+    <id>http://lingceng.github.io/blog/2014/10/16/turbolink-best-practice</id>
+    <content type="html"><![CDATA[<h2>What does <a href="https://github.com/rails/turbolinks">turbolinks</a> do?</h2>
+
+<p>Only replace the page <code>&lt;body&gt;</code> and <code>&lt;title&gt;</code> with Get respond when click a link.</p>
+
+<p>It&rsquo;s fast because no need to recompile the JavaScript and CSS between
+each page change.</p>
+
+<h4>Turbolink has other features make it fast</h4>
+
+<p>Use client cache pages.</p>
+
+<pre><code># View current page cache size
+Turbolinks.pagesCached();
+# Set the cache size
+Turbolinks.pagesCached(20);
+</code></pre>
+
+<p>Use transition cache.</p>
+
+<p>Transition will immediately display the cached copy of page and then replace
+with remote returned one.</p>
+
+<pre><code># enable transition cache
+Turbolinks.enableTransitionCache();
+</code></pre>
+
+<p>Browser native process bar will not work when using turbolink.
+So turbolink provide a JavaScript-and-CSS-based one.</p>
+
+<pre><code>Turbolinks.enableProgressBar();
+</code></pre>
+
+<h2>What&rsquo;s the best practice?</h2>
+
+<ul>
+<li>Use <code>jquery.turbolink</code> to fix Dom ready event in jQuery.</li>
+<li>Put all JavaScript and CSS in <code>&lt;HEAD&gt;</code></li>
+</ul>
+
+
+<h4>Has javascripts only needed in some page?</h4>
+
+<p>Mark tag to <code>&lt;body&gt;</code> when need specific page logic.
+Trigger it according to the tag value.</p>
+
+<pre><code>// In app/views/layouts/application.html.erb
+&lt;body data-controller-name="&lt;%= controller_name %&gt;"&gt;
+
+// In topics.coffee
+window.Topics =
+  replies_per_page: 50
+  init : () -&gt;
+    console.log "hello"
+
+$(document).ready -&gt;
+  if $('body').data('controller-name') in ['topics']
+    Topics.init()
+
+// Add topics to appliction.js
+//= require topics
+</code></pre>
+
+<p>Note: This will also avoid <code>config.precompile.assets+=%w{user}</code> in Rails.</p>
+
+<h2>What will happen when add JavaScript in body?</h2>
+
+<p>You should not add JavaScript to <code>&lt;body&gt;</code>.
+Especially when bind event, it will cause event bind multiple times.</p>
+
+<p>Note that you can add <code>data-turbolinks-eval=false</code> to rescue this.</p>
+
+<pre><code>&lt;script type="text/javascript" data-turbolinks-eval=false&gt;
+  console.log("I'm only run once on the initial page load");
+&lt;/script&gt;
+</code></pre>
+
+<h2>What will happen when I changed head content?</h2>
+
+<p>It depends on how you change it.</p>
+
+<p>If you add some <code>&lt;script type="text/javascript"&gt;</code> tag, like something like this:</p>
+
+<pre><code>// On page B
+&lt;script type="text/javascript"&gt;
+  console.log('hello')
+&lt;/script&gt;
+</code></pre>
+
+<p>When I click a link on page A to page B, the &lsquo;hello&rsquo; will <strong>not</strong> printed.
+The script tag will be ignored.
+It&rsquo;s the same when you add a <code>src</code> to script tag.</p>
+
+<p>Things will change when this case</p>
+
+<pre><code>&lt;script type="text/javascript" src="http://lingceng.github.io/hello.js" data-turbolinks-track&gt;&lt;/script&gt;
+</code></pre>
+
+<p><code>data-turbolinks-track</code> make turbolink track the change in head.</p>
+
+<p>When this case, &lsquo;hello&rsquo; will be printed,
+every things seems fine except slow page load.
+When this happens, you&rsquo;ll technically be requesting the same page twice.
+Once through Turbolinks to detect that the assets changed,
+and then again when we do a full redirect to that page.</p>
+
+<p>You should always add <code>data-turbolinks-track</code> to JavaScript and CSS links.
+This will trigger full page load when your assets changed.
+But when two pages have different <code>track targets</code>, every switch between the two
+pages will cause <code>double load</code>.</p>
+
+<p>See the
+<a href="https://github.com/rails/turbolinks/blob/master/lib%2Fassets%2Fjavascripts%2Fturbolinks.js.coffee#L231">code</a>
+to know the details</p>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='coffeescript'><span class='line'><span class="nv">extractTrackAssets = </span><span class="p">(</span><span class="nx">doc</span><span class="p">)</span> <span class="o">&amp;</span><span class="nx">ndash</span><span class="p">;</span><span class="o">&gt;</span>
+</span><span class='line'>  <span class="k">for</span> <span class="nx">node</span> <span class="k">in</span> <span class="nx">doc</span><span class="p">.</span><span class="nx">querySelector</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">lsquo</span><span class="p">;</span><span class="nx">head</span><span class="o">&amp;</span><span class="nx">rsquo</span><span class="p">;).</span><span class="nx">childNodes</span> <span class="k">when</span> <span class="nx">node</span><span class="p">.</span><span class="nx">getAttribute</span><span class="o">?</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">lsquo</span><span class="p">;</span><span class="nx">data</span><span class="o">-</span><span class="nx">turbolinks</span><span class="o">-</span><span class="nx">track</span><span class="o">&amp;</span><span class="nx">rsquo</span><span class="p">;)</span><span class="o">?&lt;/</span><span class="nx">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="nx">node</span><span class="p">.</span><span class="nx">getAttribute</span><span class="p">(</span><span class="s">&#39;src&#39;</span><span class="p">)</span> <span class="o">or</span> <span class="nx">node</span><span class="p">.</span><span class="nx">getAttribute</span><span class="p">(</span><span class="s">&#39;href&#39;</span><span class="p">)</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="nx">code</span><span class="o">&gt;&lt;/</span><span class="nx">pre</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="nv">assetsChanged = </span><span class="p">(</span><span class="nx">doc</span><span class="p">)</span> <span class="o">&amp;</span><span class="nx">ndash</span><span class="p">;</span><span class="o">&gt;</span>
+</span><span class='line'>  <span class="nx">loadedAssets</span> <span class="o">||=</span> <span class="nx">extractTrackAssets</span> <span class="nb">document</span>
+</span><span class='line'>  <span class="nv">fetchedAssets  = </span><span class="nx">extractTrackAssets</span> <span class="nx">doc</span>
+</span><span class='line'>  <span class="nx">fetchedAssets</span><span class="p">.</span><span class="nx">length</span> <span class="o">isnt</span> <span class="nx">loadedAssets</span><span class="p">.</span><span class="nx">length</span> <span class="o">or</span> <span class="nx">intersection</span><span class="p">(</span><span class="nx">fetchedAssets</span><span class="p">,</span> <span class="nx">loadedAssets</span><span class="p">).</span><span class="nx">length</span> <span class="o">isnt</span> <span class="nx">loadedAssets</span><span class="p">.</span><span class="nx">length</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<p>In this situation, you can add tag to prevent turbolink jump.</p>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='html'><span class='line'><span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">&quot;http://lingceng.github.io/&quot;</span><span class="nt">&gt;</span>Home (via Turbolinks)<span class="nt">&lt;/a&gt;&lt;/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">&quot;some-div&quot;</span> <span class="na">data-no-turbolink</span><span class="nt">&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">&quot;http://lingceng.github.io/&quot;</span><span class="nt">&gt;</span>Home (without Turbolinks)<span class="nt">&lt;/a&gt;</span>
+</span><span class='line'><span class="nt">&lt;/div&gt;</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="nt">&lt;p&gt;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<p>But you must add to &ldquo;every in and out link&rdquo; for page B, that&rsquo;s not a easy job.</p>
+
+<h2>Conclusion</h2>
+
+<h3>Never change head contents and follow the best practice.</h3>
+]]></content>
+  </entry>
+  
+</feed>
