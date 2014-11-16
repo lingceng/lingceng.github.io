@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Ruby | Lingceng's Blog]]></title>
   <link href="http://lingceng.github.io/blog/categories/ruby/atom.xml" rel="self"/>
   <link href="http://lingceng.github.io/"/>
-  <updated>2014-11-16T16:42:54+08:00</updated>
+  <updated>2014-11-16T17:52:32+08:00</updated>
   <id>http://lingceng.github.io/</id>
   <author>
     <name><![CDATA[Lingceng]]></name>
@@ -18,12 +18,13 @@
     <link href="http://lingceng.github.io/blog/2014/10/16/turbolink-best-practice/"/>
     <updated>2014-10-16T12:12:00+08:00</updated>
     <id>http://lingceng.github.io/blog/2014/10/16/turbolink-best-practice</id>
-    <content type="html"><![CDATA[<h2>What does <a href="https://github.com/rails/turbolinks">turbolinks</a> do?</h2>
+    <content type="html"><![CDATA[<h2>What does Turbolink do?</h2>
 
-<p>Only replace the page <code>&lt;body&gt;</code> and <code>&lt;title&gt;</code> with Get respond when click a link.</p>
+<p><a href="https://github.com/rails/turbolinks">Turbolink</a> makes browser to only replace
+page&rsquo;s <code>&lt;body&gt;</code> and <code>&lt;title&gt;</code> to simulate page jumping when click a link.</p>
 
-<p>It&rsquo;s fast because no need to recompile the JavaScript and CSS between
-each page change.</p>
+<p>It&rsquo;s fast because no need to recompile the JavaScript and CSS.
+As you can see, we must keep stuffs in head the same, or things will go wrong.</p>
 
 <h4>Turbolink has other features make it fast</h4>
 
@@ -35,17 +36,16 @@ Turbolinks.pagesCached();
 Turbolinks.pagesCached(20);
 </code></pre>
 
-<p>Use transition cache.</p>
-
-<p>Transition will immediately display the cached copy of page and then replace
+<p>Use transition cache.
+Transition will immediately display the cached copy of page and then replace
 with remote returned one.</p>
 
 <pre><code># enable transition cache
 Turbolinks.enableTransitionCache();
 </code></pre>
 
-<p>Browser native process bar will not work when using turbolink.
-So turbolink provide a JavaScript-and-CSS-based one.</p>
+<p>Browser native process bar will not work when using Turbolink.
+So Turbolink provide a JavaScript-and-CSS-based one.</p>
 
 <pre><code>Turbolinks.enableProgressBar();
 </code></pre>
@@ -53,15 +53,15 @@ So turbolink provide a JavaScript-and-CSS-based one.</p>
 <h2>What&rsquo;s the best practice?</h2>
 
 <ul>
-<li>Use <code>jquery.turbolink</code> to fix Dom ready event in jQuery.</li>
-<li>Put all JavaScript and CSS in <code>&lt;HEAD&gt;</code></li>
+<li><strong> Never change <code>&lt;HEAD&gt;</code> content except <code>title</code> </strong></li>
+<li><strong> Put all JavaScript and CSS in <code>&lt;HEAD&gt;</code> </strong></li>
+<li><strong> Use <code>jquery.turbolink</code> to fix <code>DOMContentLoaded</code> or <code>jQuery.ready()</code> in jQuery. </strong></li>
 </ul>
 
 
-<h4>Has javascripts only needed in some page?</h4>
+<h2>You want some JavaScript only included in some page?</h2>
 
-<p>Mark tag to <code>&lt;body&gt;</code> when need specific page logic.
-Trigger it according to the tag value.</p>
+<p>Mark to <code>&lt;body&gt;</code> when need specific page logic, trigger it according to mark, eg.</p>
 
 <pre><code>// In app/views/layouts/application.html.erb
 &lt;body data-controller-name="&lt;%= controller_name %&gt;"&gt;
@@ -82,12 +82,12 @@ $(document).ready -&gt;
 
 <p>Note: This will also avoid <code>config.precompile.assets+=%w{user}</code> in Rails.</p>
 
-<h2>What will happen when add JavaScript in body?</h2>
+<h2>What will happen when add JavaScript in page body?</h2>
 
-<p>You should not add JavaScript to <code>&lt;body&gt;</code>.
-Especially when bind event, it will cause event bind multiple times.</p>
+<p>You should not add JavaScript to <code>&lt;body&gt;</code>, they will be re-evaluated.
+Especially when doing event bind, it will cause event binding multiple times.</p>
 
-<p>Note that you can add <code>data-turbolinks-eval=false</code> to rescue this.</p>
+<p>Note that you can add <code>data-turbolinks-eval=false</code> to prevent re-evaluating.</p>
 
 <pre><code>&lt;script type="text/javascript" data-turbolinks-eval=false&gt;
   console.log("I'm only run once on the initial page load");
@@ -98,7 +98,7 @@ Especially when bind event, it will cause event bind multiple times.</p>
 
 <p>It depends on how you change it.</p>
 
-<p>If you add some <code>&lt;script type="text/javascript"&gt;</code> tag, like something like this:</p>
+<p>If you add some <code>&lt;script type="text/javascript"&gt;</code> tag, eg.</p>
 
 <pre><code>// On page B
 &lt;script type="text/javascript"&gt;
@@ -106,30 +106,36 @@ Especially when bind event, it will cause event bind multiple times.</p>
 &lt;/script&gt;
 </code></pre>
 
-<p>When I click a link on page A to page B, the &lsquo;hello&rsquo; will <strong>not</strong> printed.
-The script tag will be ignored.
-It&rsquo;s the same when you add a <code>src</code> to script tag.</p>
+<p>When you click a link on page A to page B, the &lsquo;hello&rsquo; will <strong>not</strong> printed.
+The script tag will be ignored.</p>
 
-<p>Things will change when this case</p>
+<p>It&rsquo;s the same when you make it a <code>src</code> link.</p>
+
+<pre><code>// On page B
+&lt;script type="text/javascript" src='hello.js'&gt; &lt;/script&gt;
+</code></pre>
+
+<p>Only if you add a <code>data-turbolinks-track</code> tag.</p>
 
 <pre><code>&lt;script type="text/javascript" src="http://lingceng.github.io/hello.js" data-turbolinks-track&gt;&lt;/script&gt;
 </code></pre>
 
-<p><code>data-turbolinks-track</code> make turbolink track the change in head.</p>
-
 <p>When this case, &lsquo;hello&rsquo; will be printed,
-every things seems fine except slow page load.
-When this happens, you&rsquo;ll technically be requesting the same page twice.
+every things seems fine except <strong>slow page load</strong>.</p>
+
+<p>You&rsquo;ll technically be requesting the same page twice.
 Once through Turbolinks to detect that the assets changed,
-and then again when we do a full redirect to that page.</p>
+and then again do a full redirect to that page.</p>
 
 <p>You should always add <code>data-turbolinks-track</code> to JavaScript and CSS links.
 This will trigger full page load when your assets changed.
-But when two pages have different <code>track targets</code>, every switch between the two
-pages will cause <code>double load</code>.</p>
+It is only useful to clear cache in a page instance.</p>
 
-<p>See the
-<a href="https://github.com/rails/turbolinks/blob/master/lib%2Fassets%2Fjavascripts%2Fturbolinks.js.coffee#L231">code</a>
+<p>When page A and page B have different <code>track targets</code>,
+every switch between them will cause <code>double load</code>.
+So, you&rsquo;d better not rely on <code>data-turbolinks-track</code> to jumps between different head content.</p>
+
+<p>See the <a href="https://github.com/rails/turbolinks/blob/master/lib%2Fassets%2Fjavascripts%2Fturbolinks.js.coffee#L231">code</a>
 to know the details</p>
 
 <p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
@@ -154,7 +160,8 @@ to know the details</p>
 </span><span class='line'>  <span class="nx">fetchedAssets</span><span class="p">.</span><span class="nx">length</span> <span class="o">isnt</span> <span class="nx">loadedAssets</span><span class="p">.</span><span class="nx">length</span> <span class="o">or</span> <span class="nx">intersection</span><span class="p">(</span><span class="nx">fetchedAssets</span><span class="p">,</span> <span class="nx">loadedAssets</span><span class="p">).</span><span class="nx">length</span> <span class="o">isnt</span> <span class="nx">loadedAssets</span><span class="p">.</span><span class="nx">length</span>
 </span></code></pre></td></tr></table></div></figure></notextile></div></p>
 
-<p>In this situation, you can add tag to prevent turbolink jump.</p>
+<p>One last rescue is to prevent turbolink jump by add <code>data-no-turbolink</code> tag.
+And then you will not benefit from turbolink speed boost.</p>
 
 <p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -173,12 +180,6 @@ to know the details</p>
 </span><span class='line'>
 </span><span class='line'><span class="nt">&lt;p&gt;</span>
 </span></code></pre></td></tr></table></div></figure></notextile></div></p>
-
-<p>But you must add to &ldquo;every in and out link&rdquo; for page B, that&rsquo;s not a easy job.</p>
-
-<h2>Conclusion</h2>
-
-<h3>Never change head contents and follow the best practice.</h3>
 ]]></content>
   </entry>
   
