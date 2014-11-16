@@ -16,7 +16,8 @@
 5
 6
 7
-8 out, err = capture_io do puts &quot;Some info&quot; warn &quot;You did a bad thing&quot; &hellip;">
+out, err = capture_io do puts &quot;Some info&quot; warn &quot;You did a bad thing&quot;
+end &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -109,15 +110,13 @@
 <span class='line-number'>5</span>
 <span class='line-number'>6</span>
 <span class='line-number'>7</span>
-<span class='line-number'>8</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'>    <span class="n">out</span><span class="p">,</span> <span class="n">err</span> <span class="o">=</span> <span class="n">capture_io</span> <span class="k">do</span>
-</span><span class='line'>      <span class="nb">puts</span> <span class="s2">&quot;Some info&quot;</span>
-</span><span class='line'>      <span class="nb">warn</span> <span class="s2">&quot;You did a bad thing&quot;</span>
-</span><span class='line'>    <span class="k">end</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">out</span><span class="p">,</span> <span class="n">err</span> <span class="o">=</span> <span class="n">capture_io</span> <span class="k">do</span>
+</span><span class='line'>  <span class="nb">puts</span> <span class="s2">&quot;Some info&quot;</span>
+</span><span class='line'>  <span class="nb">warn</span> <span class="s2">&quot;You did a bad thing&quot;</span>
+</span><span class='line'><span class="k">end</span>
 </span><span class='line'>
-</span><span class='line'>    <span class="n">assert_match</span> <span class="sr">%r%info%</span><span class="p">,</span> <span class="n">out</span>
-</span><span class='line'>    <span class="n">assert_match</span> <span class="sr">%r%bad%</span><span class="p">,</span> <span class="n">err</span>
-</span><span class='line'>
+</span><span class='line'><span class="n">assert_match</span> <span class="sr">%r%info%</span><span class="p">,</span> <span class="n">out</span>
+</span><span class='line'><span class="n">assert_match</span> <span class="sr">%r%bad%</span><span class="p">,</span> <span class="n">err</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
@@ -137,18 +136,16 @@ How to simulate user input or socket talks? Mock may do the job.</p>
 <span class='line-number'>8</span>
 <span class='line-number'>9</span>
 <span class='line-number'>10</span>
-<span class='line-number'>11</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'>    <span class="k">class</span> <span class="nc">Stupidc</span>
-</span><span class='line'>      <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="n">input</span><span class="o">=</span><span class="no">STDIN</span><span class="p">,</span> <span class="n">output</span><span class="o">=</span><span class="no">STDOUT</span><span class="p">)</span>
-</span><span class='line'>        <span class="vi">@input</span> <span class="o">=</span> <span class="n">input</span>
-</span><span class='line'>        <span class="vi">@output</span> <span class="o">=</span> <span class="n">output</span>
-</span><span class='line'>      <span class="k">end</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">Stupidc</span>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="n">input</span><span class="o">=</span><span class="no">STDIN</span><span class="p">,</span> <span class="n">output</span><span class="o">=</span><span class="no">STDOUT</span><span class="p">)</span>
+</span><span class='line'>    <span class="vi">@input</span> <span class="o">=</span> <span class="n">input</span>
+</span><span class='line'>    <span class="vi">@output</span> <span class="o">=</span> <span class="n">output</span>
+</span><span class='line'>  <span class="k">end</span>
 </span><span class='line'>
-</span><span class='line'>      <span class="k">def</span> <span class="nf">say_hello</span><span class="p">()</span>
-</span><span class='line'>        <span class="vi">@output</span><span class="o">.</span><span class="n">puts</span> <span class="s1">&#39;hello&#39;</span>
-</span><span class='line'>      <span class="k">end</span>
-</span><span class='line'>    <span class="k">end</span>
-</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">say_hello</span><span class="p">()</span>
+</span><span class='line'>    <span class="vi">@output</span><span class="o">.</span><span class="n">puts</span> <span class="s1">&#39;hello&#39;</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
@@ -172,25 +169,23 @@ How to simulate user input or socket talks? Mock may do the job.</p>
 <span class='line-number'>15</span>
 <span class='line-number'>16</span>
 <span class='line-number'>17</span>
-<span class='line-number'>18</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'>    <span class="nb">require</span> <span class="s1">&#39;minitest/autorun&#39;</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="nb">require</span> <span class="s1">&#39;minitest/autorun&#39;</span>
 </span><span class='line'>
-</span><span class='line'>    <span class="n">describe</span> <span class="no">Stupidc</span> <span class="k">do</span>
-</span><span class='line'>      <span class="n">before</span> <span class="k">do</span>
-</span><span class='line'>        <span class="vi">@input</span> <span class="o">=</span> <span class="ss">MiniTest</span><span class="p">:</span><span class="ss">:Mock</span><span class="o">.</span><span class="n">new</span>
-</span><span class='line'>        <span class="vi">@output</span> <span class="o">=</span> <span class="ss">MiniTest</span><span class="p">:</span><span class="ss">:Mock</span><span class="o">.</span><span class="n">new</span>
+</span><span class='line'><span class="n">describe</span> <span class="no">Stupidc</span> <span class="k">do</span>
+</span><span class='line'>  <span class="n">before</span> <span class="k">do</span>
+</span><span class='line'>    <span class="vi">@input</span> <span class="o">=</span> <span class="ss">MiniTest</span><span class="p">:</span><span class="ss">:Mock</span><span class="o">.</span><span class="n">new</span>
+</span><span class='line'>    <span class="vi">@output</span> <span class="o">=</span> <span class="ss">MiniTest</span><span class="p">:</span><span class="ss">:Mock</span><span class="o">.</span><span class="n">new</span>
 </span><span class='line'>
-</span><span class='line'>        <span class="vi">@stupidc</span> <span class="o">=</span> <span class="no">Stupidc</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="vi">@input</span><span class="p">,</span> <span class="vi">@output</span><span class="p">)</span>
-</span><span class='line'>      <span class="k">end</span>
+</span><span class='line'>    <span class="vi">@stupidc</span> <span class="o">=</span> <span class="no">Stupidc</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="vi">@input</span><span class="p">,</span> <span class="vi">@output</span><span class="p">)</span>
+</span><span class='line'>  <span class="k">end</span>
 </span><span class='line'>
 </span><span class='line'>
-</span><span class='line'>      <span class="n">it</span> <span class="s2">&quot;should copy file to source when file is target&quot;</span> <span class="k">do</span>
-</span><span class='line'>        <span class="vi">@output</span><span class="o">.</span><span class="n">expect</span> <span class="ss">:puts</span><span class="p">,</span> <span class="kp">nil</span><span class="p">,</span> <span class="o">[</span><span class="s1">&#39;hello&#39;</span><span class="o">]</span>
-</span><span class='line'>        <span class="vi">@stupidc</span><span class="o">.</span><span class="n">say_hello</span><span class="p">()</span>
-</span><span class='line'>        <span class="vi">@output</span><span class="o">.</span><span class="n">verify</span>
-</span><span class='line'>      <span class="k">end</span>
-</span><span class='line'>    <span class="k">end</span>
-</span><span class='line'>
+</span><span class='line'>  <span class="n">it</span> <span class="s2">&quot;should copy file to source when file is target&quot;</span> <span class="k">do</span>
+</span><span class='line'>    <span class="vi">@output</span><span class="o">.</span><span class="n">expect</span> <span class="ss">:puts</span><span class="p">,</span> <span class="kp">nil</span><span class="p">,</span> <span class="o">[</span><span class="s1">&#39;hello&#39;</span><span class="o">]</span>
+</span><span class='line'>    <span class="vi">@stupidc</span><span class="o">.</span><span class="n">say_hello</span><span class="p">()</span>
+</span><span class='line'>    <span class="vi">@output</span><span class="o">.</span><span class="n">verify</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
@@ -209,17 +204,15 @@ see <a href="https://github.com/seattlerb/minitest/blob/master/test/minitest/tes
 <span class='line-number'>7</span>
 <span class='line-number'>8</span>
 <span class='line-number'>9</span>
-<span class='line-number'>10</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'>     <span class="k">def</span> <span class="nf">test_stub_yield_self</span>
-</span><span class='line'>        <span class="n">obj</span> <span class="o">=</span> <span class="s2">&quot;foo&quot;</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">def</span> <span class="nf">test_stub_yield_self</span>
+</span><span class='line'>  <span class="n">obj</span> <span class="o">=</span> <span class="s2">&quot;foo&quot;</span>
 </span><span class='line'>
-</span><span class='line'>        <span class="n">val</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">stub</span> <span class="ss">:to_s</span><span class="p">,</span> <span class="s2">&quot;bar&quot;</span> <span class="k">do</span> <span class="o">|</span><span class="n">s</span><span class="o">|</span>
-</span><span class='line'>          <span class="n">s</span><span class="o">.</span><span class="n">to_s</span>
-</span><span class='line'>        <span class="k">end</span>
+</span><span class='line'>  <span class="n">val</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">stub</span> <span class="ss">:to_s</span><span class="p">,</span> <span class="s2">&quot;bar&quot;</span> <span class="k">do</span> <span class="o">|</span><span class="n">s</span><span class="o">|</span>
+</span><span class='line'>    <span class="n">s</span><span class="o">.</span><span class="n">to_s</span>
+</span><span class='line'>  <span class="k">end</span>
 </span><span class='line'>
-</span><span class='line'>        <span class="vi">@tc</span><span class="o">.</span><span class="n">assert_equal</span> <span class="s2">&quot;bar&quot;</span><span class="p">,</span> <span class="n">val</span>
-</span><span class='line'>      <span class="k">end</span>
-</span><span class='line'>
+</span><span class='line'>  <span class="vi">@tc</span><span class="o">.</span><span class="n">assert_equal</span> <span class="s2">&quot;bar&quot;</span><span class="p">,</span> <span class="n">val</span>
+</span><span class='line'><span class="k">end</span>
 </span></code></pre></td></tr></table></div></figure>
 
 

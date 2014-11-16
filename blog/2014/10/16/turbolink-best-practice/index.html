@@ -205,23 +205,37 @@ pages will cause <code>double load</code>.</p>
 <a href="https://github.com/rails/turbolinks/blob/master/lib%2Fassets%2Fjavascripts%2Fturbolinks.js.coffee#L231">code</a>
 to know the details</p>
 
-<pre><code>extractTrackAssets = (doc) -&gt;
-  for node in doc.querySelector('head').childNodes when node.getAttribute?('data-turbolinks-track')?
-    node.getAttribute('src') or node.getAttribute('href')
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='coffeescript'><span class='line'><span class="nv">extractTrackAssets = </span><span class="nf">(doc) -&gt;</span>
+</span><span class='line'>  <span class="k">for</span> <span class="nx">node</span> <span class="k">in</span> <span class="nx">doc</span><span class="p">.</span><span class="nx">querySelector</span><span class="p">(</span><span class="s">&#39;head&#39;</span><span class="p">).</span><span class="nx">childNodes</span> <span class="k">when</span> <span class="nx">node</span><span class="p">.</span><span class="nx">getAttribute</span><span class="o">?</span><span class="p">(</span><span class="s">&#39;data-turbolinks-track&#39;</span><span class="p">)</span><span class="o">?</span>
+</span><span class='line'>    <span class="nx">node</span><span class="p">.</span><span class="nx">getAttribute</span><span class="p">(</span><span class="s">&#39;src&#39;</span><span class="p">)</span> <span class="o">or</span> <span class="nx">node</span><span class="p">.</span><span class="nx">getAttribute</span><span class="p">(</span><span class="s">&#39;href&#39;</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="nv">assetsChanged = </span><span class="nf">(doc) -&gt;</span>
+</span><span class='line'>  <span class="nx">loadedAssets</span> <span class="o">||=</span> <span class="nx">extractTrackAssets</span> <span class="nb">document</span>
+</span><span class='line'>  <span class="nv">fetchedAssets  = </span><span class="nx">extractTrackAssets</span> <span class="nx">doc</span>
+</span><span class='line'>  <span class="nx">fetchedAssets</span><span class="p">.</span><span class="nx">length</span> <span class="o">isnt</span> <span class="nx">loadedAssets</span><span class="p">.</span><span class="nx">length</span> <span class="o">or</span> <span class="nx">intersection</span><span class="p">(</span><span class="nx">fetchedAssets</span><span class="p">,</span> <span class="nx">loadedAssets</span><span class="p">).</span><span class="nx">length</span> <span class="o">isnt</span> <span class="nx">loadedAssets</span><span class="p">.</span><span class="nx">length</span>
+</span></code></pre></td></tr></table></div></figure>
 
-assetsChanged = (doc) -&gt;
-  loadedAssets ||= extractTrackAssets document
-  fetchedAssets  = extractTrackAssets doc
-  fetchedAssets.length isnt loadedAssets.length or intersection(fetchedAssets, loadedAssets).length isnt loadedAssets.length
-</code></pre>
 
 <p>In this situation, you can add tag to prevent turbolink jump.</p>
 
-<pre><code>&lt;a href="/"&gt;Home (via Turbolinks)&lt;/a&gt;
-&lt;div id="some-div" data-no-turbolink&gt;
-  &lt;a href="/"&gt;Home (without Turbolinks)&lt;/a&gt;
-&lt;/div&gt;
-</code></pre>
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='html'><span class='line'><span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">&quot;/&quot;</span><span class="nt">&gt;</span>Home (via Turbolinks)<span class="nt">&lt;/a&gt;</span>
+</span><span class='line'><span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">&quot;some-div&quot;</span> <span class="na">data-no-turbolink</span><span class="nt">&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">&quot;/&quot;</span><span class="nt">&gt;</span>Home (without Turbolinks)<span class="nt">&lt;/a&gt;</span>
+</span><span class='line'><span class="nt">&lt;/div&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
 
 <p>But you must add to &ldquo;every in and out link&rdquo; for page B, that&rsquo;s not a easy job.</p>
 

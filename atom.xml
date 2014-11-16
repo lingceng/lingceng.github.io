@@ -4,7 +4,7 @@
   <title><![CDATA[Lingceng's Blog]]></title>
   <link href="http://lingceng.github.io/atom.xml" rel="self"/>
   <link href="http://lingceng.github.io/"/>
-  <updated>2014-11-16T12:26:05+08:00</updated>
+  <updated>2014-11-16T12:36:07+08:00</updated>
   <id>http://lingceng.github.io/</id>
   <author>
     <name><![CDATA[Lingceng]]></name>
@@ -132,23 +132,37 @@ pages will cause <code>double load</code>.</p>
 <a href="https://github.com/rails/turbolinks/blob/master/lib%2Fassets%2Fjavascripts%2Fturbolinks.js.coffee#L231">code</a>
 to know the details</p>
 
-<pre><code>extractTrackAssets = (doc) -&gt;
-  for node in doc.querySelector('head').childNodes when node.getAttribute?('data-turbolinks-track')?
-    node.getAttribute('src') or node.getAttribute('href')
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='coffeescript'><span class='line'><span class="nv">extractTrackAssets = </span><span class="nf">(doc) -&gt;</span>
+</span><span class='line'>  <span class="k">for</span> <span class="nx">node</span> <span class="k">in</span> <span class="nx">doc</span><span class="p">.</span><span class="nx">querySelector</span><span class="p">(</span><span class="s">&#39;head&#39;</span><span class="p">).</span><span class="nx">childNodes</span> <span class="k">when</span> <span class="nx">node</span><span class="p">.</span><span class="nx">getAttribute</span><span class="o">?</span><span class="p">(</span><span class="s">&#39;data-turbolinks-track&#39;</span><span class="p">)</span><span class="o">?</span>
+</span><span class='line'>    <span class="nx">node</span><span class="p">.</span><span class="nx">getAttribute</span><span class="p">(</span><span class="s">&#39;src&#39;</span><span class="p">)</span> <span class="o">or</span> <span class="nx">node</span><span class="p">.</span><span class="nx">getAttribute</span><span class="p">(</span><span class="s">&#39;href&#39;</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="nv">assetsChanged = </span><span class="nf">(doc) -&gt;</span>
+</span><span class='line'>  <span class="nx">loadedAssets</span> <span class="o">||=</span> <span class="nx">extractTrackAssets</span> <span class="nb">document</span>
+</span><span class='line'>  <span class="nv">fetchedAssets  = </span><span class="nx">extractTrackAssets</span> <span class="nx">doc</span>
+</span><span class='line'>  <span class="nx">fetchedAssets</span><span class="p">.</span><span class="nx">length</span> <span class="o">isnt</span> <span class="nx">loadedAssets</span><span class="p">.</span><span class="nx">length</span> <span class="o">or</span> <span class="nx">intersection</span><span class="p">(</span><span class="nx">fetchedAssets</span><span class="p">,</span> <span class="nx">loadedAssets</span><span class="p">).</span><span class="nx">length</span> <span class="o">isnt</span> <span class="nx">loadedAssets</span><span class="p">.</span><span class="nx">length</span>
+</span></code></pre></td></tr></table></div></figure>
 
-assetsChanged = (doc) -&gt;
-  loadedAssets ||= extractTrackAssets document
-  fetchedAssets  = extractTrackAssets doc
-  fetchedAssets.length isnt loadedAssets.length or intersection(fetchedAssets, loadedAssets).length isnt loadedAssets.length
-</code></pre>
 
 <p>In this situation, you can add tag to prevent turbolink jump.</p>
 
-<pre><code>&lt;a href="http://lingceng.github.io/"&gt;Home (via Turbolinks)&lt;/a&gt;
-&lt;div id="some-div" data-no-turbolink&gt;
-  &lt;a href="http://lingceng.github.io/"&gt;Home (without Turbolinks)&lt;/a&gt;
-&lt;/div&gt;
-</code></pre>
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='html'><span class='line'><span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">&quot;/&quot;</span><span class="nt">&gt;</span>Home (via Turbolinks)<span class="nt">&lt;/a&gt;</span>
+</span><span class='line'><span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">&quot;some-div&quot;</span> <span class="na">data-no-turbolink</span><span class="nt">&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">&quot;/&quot;</span><span class="nt">&gt;</span>Home (without Turbolinks)<span class="nt">&lt;/a&gt;</span>
+</span><span class='line'><span class="nt">&lt;/div&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
 
 <p>But you must add to &ldquo;every in and out link&rdquo; for page B, that&rsquo;s not a easy job.</p>
 
@@ -174,14 +188,12 @@ I finaly find a clue after several attempts.</p>
 <span class='line-number'>4</span>
 <span class='line-number'>5</span>
 <span class='line-number'>6</span>
-<span class='line-number'>7</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'>    <span class="nx">jQuery</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">jQuery</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
 </span><span class='line'>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>    <span class="nx">jQuery</span><span class="p">.</span><span class="nx">prototype</span> <span class="o">=</span> <span class="p">{</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="nx">jQuery</span><span class="p">.</span><span class="nx">prototype</span> <span class="o">=</span> <span class="p">{</span>
 </span><span class='line'>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>
+</span><span class='line'><span class="p">}</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
@@ -192,13 +204,11 @@ I finaly find a clue after several attempts.</p>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
 <span class='line-number'>5</span>
-<span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'>    <span class="c1">// we can use the dollar sign to call the jQuery function</span>
-</span><span class='line'>    <span class="nx">$</span> <span class="o">=</span> <span class="nx">jQuery</span><span class="p">;</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="c1">// we can use the dollar sign to call the jQuery function</span>
+</span><span class='line'><span class="nx">$</span> <span class="o">=</span> <span class="nx">jQuery</span><span class="p">;</span>
 </span><span class='line'>
-</span><span class='line'>    <span class="c1">// we can use the `jQuery.fn.newFeature = function() {}` to extend the jQuery instance function</span>
-</span><span class='line'>    <span class="nx">jQuery</span><span class="p">.</span><span class="nx">fn</span> <span class="o">=</span> <span class="nx">jQuery</span><span class="p">.</span><span class="nx">prototype</span><span class="p">;</span>
-</span><span class='line'>
+</span><span class='line'><span class="c1">// we can use the `jQuery.fn.newFeature = function() {}` to extend the jQuery instance function</span>
+</span><span class='line'><span class="nx">jQuery</span><span class="p">.</span><span class="nx">fn</span> <span class="o">=</span> <span class="nx">jQuery</span><span class="p">.</span><span class="nx">prototype</span><span class="p">;</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
@@ -211,15 +221,13 @@ I finaly find a clue after several attempts.</p>
 <span class='line-number'>5</span>
 <span class='line-number'>6</span>
 <span class='line-number'>7</span>
-<span class='line-number'>8</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'>    <span class="nx">jQuery</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-</span><span class='line'>        <span class="c1">// jQuery.prototype.init is the actually creator function</span>
-</span><span class='line'>        <span class="k">return</span> <span class="k">new</span> <span class="nx">jQuery</span><span class="p">.</span><span class="nx">fn</span><span class="p">.</span><span class="nx">init</span><span class="p">(</span> <span class="nx">selector</span><span class="p">,</span> <span class="nx">context</span> <span class="p">);</span>
-</span><span class='line'>    <span class="p">}</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">jQuery</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>    <span class="c1">// jQuery.prototype.init is the actually creator function</span>
+</span><span class='line'>    <span class="k">return</span> <span class="k">new</span> <span class="nx">jQuery</span><span class="p">.</span><span class="nx">fn</span><span class="p">.</span><span class="nx">init</span><span class="p">(</span> <span class="nx">selector</span><span class="p">,</span> <span class="nx">context</span> <span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
 </span><span class='line'>
-</span><span class='line'>    <span class="c1">//  mount prototype on jQuery to jQuery.fn.init</span>
-</span><span class='line'>    <span class="nx">jQuery</span><span class="p">.</span><span class="nx">fn</span><span class="p">.</span><span class="nx">init</span><span class="p">.</span><span class="nx">prototype</span> <span class="o">=</span> <span class="nx">jquery</span><span class="p">.</span><span class="nx">fn</span>
-</span><span class='line'>
+</span><span class='line'><span class="c1">//  mount prototype on jQuery to jQuery.fn.init</span>
+</span><span class='line'><span class="nx">jQuery</span><span class="p">.</span><span class="nx">fn</span><span class="p">.</span><span class="nx">init</span><span class="p">.</span><span class="nx">prototype</span> <span class="o">=</span> <span class="nx">jquery</span><span class="p">.</span><span class="nx">fn</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
@@ -256,39 +264,37 @@ I finaly find a clue after several attempts.</p>
 <span class='line-number'>29</span>
 <span class='line-number'>30</span>
 <span class='line-number'>31</span>
-<span class='line-number'>32</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'>    <span class="c1">// utils</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="c1">// utils</span>
 </span><span class='line'>
-</span><span class='line'>    <span class="c1">// class structure</span>
-</span><span class='line'>    <span class="nx">jQuery</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-</span><span class='line'>        <span class="k">return</span> <span class="k">new</span> <span class="nx">jQuery</span><span class="p">.</span><span class="nx">fn</span><span class="p">.</span><span class="nx">init</span><span class="p">(</span> <span class="nx">selector</span><span class="p">,</span> <span class="nx">context</span> <span class="p">);</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>    <span class="nx">jQuery</span><span class="p">.</span><span class="nx">fn</span> <span class="o">=</span> <span class="p">{</span>
-</span><span class='line'>       <span class="nx">init</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">selector</span><span class="p">,</span> <span class="nx">context</span><span class="p">)</span> <span class="p">{}</span>
-</span><span class='line'>       <span class="c1">// other core instance methods</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>    <span class="nx">jQuery</span><span class="p">.</span><span class="nx">fn</span> <span class="o">=</span> <span class="nx">jQuery</span><span class="p">.</span><span class="nx">prototype</span><span class="p">;</span>
-</span><span class='line'>    <span class="nx">jQuery</span><span class="p">.</span><span class="nx">fn</span><span class="p">.</span><span class="nx">init</span><span class="p">.</span><span class="nx">prototype</span> <span class="o">=</span> <span class="nx">jquery</span><span class="p">.</span><span class="nx">fn</span>
+</span><span class='line'><span class="c1">// class structure</span>
+</span><span class='line'><span class="nx">jQuery</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="k">new</span> <span class="nx">jQuery</span><span class="p">.</span><span class="nx">fn</span><span class="p">.</span><span class="nx">init</span><span class="p">(</span> <span class="nx">selector</span><span class="p">,</span> <span class="nx">context</span> <span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="nx">jQuery</span><span class="p">.</span><span class="nx">fn</span> <span class="o">=</span> <span class="p">{</span>
+</span><span class='line'>   <span class="nx">init</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">selector</span><span class="p">,</span> <span class="nx">context</span><span class="p">)</span> <span class="p">{}</span>
+</span><span class='line'>   <span class="c1">// other core instance methods</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="nx">jQuery</span><span class="p">.</span><span class="nx">fn</span> <span class="o">=</span> <span class="nx">jQuery</span><span class="p">.</span><span class="nx">prototype</span><span class="p">;</span>
+</span><span class='line'><span class="nx">jQuery</span><span class="p">.</span><span class="nx">fn</span><span class="p">.</span><span class="nx">init</span><span class="p">.</span><span class="nx">prototype</span> <span class="o">=</span> <span class="nx">jquery</span><span class="p">.</span><span class="nx">fn</span>
 </span><span class='line'>
-</span><span class='line'>    <span class="c1">// instance methods extend</span>
-</span><span class='line'>    <span class="c1">// or use this style: jQuery.fn.hello = funtion() {}</span>
-</span><span class='line'>    <span class="nx">jQuery</span><span class="p">.</span><span class="nx">extend</span><span class="p">(</span><span class="nx">jQuery</span><span class="p">.</span><span class="nx">fn</span><span class="p">,</span> <span class="p">{</span>
-</span><span class='line'>       <span class="c1">// ...</span>
-</span><span class='line'>    <span class="p">});</span>
+</span><span class='line'><span class="c1">// instance methods extend</span>
+</span><span class='line'><span class="c1">// or use this style: jQuery.fn.hello = funtion() {}</span>
+</span><span class='line'><span class="nx">jQuery</span><span class="p">.</span><span class="nx">extend</span><span class="p">(</span><span class="nx">jQuery</span><span class="p">.</span><span class="nx">fn</span><span class="p">,</span> <span class="p">{</span>
+</span><span class='line'>   <span class="c1">// ...</span>
+</span><span class='line'><span class="p">});</span>
 </span><span class='line'>
-</span><span class='line'>    <span class="c1">// class methods extend</span>
-</span><span class='line'>    <span class="c1">// or use this style: jQuery.hello = funtion() {}</span>
-</span><span class='line'>    <span class="c1">// maybe some utils</span>
-</span><span class='line'>    <span class="nx">jQuery</span><span class="p">.</span><span class="nx">extend</span><span class="p">(</span><span class="nx">jQuery</span><span class="p">,</span> <span class="p">{</span>
-</span><span class='line'>      <span class="nx">isFunction</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span> <span class="nx">obj</span> <span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>        <span class="k">return</span> <span class="nx">jQuery</span><span class="p">.</span><span class="nx">type</span><span class="p">(</span><span class="nx">obj</span><span class="p">)</span> <span class="o">===</span> <span class="s2">&quot;function&quot;</span><span class="p">;</span>
-</span><span class='line'>      <span class="p">}</span>
-</span><span class='line'>      <span class="c1">// ...</span>
-</span><span class='line'>    <span class="p">});</span>
+</span><span class='line'><span class="c1">// class methods extend</span>
+</span><span class='line'><span class="c1">// or use this style: jQuery.hello = funtion() {}</span>
+</span><span class='line'><span class="c1">// maybe some utils</span>
+</span><span class='line'><span class="nx">jQuery</span><span class="p">.</span><span class="nx">extend</span><span class="p">(</span><span class="nx">jQuery</span><span class="p">,</span> <span class="p">{</span>
+</span><span class='line'>  <span class="nx">isFunction</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span> <span class="nx">obj</span> <span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="nx">jQuery</span><span class="p">.</span><span class="nx">type</span><span class="p">(</span><span class="nx">obj</span><span class="p">)</span> <span class="o">===</span> <span class="s2">&quot;function&quot;</span><span class="p">;</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>  <span class="c1">// ...</span>
+</span><span class='line'><span class="p">});</span>
 </span><span class='line'>
-</span><span class='line'>    <span class="c1">// module export or AMD</span>
-</span><span class='line'>    <span class="nb">window</span><span class="p">.</span><span class="nx">$</span> <span class="o">=</span> <span class="nb">window</span><span class="p">.</span><span class="nx">jQuery</span> <span class="o">=</span> <span class="nx">jQuery</span>
-</span><span class='line'>
+</span><span class='line'><span class="c1">// module export or AMD</span>
+</span><span class='line'><span class="nb">window</span><span class="p">.</span><span class="nx">$</span> <span class="o">=</span> <span class="nb">window</span><span class="p">.</span><span class="nx">jQuery</span> <span class="o">=</span> <span class="nx">jQuery</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
@@ -312,15 +318,13 @@ I finaly find a clue after several attempts.</p>
 <span class='line-number'>5</span>
 <span class='line-number'>6</span>
 <span class='line-number'>7</span>
-<span class='line-number'>8</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'>    <span class="n">out</span><span class="p">,</span> <span class="n">err</span> <span class="o">=</span> <span class="n">capture_io</span> <span class="k">do</span>
-</span><span class='line'>      <span class="nb">puts</span> <span class="s2">&quot;Some info&quot;</span>
-</span><span class='line'>      <span class="nb">warn</span> <span class="s2">&quot;You did a bad thing&quot;</span>
-</span><span class='line'>    <span class="k">end</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">out</span><span class="p">,</span> <span class="n">err</span> <span class="o">=</span> <span class="n">capture_io</span> <span class="k">do</span>
+</span><span class='line'>  <span class="nb">puts</span> <span class="s2">&quot;Some info&quot;</span>
+</span><span class='line'>  <span class="nb">warn</span> <span class="s2">&quot;You did a bad thing&quot;</span>
+</span><span class='line'><span class="k">end</span>
 </span><span class='line'>
-</span><span class='line'>    <span class="n">assert_match</span> <span class="sr">%r%info%</span><span class="p">,</span> <span class="n">out</span>
-</span><span class='line'>    <span class="n">assert_match</span> <span class="sr">%r%bad%</span><span class="p">,</span> <span class="n">err</span>
-</span><span class='line'>
+</span><span class='line'><span class="n">assert_match</span> <span class="sr">%r%info%</span><span class="p">,</span> <span class="n">out</span>
+</span><span class='line'><span class="n">assert_match</span> <span class="sr">%r%bad%</span><span class="p">,</span> <span class="n">err</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
@@ -340,18 +344,16 @@ How to simulate user input or socket talks? Mock may do the job.</p>
 <span class='line-number'>8</span>
 <span class='line-number'>9</span>
 <span class='line-number'>10</span>
-<span class='line-number'>11</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'>    <span class="k">class</span> <span class="nc">Stupidc</span>
-</span><span class='line'>      <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="n">input</span><span class="o">=</span><span class="no">STDIN</span><span class="p">,</span> <span class="n">output</span><span class="o">=</span><span class="no">STDOUT</span><span class="p">)</span>
-</span><span class='line'>        <span class="vi">@input</span> <span class="o">=</span> <span class="n">input</span>
-</span><span class='line'>        <span class="vi">@output</span> <span class="o">=</span> <span class="n">output</span>
-</span><span class='line'>      <span class="k">end</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">Stupidc</span>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="n">input</span><span class="o">=</span><span class="no">STDIN</span><span class="p">,</span> <span class="n">output</span><span class="o">=</span><span class="no">STDOUT</span><span class="p">)</span>
+</span><span class='line'>    <span class="vi">@input</span> <span class="o">=</span> <span class="n">input</span>
+</span><span class='line'>    <span class="vi">@output</span> <span class="o">=</span> <span class="n">output</span>
+</span><span class='line'>  <span class="k">end</span>
 </span><span class='line'>
-</span><span class='line'>      <span class="k">def</span> <span class="nf">say_hello</span><span class="p">()</span>
-</span><span class='line'>        <span class="vi">@output</span><span class="o">.</span><span class="n">puts</span> <span class="s1">&#39;hello&#39;</span>
-</span><span class='line'>      <span class="k">end</span>
-</span><span class='line'>    <span class="k">end</span>
-</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">say_hello</span><span class="p">()</span>
+</span><span class='line'>    <span class="vi">@output</span><span class="o">.</span><span class="n">puts</span> <span class="s1">&#39;hello&#39;</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
@@ -375,25 +377,23 @@ How to simulate user input or socket talks? Mock may do the job.</p>
 <span class='line-number'>15</span>
 <span class='line-number'>16</span>
 <span class='line-number'>17</span>
-<span class='line-number'>18</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'>    <span class="nb">require</span> <span class="s1">&#39;minitest/autorun&#39;</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="nb">require</span> <span class="s1">&#39;minitest/autorun&#39;</span>
 </span><span class='line'>
-</span><span class='line'>    <span class="n">describe</span> <span class="no">Stupidc</span> <span class="k">do</span>
-</span><span class='line'>      <span class="n">before</span> <span class="k">do</span>
-</span><span class='line'>        <span class="vi">@input</span> <span class="o">=</span> <span class="ss">MiniTest</span><span class="p">:</span><span class="ss">:Mock</span><span class="o">.</span><span class="n">new</span>
-</span><span class='line'>        <span class="vi">@output</span> <span class="o">=</span> <span class="ss">MiniTest</span><span class="p">:</span><span class="ss">:Mock</span><span class="o">.</span><span class="n">new</span>
+</span><span class='line'><span class="n">describe</span> <span class="no">Stupidc</span> <span class="k">do</span>
+</span><span class='line'>  <span class="n">before</span> <span class="k">do</span>
+</span><span class='line'>    <span class="vi">@input</span> <span class="o">=</span> <span class="ss">MiniTest</span><span class="p">:</span><span class="ss">:Mock</span><span class="o">.</span><span class="n">new</span>
+</span><span class='line'>    <span class="vi">@output</span> <span class="o">=</span> <span class="ss">MiniTest</span><span class="p">:</span><span class="ss">:Mock</span><span class="o">.</span><span class="n">new</span>
 </span><span class='line'>
-</span><span class='line'>        <span class="vi">@stupidc</span> <span class="o">=</span> <span class="no">Stupidc</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="vi">@input</span><span class="p">,</span> <span class="vi">@output</span><span class="p">)</span>
-</span><span class='line'>      <span class="k">end</span>
+</span><span class='line'>    <span class="vi">@stupidc</span> <span class="o">=</span> <span class="no">Stupidc</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="vi">@input</span><span class="p">,</span> <span class="vi">@output</span><span class="p">)</span>
+</span><span class='line'>  <span class="k">end</span>
 </span><span class='line'>
 </span><span class='line'>
-</span><span class='line'>      <span class="n">it</span> <span class="s2">&quot;should copy file to source when file is target&quot;</span> <span class="k">do</span>
-</span><span class='line'>        <span class="vi">@output</span><span class="o">.</span><span class="n">expect</span> <span class="ss">:puts</span><span class="p">,</span> <span class="kp">nil</span><span class="p">,</span> <span class="o">[</span><span class="s1">&#39;hello&#39;</span><span class="o">]</span>
-</span><span class='line'>        <span class="vi">@stupidc</span><span class="o">.</span><span class="n">say_hello</span><span class="p">()</span>
-</span><span class='line'>        <span class="vi">@output</span><span class="o">.</span><span class="n">verify</span>
-</span><span class='line'>      <span class="k">end</span>
-</span><span class='line'>    <span class="k">end</span>
-</span><span class='line'>
+</span><span class='line'>  <span class="n">it</span> <span class="s2">&quot;should copy file to source when file is target&quot;</span> <span class="k">do</span>
+</span><span class='line'>    <span class="vi">@output</span><span class="o">.</span><span class="n">expect</span> <span class="ss">:puts</span><span class="p">,</span> <span class="kp">nil</span><span class="p">,</span> <span class="o">[</span><span class="s1">&#39;hello&#39;</span><span class="o">]</span>
+</span><span class='line'>    <span class="vi">@stupidc</span><span class="o">.</span><span class="n">say_hello</span><span class="p">()</span>
+</span><span class='line'>    <span class="vi">@output</span><span class="o">.</span><span class="n">verify</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
@@ -412,17 +412,15 @@ see <a href="https://github.com/seattlerb/minitest/blob/master/test/minitest/tes
 <span class='line-number'>7</span>
 <span class='line-number'>8</span>
 <span class='line-number'>9</span>
-<span class='line-number'>10</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'>     <span class="k">def</span> <span class="nf">test_stub_yield_self</span>
-</span><span class='line'>        <span class="n">obj</span> <span class="o">=</span> <span class="s2">&quot;foo&quot;</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">def</span> <span class="nf">test_stub_yield_self</span>
+</span><span class='line'>  <span class="n">obj</span> <span class="o">=</span> <span class="s2">&quot;foo&quot;</span>
 </span><span class='line'>
-</span><span class='line'>        <span class="n">val</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">stub</span> <span class="ss">:to_s</span><span class="p">,</span> <span class="s2">&quot;bar&quot;</span> <span class="k">do</span> <span class="o">|</span><span class="n">s</span><span class="o">|</span>
-</span><span class='line'>          <span class="n">s</span><span class="o">.</span><span class="n">to_s</span>
-</span><span class='line'>        <span class="k">end</span>
+</span><span class='line'>  <span class="n">val</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">stub</span> <span class="ss">:to_s</span><span class="p">,</span> <span class="s2">&quot;bar&quot;</span> <span class="k">do</span> <span class="o">|</span><span class="n">s</span><span class="o">|</span>
+</span><span class='line'>    <span class="n">s</span><span class="o">.</span><span class="n">to_s</span>
+</span><span class='line'>  <span class="k">end</span>
 </span><span class='line'>
-</span><span class='line'>        <span class="vi">@tc</span><span class="o">.</span><span class="n">assert_equal</span> <span class="s2">&quot;bar&quot;</span><span class="p">,</span> <span class="n">val</span>
-</span><span class='line'>      <span class="k">end</span>
-</span><span class='line'>
+</span><span class='line'>  <span class="vi">@tc</span><span class="o">.</span><span class="n">assert_equal</span> <span class="s2">&quot;bar&quot;</span><span class="p">,</span> <span class="n">val</span>
+</span><span class='line'><span class="k">end</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
@@ -731,14 +729,12 @@ git log --graph --oneline --all
 <span class='line-number'>4</span>
 <span class='line-number'>5</span>
 <span class='line-number'>6</span>
-<span class='line-number'>7</span>
-</pre></td><td class='code'><pre><code class='sh'><span class='line'>    <span class="c"># set the shell</span>
-</span><span class='line'>    <span class="nv">SHELL</span><span class="o">=</span>/bin/sh
-</span><span class='line'>    <span class="nv">PATH</span><span class="o">=</span>/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+</pre></td><td class='code'><pre><code class='sh'><span class='line'><span class="c"># set the shell</span>
+</span><span class='line'><span class="nv">SHELL</span><span class="o">=</span>/bin/sh
+</span><span class='line'><span class="nv">PATH</span><span class="o">=</span>/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
 </span><span class='line'>
-</span><span class='line'>    <span class="c"># m h dom mon dow usercommand</span>
-</span><span class='line'>    0 */5 * * * /path/hello.sh &gt;&gt; /path/hello.log 2&gt;&amp;1
-</span><span class='line'>
+</span><span class='line'><span class="c"># m h dom mon dow usercommand</span>
+</span><span class='line'>0 */5 * * * /path/hello.sh &gt;&gt; /path/hello.log 2&gt;&amp;1
 </span></code></pre></td></tr></table></div></figure>
 
 
