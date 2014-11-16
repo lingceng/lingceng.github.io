@@ -3,12 +3,12 @@ layout: post
 title: "vim tips"
 date: 2014-03-14 22:39
 comments: true
-categories: 
+categories:
 ---
 
 HERE IS MY [vimrc](https://gist.github.com/lingceng/6097985)
 
-### wonderful block insert 
+### wonderful block insert
     in Visual block mode:
     |v_b_I|    I	insert the same text in front of all the selected lines
     |v_b_A|	   A	append the same text after all the selected lines
@@ -38,9 +38,9 @@ HERE IS MY [vimrc](https://gist.github.com/lingceng/6097985)
     CTRL-W o
 
     # split
-    CTRL-W s 
+    CTRL-W s
     # split vertically
-    CTRL-W v 
+    CTRL-W v
 
     # navigate with h j k l
     # go to left

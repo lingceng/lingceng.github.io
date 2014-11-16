@@ -3,9 +3,9 @@
 # ----------------------- #
 
 url: http://lingceng.github.io
-title: lingceng
-subtitle: have fun with code 
-author: lingceng 
+title: Lingceng's Blog
+subtitle: Just another developer blog
+author: Lingceng
 simple_search: http://google.com/search
 description: This is my personal blog. I'm a vim fan, rubist, and familar with javascript and java.
 
@@ -63,14 +63,14 @@ default_asides: [asides/recent_posts.html, asides/github.html, asides/delicious.
 # ----------------------- #
 
 # Github repositories
-github_user: lingceng
+github_user:
 github_repo_count: 0
 github_show_profile_link: true
 github_skip_forks: true
 
 # Twitter
 twitter_user:
-twitter_tweet_button: true
+twitter_tweet_button: false
 
 # Google +1
 google_plus_one: false

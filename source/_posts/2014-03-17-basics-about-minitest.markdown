@@ -3,7 +3,7 @@ layout: post
 title: "basics about minitest"
 date: 2014-03-17 07:58
 comments: true
-categories: 
+categories:
 ---
 
 + home :: https://github.com/seattlerb/minitest
@@ -14,10 +14,10 @@ With Ruby 1.9, MiniTest entered standard lib.
 MiniTest is pretty small and readable, here is all source file list:
 > lib:
 > hoe  minitest
-> 
+>
 > lib/hoe:
 > minitest.rb
-> 
+>
 > lib/minitest:
 > autorun.rb  benchmark.rb  hell.rb  mock.rb  parallel_each.rb  pride.rb  spec.rb  unit.rb
 
@@ -30,15 +30,15 @@ See  Minitest::Assertions doc or unit.rb source
     ...
 
 ### Specs Expections
-See Minitest::Expectations doc or spec.rb source 
+See Minitest::Expectations doc or spec.rb source
     must_be must_be_close_to
     wont_be_empty
     ...
 
 Most methods just redirect to assert methods internally.
-**describe** method is added to **Kernel** to start the DSL road; 
+**describe** method is added to **Kernel** to start the DSL road;
 expectations method is added to **Object**
-    class Object 
+    class Object
       include MiniTest::Expectations unless ENV["MT_NO_EXPECTATIONS"]
     end
 
@@ -77,7 +77,7 @@ Unit tests
     end
 
 Specs
-    # the following have required in autorun 
+    # the following have required in autorun
     # no need to repeat !
     # require 'minitest/unit'
     # require 'minitest/spec'
