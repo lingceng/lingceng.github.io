@@ -1,0 +1,335 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Turbolink Best Practice - Lingceng's Blog</title>
+  <meta name="author" content="Lingceng">
+
+  
+  <meta name="description" content="What does turbolinks do? Only replace the page &lt;body&gt; and &lt;title&gt; with Get respond when click a link. It&rsquo;s fast because no need to &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://lingceng.github.io/blog/2014/10/16/turbolink-best-practice">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="Lingceng's Blog" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/libs/jquery.min.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+-->
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Lingceng's Blog</a></h1>
+  
+    <h2>Just another developer blog</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:lingceng.github.io" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Turbolink Best Practice</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-10-16T12:12:00+08:00" pubdate data-updated="true">Oct 16<span>th</span>, 2014</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><h2>What does <a href="https://github.com/rails/turbolinks">turbolinks</a> do?</h2>
+
+<p>Only replace the page <code>&lt;body&gt;</code> and <code>&lt;title&gt;</code> with Get respond when click a link.</p>
+
+<p>It&rsquo;s fast because no need to recompile the JavaScript and CSS between
+each page change.</p>
+
+<h4>Turbolink has other features make it fast</h4>
+
+<p>Use client cache pages.</p>
+
+<pre><code># View current page cache size
+Turbolinks.pagesCached();
+# Set the cache size
+Turbolinks.pagesCached(20);
+</code></pre>
+
+<p>Use transition cache.</p>
+
+<p>Transition will immediately display the cached copy of page and then replace
+with remote returned one.</p>
+
+<pre><code># enable transition cache
+Turbolinks.enableTransitionCache();
+</code></pre>
+
+<p>Browser native process bar will not work when using turbolink.
+So turbolink provide a JavaScript-and-CSS-based one.</p>
+
+<pre><code>Turbolinks.enableProgressBar();
+</code></pre>
+
+<h2>What&rsquo;s the best practice?</h2>
+
+<ul>
+<li>Use <code>jquery.turbolink</code> to fix Dom ready event in jQuery.</li>
+<li>Put all JavaScript and CSS in <code>&lt;HEAD&gt;</code></li>
+</ul>
+
+
+<h4>Has javascripts only needed in some page?</h4>
+
+<p>Mark tag to <code>&lt;body&gt;</code> when need specific page logic.
+Trigger it according to the tag value.</p>
+
+<pre><code>// In app/views/layouts/application.html.erb
+&lt;body data-controller-name="&lt;%= controller_name %&gt;"&gt;
+
+// In topics.coffee
+window.Topics =
+  replies_per_page: 50
+  init : () -&gt;
+    console.log "hello"
+
+$(document).ready -&gt;
+  if $('body').data('controller-name') in ['topics']
+    Topics.init()
+
+// Add topics to appliction.js
+//= require topics
+</code></pre>
+
+<p>Note: This will also avoid <code>config.precompile.assets+=%w{user}</code> in Rails.</p>
+
+<h2>What will happen when add JavaScript in body?</h2>
+
+<p>You should not add JavaScript to <code>&lt;body&gt;</code>.
+Especially when bind event, it will cause event bind multiple times.</p>
+
+<p>Note that you can add <code>data-turbolinks-eval=false</code> to rescue this.</p>
+
+<pre><code>&lt;script type="text/javascript" data-turbolinks-eval=false&gt;
+  console.log("I'm only run once on the initial page load");
+&lt;/script&gt;
+</code></pre>
+
+<h2>What will happen when I changed head content?</h2>
+
+<p>It depends on how you change it.</p>
+
+<p>If you add some <code>&lt;script type="text/javascript"&gt;</code> tag, like something like this:</p>
+
+<pre><code>// On page B
+&lt;script type="text/javascript"&gt;
+  console.log('hello')
+&lt;/script&gt;
+</code></pre>
+
+<p>When I click a link on page A to page B, the &lsquo;hello&rsquo; will <strong>not</strong> printed.
+The script tag will be ignored.
+It&rsquo;s the same when you add a <code>src</code> to script tag.</p>
+
+<p>Things will change when this case</p>
+
+<pre><code>&lt;script type="text/javascript" src="/hello.js" data-turbolinks-track&gt;&lt;/script&gt;
+</code></pre>
+
+<p><code>data-turbolinks-track</code> make turbolink track the change in head.</p>
+
+<p>When this case, &lsquo;hello&rsquo; will be printed,
+every things seems fine except slow page load.
+When this happens, you&rsquo;ll technically be requesting the same page twice.
+Once through Turbolinks to detect that the assets changed,
+and then again when we do a full redirect to that page.</p>
+
+<p>You should always add <code>data-turbolinks-track</code> to JavaScript and CSS links.
+This will trigger full page load when your assets changed.
+But when two pages have different <code>track targets</code>, every switch between the two
+pages will cause <code>double load</code>.</p>
+
+<p>See the
+<a href="https://github.com/rails/turbolinks/blob/master/lib%2Fassets%2Fjavascripts%2Fturbolinks.js.coffee#L231">code</a>
+to know the details</p>
+
+<pre><code>extractTrackAssets = (doc) -&gt;
+  for node in doc.querySelector('head').childNodes when node.getAttribute?('data-turbolinks-track')?
+    node.getAttribute('src') or node.getAttribute('href')
+
+assetsChanged = (doc) -&gt;
+  loadedAssets ||= extractTrackAssets document
+  fetchedAssets  = extractTrackAssets doc
+  fetchedAssets.length isnt loadedAssets.length or intersection(fetchedAssets, loadedAssets).length isnt loadedAssets.length
+</code></pre>
+
+<p>In this situation, you can add tag to prevent turbolink jump.</p>
+
+<pre><code>&lt;a href="/"&gt;Home (via Turbolinks)&lt;/a&gt;
+&lt;div id="some-div" data-no-turbolink&gt;
+  &lt;a href="/"&gt;Home (without Turbolinks)&lt;/a&gt;
+&lt;/div&gt;
+</code></pre>
+
+<p>But you must add to &ldquo;every in and out link&rdquo; for page B, that&rsquo;s not a easy job.</p>
+
+<h2>Conclusion</h2>
+
+<h3>Never change head contents and follow the best practice.</h3>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Lingceng</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-10-16T12:12:00+08:00" pubdate data-updated="true">Oct 16<span>th</span>, 2014</time>
+      
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2014/03/26/jquery-source-structure-tip/" title="Previous Post: jQuery Source Structure Tip">&laquo; jQuery Source Structure Tip</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2014/10/16/turbolink-best-practice/">Turbolink Best Practice</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/03/26/jquery-source-structure-tip/">jQuery Source Structure Tip</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/03/18/minitest-mock-and-stud/">Minitest Mock and Stud</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/03/17/basics-about-minitest/">Basics About Minitest</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/03/14/vim-tips/">Vim Tips</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2014 - Lingceng -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

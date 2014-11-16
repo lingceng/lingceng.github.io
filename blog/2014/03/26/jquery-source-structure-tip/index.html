@@ -5,11 +5,12 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>jQuery Source Structure Tip - lingceng</title>
-  <meta name="author" content="lingceng">
+  <title>jQuery Source Structure Tip - Lingceng's Blog</title>
+  <meta name="author" content="Lingceng">
 
   
-  <meta name="description" content="I&rsquo;m puzzled when I first see the jQuery source code. I finaly find a clue after several attempts. Put aside other modules, we can find out that &hellip;">
+  <meta name="description" content="I&rsquo;m puzzled when I first see the jQuery source code.
+I finaly find a clue after several attempts. Put aside other modules, we can find out that &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -21,18 +22,14 @@
   <link rel="canonical" href="http://lingceng.github.io/blog/2014/03/26/jquery-source-structure-tip">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
-  <link href="/atom.xml" rel="alternate" title="lingceng" type="application/atom+xml">
+  <link href="/atom.xml" rel="alternate" title="Lingceng's Blog" type="application/atom+xml">
   <script src="/javascripts/modernizr-2.0.js"></script>
-  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-  <script>
-    !window.jQuery && document.write(
-      unescape('%3Cscript src="./javascripts/libs/jquery.min.js"%3E%3C/script%3E')
-    )
-  </script>
+  <script src="/javascripts/libs/jquery.min.js"></script>
   <script src="/javascripts/octopress.js" type="text/javascript"></script>
-  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts
 <link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
 <link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+-->
 
   
 
@@ -40,9 +37,9 @@
 
 <body   >
   <header role="banner"><hgroup>
-  <h1><a href="/">lingceng</a></h1>
+  <h1><a href="/">Lingceng's Blog</a></h1>
   
-    <h2>have fun with code</h2>
+    <h2>Just another developer blog</h2>
   
 </hgroup>
 
@@ -95,7 +92,7 @@
   </header>
 
 
-<div class="entry-content"><p>I&rsquo;m puzzled when I first see the jQuery source code. <br/>
+<div class="entry-content"><p>I&rsquo;m puzzled when I first see the jQuery source code.
 I finaly find a clue after several attempts.</p>
 
 <p>Put aside other modules, we can find out that jQuery has the ordinary JS class structrue.</p>
@@ -145,7 +142,7 @@ I finaly find a clue after several attempts.</p>
 <span class='line-number'>7</span>
 <span class='line-number'>8</span>
 </pre></td><td class='code'><pre><code class='javascript'><span class='line'>    <span class="nx">jQuery</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-</span><span class='line'>        <span class="c1">// jQuery.prototype.init is the actually creator function         </span>
+</span><span class='line'>        <span class="c1">// jQuery.prototype.init is the actually creator function</span>
 </span><span class='line'>        <span class="k">return</span> <span class="k">new</span> <span class="nx">jQuery</span><span class="p">.</span><span class="nx">fn</span><span class="p">.</span><span class="nx">init</span><span class="p">(</span> <span class="nx">selector</span><span class="p">,</span> <span class="nx">context</span> <span class="p">);</span>
 </span><span class='line'>    <span class="p">}</span>
 </span><span class='line'>
@@ -197,7 +194,7 @@ I finaly find a clue after several attempts.</p>
 </span><span class='line'>    <span class="p">}</span>
 </span><span class='line'>    <span class="nx">jQuery</span><span class="p">.</span><span class="nx">fn</span> <span class="o">=</span> <span class="p">{</span>
 </span><span class='line'>       <span class="nx">init</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">selector</span><span class="p">,</span> <span class="nx">context</span><span class="p">)</span> <span class="p">{}</span>
-</span><span class='line'>       <span class="c1">// other core instance methods </span>
+</span><span class='line'>       <span class="c1">// other core instance methods</span>
 </span><span class='line'>    <span class="p">}</span>
 </span><span class='line'>    <span class="nx">jQuery</span><span class="p">.</span><span class="nx">fn</span> <span class="o">=</span> <span class="nx">jQuery</span><span class="p">.</span><span class="nx">prototype</span><span class="p">;</span>
 </span><span class='line'>    <span class="nx">jQuery</span><span class="p">.</span><span class="nx">fn</span><span class="p">.</span><span class="nx">init</span><span class="p">.</span><span class="nx">prototype</span> <span class="o">=</span> <span class="nx">jquery</span><span class="p">.</span><span class="nx">fn</span>
@@ -205,7 +202,7 @@ I finaly find a clue after several attempts.</p>
 </span><span class='line'>    <span class="c1">// instance methods extend</span>
 </span><span class='line'>    <span class="c1">// or use this style: jQuery.fn.hello = funtion() {}</span>
 </span><span class='line'>    <span class="nx">jQuery</span><span class="p">.</span><span class="nx">extend</span><span class="p">(</span><span class="nx">jQuery</span><span class="p">.</span><span class="nx">fn</span><span class="p">,</span> <span class="p">{</span>
-</span><span class='line'>       <span class="c1">// ...  </span>
+</span><span class='line'>       <span class="c1">// ...</span>
 </span><span class='line'>    <span class="p">});</span>
 </span><span class='line'>
 </span><span class='line'>    <span class="c1">// class methods extend</span>
@@ -215,7 +212,7 @@ I finaly find a clue after several attempts.</p>
 </span><span class='line'>      <span class="nx">isFunction</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span> <span class="nx">obj</span> <span class="p">)</span> <span class="p">{</span>
 </span><span class='line'>        <span class="k">return</span> <span class="nx">jQuery</span><span class="p">.</span><span class="nx">type</span><span class="p">(</span><span class="nx">obj</span><span class="p">)</span> <span class="o">===</span> <span class="s2">&quot;function&quot;</span><span class="p">;</span>
 </span><span class='line'>      <span class="p">}</span>
-</span><span class='line'>      <span class="c1">// ...  </span>
+</span><span class='line'>      <span class="c1">// ...</span>
 </span><span class='line'>    <span class="p">});</span>
 </span><span class='line'>
 </span><span class='line'>    <span class="c1">// module export or AMD</span>
@@ -233,7 +230,7 @@ I finaly find a clue after several attempts.</p>
       
   
 
-<span class="byline author vcard">Posted by <span class="fn">lingceng</span></span>
+<span class="byline author vcard">Posted by <span class="fn">Lingceng</span></span>
 
       
 
@@ -255,8 +252,6 @@ I finaly find a clue after several attempts.</p>
     
       <div class="sharing">
   
-  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://lingceng.github.io/blog/2014/03/26/jquery-source-structure-tip/" data-via="" data-counturl="http://lingceng.github.io/blog/2014/03/26/jquery-source-structure-tip/" >Tweet</a>
-  
   
   
 </div>
@@ -266,6 +261,8 @@ I finaly find a clue after several attempts.</p>
       
         <a class="basic-alignment left" href="/blog/2014/03/18/minitest-mock-and-stud/" title="Previous Post: minitest mock and stud">&laquo; minitest mock and stud</a>
       
+      
+        <a class="basic-alignment right" href="/blog/2014/10/16/turbolink-best-practice/" title="Next Post: Turbolink Best Practice">Turbolink Best Practice &raquo;</a>
       
     </p>
   </footer>
@@ -278,6 +275,10 @@ I finaly find a clue after several attempts.</p>
     <section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2014/10/16/turbolink-best-practice/">Turbolink Best Practice</a>
+      </li>
     
       <li class="post">
         <a href="/blog/2014/03/26/jquery-source-structure-tip/">jQuery Source Structure Tip</a>
@@ -295,40 +296,7 @@ I finaly find a clue after several attempts.</p>
         <a href="/blog/2014/03/14/vim-tips/">Vim Tips</a>
       </li>
     
-      <li class="post">
-        <a href="/blog/2014/03/13/git-get-start/">Git Get Start</a>
-      </li>
-    
   </ul>
-</section>
-
-<section>
-  <h1>GitHub Repos</h1>
-  <ul id="gh_repos">
-    <li class="loading">Status updating...</li>
-  </ul>
-  
-  <a href="https://github.com/lingceng">@lingceng</a> on GitHub
-  
-  <script type="text/javascript">
-    $(document).ready(function(){
-        if (!window.jXHR){
-            var jxhr = document.createElement('script');
-            jxhr.type = 'text/javascript';
-            jxhr.src = '/javascripts/libs/jXHR.js';
-            var s = document.getElementsByTagName('script')[0];
-            s.parentNode.insertBefore(jxhr, s);
-        }
-
-        github.showRepos({
-            user: 'lingceng',
-            count: 0,
-            skip_forks: true,
-            target: '#gh_repos'
-        });
-    });
-  </script>
-  <script src="/javascripts/github.js" type="text/javascript"> </script>
 </section>
 
 
@@ -342,7 +310,7 @@ I finaly find a clue after several attempts.</p>
     </div>
   </div>
   <footer role="contentinfo"><p>
-  Copyright &copy; 2014 - lingceng -
+  Copyright &copy; 2014 - Lingceng -
   <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
 </p>
 
@@ -354,16 +322,6 @@ I finaly find a clue after several attempts.</p>
 
 
 
-
-  <script type="text/javascript">
-    (function(){
-      var twitterWidgets = document.createElement('script');
-      twitterWidgets.type = 'text/javascript';
-      twitterWidgets.async = true;
-      twitterWidgets.src = '//platform.twitter.com/widgets.js';
-      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
-    })();
-  </script>
 
 
 

@@ -5,8 +5,8 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>minitest mock and stud - lingceng</title>
-  <meta name="author" content="lingceng">
+  <title>minitest mock and stud - Lingceng's Blog</title>
+  <meta name="author" content="Lingceng">
 
   
   <meta name="description" content="capture io Use capture_io to test output. 1
@@ -28,18 +28,14 @@
   <link rel="canonical" href="http://lingceng.github.io/blog/2014/03/18/minitest-mock-and-stud">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
-  <link href="/atom.xml" rel="alternate" title="lingceng" type="application/atom+xml">
+  <link href="/atom.xml" rel="alternate" title="Lingceng's Blog" type="application/atom+xml">
   <script src="/javascripts/modernizr-2.0.js"></script>
-  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-  <script>
-    !window.jQuery && document.write(
-      unescape('%3Cscript src="./javascripts/libs/jquery.min.js"%3E%3C/script%3E')
-    )
-  </script>
+  <script src="/javascripts/libs/jquery.min.js"></script>
   <script src="/javascripts/octopress.js" type="text/javascript"></script>
-  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts
 <link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
 <link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+-->
 
   
 
@@ -47,9 +43,9 @@
 
 <body   >
   <header role="banner"><hgroup>
-  <h1><a href="/">lingceng</a></h1>
+  <h1><a href="/">Lingceng's Blog</a></h1>
   
-    <h2>have fun with code</h2>
+    <h2>Just another developer blog</h2>
   
 </hgroup>
 
@@ -127,7 +123,7 @@
 
 <h3>mock</h3>
 
-<p><code>capture_io</code> uses StringIO to wrap $stdout and $stderr.<br/>
+<p><code>capture_io</code> uses StringIO to wrap $stdout and $stderr.
 How to simulate user input or socket talks? Mock may do the job.</p>
 
 <figure class='code'><figcaption><span>stupidc.rb </span></figcaption>
@@ -200,8 +196,8 @@ How to simulate user input or socket talks? Mock may do the job.</p>
 
 <h3>stub</h3>
 
-<p>Stub has similar function with mock, but no need to inject a property. <br/>
-Stub can simulate module methods or instance methods (They are the same in ruby, all class is the instance of Class) with ease. <br/>
+<p>Stub has similar function with mock, but no need to inject a property.
+Stub can simulate module methods or instance methods (They are the same in ruby, all class is the instance of Class) with ease.
 see <a href="https://github.com/seattlerb/minitest/blob/master/test/minitest/test_minitest_mock.rb">test</a></p>
 
 <figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
@@ -236,7 +232,7 @@ see <a href="https://github.com/seattlerb/minitest/blob/master/test/minitest/tes
       
   
 
-<span class="byline author vcard">Posted by <span class="fn">lingceng</span></span>
+<span class="byline author vcard">Posted by <span class="fn">Lingceng</span></span>
 
       
 
@@ -257,8 +253,6 @@ see <a href="https://github.com/seattlerb/minitest/blob/master/test/minitest/tes
     </p>
     
       <div class="sharing">
-  
-  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://lingceng.github.io/blog/2014/03/18/minitest-mock-and-stud/" data-via="" data-counturl="http://lingceng.github.io/blog/2014/03/18/minitest-mock-and-stud/" >Tweet</a>
   
   
   
@@ -285,6 +279,10 @@ see <a href="https://github.com/seattlerb/minitest/blob/master/test/minitest/tes
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2014/10/16/turbolink-best-practice/">Turbolink Best Practice</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2014/03/26/jquery-source-structure-tip/">jQuery Source Structure Tip</a>
       </li>
     
@@ -300,40 +298,7 @@ see <a href="https://github.com/seattlerb/minitest/blob/master/test/minitest/tes
         <a href="/blog/2014/03/14/vim-tips/">Vim Tips</a>
       </li>
     
-      <li class="post">
-        <a href="/blog/2014/03/13/git-get-start/">Git Get Start</a>
-      </li>
-    
   </ul>
-</section>
-
-<section>
-  <h1>GitHub Repos</h1>
-  <ul id="gh_repos">
-    <li class="loading">Status updating...</li>
-  </ul>
-  
-  <a href="https://github.com/lingceng">@lingceng</a> on GitHub
-  
-  <script type="text/javascript">
-    $(document).ready(function(){
-        if (!window.jXHR){
-            var jxhr = document.createElement('script');
-            jxhr.type = 'text/javascript';
-            jxhr.src = '/javascripts/libs/jXHR.js';
-            var s = document.getElementsByTagName('script')[0];
-            s.parentNode.insertBefore(jxhr, s);
-        }
-
-        github.showRepos({
-            user: 'lingceng',
-            count: 0,
-            skip_forks: true,
-            target: '#gh_repos'
-        });
-    });
-  </script>
-  <script src="/javascripts/github.js" type="text/javascript"> </script>
 </section>
 
 
@@ -347,7 +312,7 @@ see <a href="https://github.com/seattlerb/minitest/blob/master/test/minitest/tes
     </div>
   </div>
   <footer role="contentinfo"><p>
-  Copyright &copy; 2014 - lingceng -
+  Copyright &copy; 2014 - Lingceng -
   <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
 </p>
 
@@ -359,16 +324,6 @@ see <a href="https://github.com/seattlerb/minitest/blob/master/test/minitest/tes
 
 
 
-
-  <script type="text/javascript">
-    (function(){
-      var twitterWidgets = document.createElement('script');
-      twitterWidgets.type = 'text/javascript';
-      twitterWidgets.async = true;
-      twitterWidgets.src = '//platform.twitter.com/widgets.js';
-      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
-    })();
-  </script>
 
 
 

@@ -1,24 +1,169 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[lingceng]]></title>
+  <title><![CDATA[Lingceng's Blog]]></title>
   <link href="http://lingceng.github.io/atom.xml" rel="self"/>
   <link href="http://lingceng.github.io/"/>
-  <updated>2014-09-27T16:53:28+08:00</updated>
+  <updated>2014-11-16T12:26:05+08:00</updated>
   <id>http://lingceng.github.io/</id>
   <author>
-    <name><![CDATA[lingceng]]></name>
+    <name><![CDATA[Lingceng]]></name>
     
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
   
   <entry>
+    <title type="html"><![CDATA[Turbolink Best Practice]]></title>
+    <link href="http://lingceng.github.io/blog/2014/10/16/turbolink-best-practice/"/>
+    <updated>2014-10-16T12:12:00+08:00</updated>
+    <id>http://lingceng.github.io/blog/2014/10/16/turbolink-best-practice</id>
+    <content type="html"><![CDATA[<h2>What does <a href="https://github.com/rails/turbolinks">turbolinks</a> do?</h2>
+
+<p>Only replace the page <code>&lt;body&gt;</code> and <code>&lt;title&gt;</code> with Get respond when click a link.</p>
+
+<p>It&rsquo;s fast because no need to recompile the JavaScript and CSS between
+each page change.</p>
+
+<h4>Turbolink has other features make it fast</h4>
+
+<p>Use client cache pages.</p>
+
+<pre><code># View current page cache size
+Turbolinks.pagesCached();
+# Set the cache size
+Turbolinks.pagesCached(20);
+</code></pre>
+
+<p>Use transition cache.</p>
+
+<p>Transition will immediately display the cached copy of page and then replace
+with remote returned one.</p>
+
+<pre><code># enable transition cache
+Turbolinks.enableTransitionCache();
+</code></pre>
+
+<p>Browser native process bar will not work when using turbolink.
+So turbolink provide a JavaScript-and-CSS-based one.</p>
+
+<pre><code>Turbolinks.enableProgressBar();
+</code></pre>
+
+<h2>What&rsquo;s the best practice?</h2>
+
+<ul>
+<li>Use <code>jquery.turbolink</code> to fix Dom ready event in jQuery.</li>
+<li>Put all JavaScript and CSS in <code>&lt;HEAD&gt;</code></li>
+</ul>
+
+
+<h4>Has javascripts only needed in some page?</h4>
+
+<p>Mark tag to <code>&lt;body&gt;</code> when need specific page logic.
+Trigger it according to the tag value.</p>
+
+<pre><code>// In app/views/layouts/application.html.erb
+&lt;body data-controller-name="&lt;%= controller_name %&gt;"&gt;
+
+// In topics.coffee
+window.Topics =
+  replies_per_page: 50
+  init : () -&gt;
+    console.log "hello"
+
+$(document).ready -&gt;
+  if $('body').data('controller-name') in ['topics']
+    Topics.init()
+
+// Add topics to appliction.js
+//= require topics
+</code></pre>
+
+<p>Note: This will also avoid <code>config.precompile.assets+=%w{user}</code> in Rails.</p>
+
+<h2>What will happen when add JavaScript in body?</h2>
+
+<p>You should not add JavaScript to <code>&lt;body&gt;</code>.
+Especially when bind event, it will cause event bind multiple times.</p>
+
+<p>Note that you can add <code>data-turbolinks-eval=false</code> to rescue this.</p>
+
+<pre><code>&lt;script type="text/javascript" data-turbolinks-eval=false&gt;
+  console.log("I'm only run once on the initial page load");
+&lt;/script&gt;
+</code></pre>
+
+<h2>What will happen when I changed head content?</h2>
+
+<p>It depends on how you change it.</p>
+
+<p>If you add some <code>&lt;script type="text/javascript"&gt;</code> tag, like something like this:</p>
+
+<pre><code>// On page B
+&lt;script type="text/javascript"&gt;
+  console.log('hello')
+&lt;/script&gt;
+</code></pre>
+
+<p>When I click a link on page A to page B, the &lsquo;hello&rsquo; will <strong>not</strong> printed.
+The script tag will be ignored.
+It&rsquo;s the same when you add a <code>src</code> to script tag.</p>
+
+<p>Things will change when this case</p>
+
+<pre><code>&lt;script type="text/javascript" src="http://lingceng.github.io/hello.js" data-turbolinks-track&gt;&lt;/script&gt;
+</code></pre>
+
+<p><code>data-turbolinks-track</code> make turbolink track the change in head.</p>
+
+<p>When this case, &lsquo;hello&rsquo; will be printed,
+every things seems fine except slow page load.
+When this happens, you&rsquo;ll technically be requesting the same page twice.
+Once through Turbolinks to detect that the assets changed,
+and then again when we do a full redirect to that page.</p>
+
+<p>You should always add <code>data-turbolinks-track</code> to JavaScript and CSS links.
+This will trigger full page load when your assets changed.
+But when two pages have different <code>track targets</code>, every switch between the two
+pages will cause <code>double load</code>.</p>
+
+<p>See the
+<a href="https://github.com/rails/turbolinks/blob/master/lib%2Fassets%2Fjavascripts%2Fturbolinks.js.coffee#L231">code</a>
+to know the details</p>
+
+<pre><code>extractTrackAssets = (doc) -&gt;
+  for node in doc.querySelector('head').childNodes when node.getAttribute?('data-turbolinks-track')?
+    node.getAttribute('src') or node.getAttribute('href')
+
+assetsChanged = (doc) -&gt;
+  loadedAssets ||= extractTrackAssets document
+  fetchedAssets  = extractTrackAssets doc
+  fetchedAssets.length isnt loadedAssets.length or intersection(fetchedAssets, loadedAssets).length isnt loadedAssets.length
+</code></pre>
+
+<p>In this situation, you can add tag to prevent turbolink jump.</p>
+
+<pre><code>&lt;a href="http://lingceng.github.io/"&gt;Home (via Turbolinks)&lt;/a&gt;
+&lt;div id="some-div" data-no-turbolink&gt;
+  &lt;a href="http://lingceng.github.io/"&gt;Home (without Turbolinks)&lt;/a&gt;
+&lt;/div&gt;
+</code></pre>
+
+<p>But you must add to &ldquo;every in and out link&rdquo; for page B, that&rsquo;s not a easy job.</p>
+
+<h2>Conclusion</h2>
+
+<h3>Never change head contents and follow the best practice.</h3>
+]]></content>
+  </entry>
+  
+  <entry>
     <title type="html"><![CDATA[jQuery Source Structure Tip]]></title>
     <link href="http://lingceng.github.io/blog/2014/03/26/jquery-source-structure-tip/"/>
     <updated>2014-03-26T09:12:00+08:00</updated>
     <id>http://lingceng.github.io/blog/2014/03/26/jquery-source-structure-tip</id>
-    <content type="html"><![CDATA[<p>I&rsquo;m puzzled when I first see the jQuery source code. <br/>
+    <content type="html"><![CDATA[<p>I&rsquo;m puzzled when I first see the jQuery source code.
 I finaly find a clue after several attempts.</p>
 
 <p>Put aside other modules, we can find out that jQuery has the ordinary JS class structrue.</p>
@@ -68,7 +213,7 @@ I finaly find a clue after several attempts.</p>
 <span class='line-number'>7</span>
 <span class='line-number'>8</span>
 </pre></td><td class='code'><pre><code class='javascript'><span class='line'>    <span class="nx">jQuery</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-</span><span class='line'>        <span class="c1">// jQuery.prototype.init is the actually creator function         </span>
+</span><span class='line'>        <span class="c1">// jQuery.prototype.init is the actually creator function</span>
 </span><span class='line'>        <span class="k">return</span> <span class="k">new</span> <span class="nx">jQuery</span><span class="p">.</span><span class="nx">fn</span><span class="p">.</span><span class="nx">init</span><span class="p">(</span> <span class="nx">selector</span><span class="p">,</span> <span class="nx">context</span> <span class="p">);</span>
 </span><span class='line'>    <span class="p">}</span>
 </span><span class='line'>
@@ -120,7 +265,7 @@ I finaly find a clue after several attempts.</p>
 </span><span class='line'>    <span class="p">}</span>
 </span><span class='line'>    <span class="nx">jQuery</span><span class="p">.</span><span class="nx">fn</span> <span class="o">=</span> <span class="p">{</span>
 </span><span class='line'>       <span class="nx">init</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">selector</span><span class="p">,</span> <span class="nx">context</span><span class="p">)</span> <span class="p">{}</span>
-</span><span class='line'>       <span class="c1">// other core instance methods </span>
+</span><span class='line'>       <span class="c1">// other core instance methods</span>
 </span><span class='line'>    <span class="p">}</span>
 </span><span class='line'>    <span class="nx">jQuery</span><span class="p">.</span><span class="nx">fn</span> <span class="o">=</span> <span class="nx">jQuery</span><span class="p">.</span><span class="nx">prototype</span><span class="p">;</span>
 </span><span class='line'>    <span class="nx">jQuery</span><span class="p">.</span><span class="nx">fn</span><span class="p">.</span><span class="nx">init</span><span class="p">.</span><span class="nx">prototype</span> <span class="o">=</span> <span class="nx">jquery</span><span class="p">.</span><span class="nx">fn</span>
@@ -128,7 +273,7 @@ I finaly find a clue after several attempts.</p>
 </span><span class='line'>    <span class="c1">// instance methods extend</span>
 </span><span class='line'>    <span class="c1">// or use this style: jQuery.fn.hello = funtion() {}</span>
 </span><span class='line'>    <span class="nx">jQuery</span><span class="p">.</span><span class="nx">extend</span><span class="p">(</span><span class="nx">jQuery</span><span class="p">.</span><span class="nx">fn</span><span class="p">,</span> <span class="p">{</span>
-</span><span class='line'>       <span class="c1">// ...  </span>
+</span><span class='line'>       <span class="c1">// ...</span>
 </span><span class='line'>    <span class="p">});</span>
 </span><span class='line'>
 </span><span class='line'>    <span class="c1">// class methods extend</span>
@@ -138,7 +283,7 @@ I finaly find a clue after several attempts.</p>
 </span><span class='line'>      <span class="nx">isFunction</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span> <span class="nx">obj</span> <span class="p">)</span> <span class="p">{</span>
 </span><span class='line'>        <span class="k">return</span> <span class="nx">jQuery</span><span class="p">.</span><span class="nx">type</span><span class="p">(</span><span class="nx">obj</span><span class="p">)</span> <span class="o">===</span> <span class="s2">&quot;function&quot;</span><span class="p">;</span>
 </span><span class='line'>      <span class="p">}</span>
-</span><span class='line'>      <span class="c1">// ...  </span>
+</span><span class='line'>      <span class="c1">// ...</span>
 </span><span class='line'>    <span class="p">});</span>
 </span><span class='line'>
 </span><span class='line'>    <span class="c1">// module export or AMD</span>
@@ -181,7 +326,7 @@ I finaly find a clue after several attempts.</p>
 
 <h3>mock</h3>
 
-<p><code>capture_io</code> uses StringIO to wrap $stdout and $stderr.<br/>
+<p><code>capture_io</code> uses StringIO to wrap $stdout and $stderr.
 How to simulate user input or socket talks? Mock may do the job.</p>
 
 <figure class='code'><figcaption><span>stupidc.rb </span></figcaption>
@@ -254,8 +399,8 @@ How to simulate user input or socket talks? Mock may do the job.</p>
 
 <h3>stub</h3>
 
-<p>Stub has similar function with mock, but no need to inject a property. <br/>
-Stub can simulate module methods or instance methods (They are the same in ruby, all class is the instance of Class) with ease. <br/>
+<p>Stub has similar function with mock, but no need to inject a property.
+Stub can simulate module methods or instance methods (They are the same in ruby, all class is the instance of Class) with ease.
 see <a href="https://github.com/seattlerb/minitest/blob/master/test/minitest/test_minitest_mock.rb">test</a></p>
 
 <figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
@@ -332,7 +477,7 @@ wont_be_empty
 <strong>describe</strong> method is added to <strong>Kernel</strong> to start the DSL road;
 expectations method is added to <strong>Object</strong></p>
 
-<pre><code>class Object 
+<pre><code>class Object
   include MiniTest::Expectations unless ENV["MT_NO_EXPECTATIONS"]
 end
 </code></pre>
@@ -377,7 +522,7 @@ end
 
 <p>Specs</p>
 
-<pre><code># the following have required in autorun 
+<pre><code># the following have required in autorun
 # no need to repeat !
 # require 'minitest/unit'
 # require 'minitest/spec'
@@ -455,9 +600,9 @@ it  # inner tag
 CTRL-W o
 
 # split
-CTRL-W s 
+CTRL-W s
 # split vertically
-CTRL-W v 
+CTRL-W v
 
 # navigate with h j k l
 # go to left
