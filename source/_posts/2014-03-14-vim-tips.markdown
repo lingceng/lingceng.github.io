@@ -3,7 +3,7 @@ layout: post
 title: "vim tips"
 date: 2014-03-14 22:39
 comments: true
-categories:
+categories: [Vim]
 ---
 
 HERE IS MY [vimrc](https://gist.github.com/lingceng/6097985)

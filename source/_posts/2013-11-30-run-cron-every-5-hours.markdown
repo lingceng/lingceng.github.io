@@ -3,7 +3,7 @@ layout: post
 title: "Run Cron Every 5 Hours"
 date: 2013-11-30 16:56
 comments: true
-categories:
+categories: [Linux]
 ---
 
 \> crontab -e

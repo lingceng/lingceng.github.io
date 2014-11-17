@@ -3,7 +3,7 @@ layout: post
 title: "minitest mock and stud"
 date: 2014-03-18 08:28
 comments: true
-categories:
+categories: [Ruby, Test]
 ---
 
 ### capture io

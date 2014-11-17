@@ -3,7 +3,7 @@ layout: post
 title: "jQuery Source Structure Tip"
 date: 2014-03-26 09:12
 comments: true
-categories:
+categories: [jQuery]
 ---
 
 I'm puzzled when I first see the jQuery source code.

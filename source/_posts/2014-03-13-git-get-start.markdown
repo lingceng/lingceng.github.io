@@ -3,7 +3,7 @@ layout: post
 title: "git get start"
 date: 2014-03-13 07:21
 comments: true
-categories:
+categories: [Tool, Git]
 ---
 config
     git config --global user.name "John Doe"

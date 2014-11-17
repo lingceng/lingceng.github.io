@@ -3,7 +3,7 @@ layout: post
 title: "basics about minitest"
 date: 2014-03-17 07:58
 comments: true
-categories:
+categories: [Ruby, Test]
 ---
 
 + home :: https://github.com/seattlerb/minitest
