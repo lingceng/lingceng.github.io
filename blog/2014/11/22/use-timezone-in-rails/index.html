@@ -5,19 +5,11 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Run Cron Every 5 Hours - Lingceng's Blog</title>
+  <title>Use Timezone In Rails - Lingceng's Blog</title>
   <meta name="author" content="Lingceng">
 
   
-  <meta name="description" content="> crontab -e Run Cron Every 5 Hours 1
-2
-3
-4
-5
-6
-# set the shell
-SHELL=/bin/sh
-PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin # m h &hellip;">
+  <meta name="description" content="Create Table and config Let&rsquo;s create a table first. class CreateHellos &lt; ActiveRecord::Migration def change create_table :hellos do |t| t. &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -26,7 +18,7 @@ PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin # m h &hellip;
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://lingceng.github.io/blog/2013/11/30/run-cron-every-5-hours">
+  <link rel="canonical" href="http://lingceng.github.io/blog/2014/11/22/use-timezone-in-rails">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/atom.xml" rel="alternate" title="Lingceng's Blog" type="application/atom+xml">
@@ -76,7 +68,7 @@ PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin # m h &hellip;
   
   <header>
     
-      <h1 class="entry-title">Run Cron Every 5 Hours</h1>
+      <h1 class="entry-title">Use Timezone in Rails</h1>
     
     
       <p class="meta">
@@ -92,58 +84,107 @@ PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin # m h &hellip;
   
 
 
-<time datetime="2013-11-30T16:56:00+08:00" pubdate data-updated="true">Nov 30<span>th</span>, 2013</time>
+<time datetime="2014-11-22T18:38:00+08:00" pubdate data-updated="true">Nov 22<span>nd</span>, 2014</time>
         
       </p>
     
   </header>
 
 
-<div class="entry-content"><p>> crontab -e</p>
+<div class="entry-content"><h4>Create Table and config</h4>
 
-<figure class='code'><figcaption><span>Run Cron Every 5 Hours </span></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class='sh'><span class='line'><span class="c"># set the shell</span>
-</span><span class='line'><span class="nv">SHELL</span><span class="o">=</span>/bin/sh
-</span><span class='line'><span class="nv">PATH</span><span class="o">=</span>/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
-</span><span class='line'>
-</span><span class='line'><span class="c"># m h dom mon dow usercommand</span>
-</span><span class='line'>0 */5 * * * /path/hello.sh &gt;&gt; /path/hello.log 2&gt;&amp;1
-</span></code></pre></td></tr></table></div></figure>
+<p>Let&rsquo;s create a table first.</p>
 
-
-<h4>Setting the PATH is Always Necessary</h4>
-
-<p><em>Crontab ignores login configuration</em>, which leads to a command not found.
-I have tested <em>env</em> command with crontab on my Ubuntu12.04 and I got the following result:</p>
-
-<pre><code>HOME=/home/lingceng
-LOGNAME=lingceng
-PATH=/usr/bin:/bin
-LANG=en_US.UTF-8
-SHELL=/bin/sh
-PWD=/home/lingceng
+<pre><code>class CreateHellos &lt; ActiveRecord::Migration
+  def change
+    create_table :hellos do |t|
+      t.timestamps
+    end
+  end
+end
 </code></pre>
 
-<h4>Not Really Every 5 Hours</h4>
+<p>Add following to <code>config/application.rb</code> to config timezone.</p>
 
-<p>The demo shell script <strong>just runs at 0, 5, 15, 20 o&#8217;clock</strong>, 20 to 0 is just 4 hours.</p>
-
-<h4>Check Cron log</h4>
-
-<p>Cron log default put <em>/var/log/syslog</em>, use following command to monitor it:</p>
-
-<pre><code>tail -f /var/log/syslog | grep CRON
+<pre><code>Rails.application.config.active_record.default_timezone = :local
+Rails.application.config.time_zone = 'Beijing'
+Rails.application.config.i18n.default_locale = 'zh-CN'
 </code></pre>
 
-<h4>Get More Help</h4>
+<h4>Test datetime output</h4>
 
-<p>> <a href="http://unixhelp.ed.ac.uk/CGI/man-cgi?crontab+5">man 5 crontab</a></p>
+<p>Run with <code>rails console</code>.</p>
+
+<pre><code>pry(main)&gt; l = FinanceItem.create
+=&gt; #&lt;FinanceItem id: 1, created_at: "2014-11-22 03:00:32",
+    updated_at: "2014-11-22 03:00:32" &gt;
+pry(main)&gt; l.created_at
+=&gt; Sat, 22 Nov 2014 11:00:32 CST +08:00
+pry(main)&gt; l.created_at.to_s(:db)
+=&gt; "2014-11-22 03:00:32"
+</code></pre>
+
+<h4>Datetime output is different</h4>
+
+<p>Here is the reason.</p>
+
+<pre><code>TimeWithZone to_s(:db)
+:db format outputs time in UTC; all others output time in local
+</code></pre>
+
+<h4><code>default_timezone</code> is so necessary</h4>
+
+<p><code>config.time_zone</code> sets the default time zone for the application
+and enables time zone awareness for Active Record.</p>
+
+<p><code>config.active_record.default_timezone</code> determines whether to use Time.local
+ (if set to :local) or Time.utc (if set to :utc) when pulling dates and times
+from the database.
+The default is :utc.</p>
+
+<p><code>utc()</code>
+Returns a Time or DateTime instance that represents the time in UTC.</p>
+
+<p><code>local()</code>
+Method for creating new ActiveSupport::TimeWithZone instance
+in time zone of self from given values.</p>
+
+<pre><code>Time.zone = 'Hawaii'                    # =&gt; "Hawaii"
+Time.zone.local(2007, 2, 1, 15, 30, 45) # =&gt; Thu, 01 Feb 2007 15:30:45 HST -10:00
+</code></pre>
+
+<h4>Take care when parse date string</h4>
+
+<p>Let&rsquo;s run the test</p>
+
+<pre><code>pry(main)&gt; a = DateTime.parse('2014-11-22 12:35:05')
+=&gt; Sat, 22 Nov 2014 12:35:05 +0000
+pry(main)&gt; a.to_s(:rfc822)
+=&gt; "Sat, 22 Nov 2014 12:35:05 +0000"
+pry(main)&gt; a.in_time_zone.to_s(:rfc822)
+=&gt; "Sat, 22 Nov 2014 20:35:05 +0800"
+
+pry(main)&gt; b = Time.zone.parse('2014-11-22 12:35:05')
+=&gt; 2014-11-22 12:35:05
+pry(main)&gt; b.to_s(:rfc822)
+=&gt; "Sat, 22 Nov 2014 12:35:05 +0800"
+pry(main)&gt; c = '2014-11-22 12:35:05'.to_time
+=&gt; 2014-11-22 12:35:05
+pry(main)&gt; c.to_s
+=&gt; "2014-11-22 12:35:05 +0800"
+</code></pre>
+
+<p>Notice that <code>Time.zone.parse</code> has <code>+0800</code> timezone offset.</p>
+
+<h3>Conclusion</h3>
+
+<p>Always set following options.</p>
+
+<pre><code>active_record.default_timezone = :local
+time_zone = 'Beijing'
+</code></pre>
+
+<p>Use <code>Time.zone.parse</code> do <strong>not</strong> use <code>DateTime.parse</code>.</p>
 </div>
 
 
@@ -166,12 +207,12 @@ PWD=/home/lingceng
   
 
 
-<time datetime="2013-11-30T16:56:00+08:00" pubdate data-updated="true">Nov 30<span>th</span>, 2013</time>
+<time datetime="2014-11-22T18:38:00+08:00" pubdate data-updated="true">Nov 22<span>nd</span>, 2014</time>
       
 
 <span class="categories">
   
-    <a class='category' href='/blog/categories/linux/'>Linux</a>
+    <a class='category' href='/blog/categories/rails/'>Rails</a>, <a class='category' href='/blog/categories/ruby/'>Ruby</a>
   
 </span>
 
@@ -187,10 +228,8 @@ PWD=/home/lingceng
     
     <p class="meta">
       
-        <a class="basic-alignment left" href="/blog/2013/10/08/hello-world/" title="Previous Post: Hello World">&laquo; Hello World</a>
+        <a class="basic-alignment left" href="/blog/2014/10/16/turbolink-best-practice/" title="Previous Post: Turbolink Best Practice">&laquo; Turbolink Best Practice</a>
       
-      
-        <a class="basic-alignment right" href="/blog/2014/03/13/git-get-start/" title="Next Post: git get start">git get start &raquo;</a>
       
     </p>
   </footer>
@@ -256,8 +295,8 @@ PWD=/home/lingceng
       
         
         // var disqus_developer = 1;
-        var disqus_identifier = 'http://lingceng.github.io/blog/2013/11/30/run-cron-every-5-hours/';
-        var disqus_url = 'http://lingceng.github.io/blog/2013/11/30/run-cron-every-5-hours/';
+        var disqus_identifier = 'http://lingceng.github.io/blog/2014/11/22/use-timezone-in-rails/';
+        var disqus_url = 'http://lingceng.github.io/blog/2014/11/22/use-timezone-in-rails/';
         var disqus_script = 'embed.js';
       
     (function () {
