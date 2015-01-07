@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Rails | Lingceng's Blog]]></title>
   <link href="http://lingceng.github.io/blog/categories/rails/atom.xml" rel="self"/>
   <link href="http://lingceng.github.io/"/>
-  <updated>2014-11-26T16:55:35+08:00</updated>
+  <updated>2015-01-07T05:03:03-06:00</updated>
   <id>http://lingceng.github.io/</id>
   <author>
     <name><![CDATA[Lingceng]]></name>
@@ -16,7 +16,7 @@
   <entry>
     <title type="html"><![CDATA[Use Timezone In Rails]]></title>
     <link href="http://lingceng.github.io/blog/2014/11/22/use-timezone-in-rails/"/>
-    <updated>2014-11-22T18:38:00+08:00</updated>
+    <updated>2014-11-22T18:38:00-06:00</updated>
     <id>http://lingceng.github.io/blog/2014/11/22/use-timezone-in-rails</id>
     <content type="html"><![CDATA[<h4>Create Table and config</h4>
 
@@ -35,28 +35,25 @@ end
 
 <pre><code>Rails.application.config.active_record.default_timezone = :local
 Rails.application.config.time_zone = 'Beijing'
+
 Rails.application.config.i18n.default_locale = 'zh-CN'
 </code></pre>
 
-<h4>Test datetime output</h4>
+<h4><code>to_s(:db)</code> vs <code>to_s</code></h4>
 
-<p>Run with <code>rails console</code>.</p>
-
-<pre><code>pry(main)&gt; l = FinanceItem.create
-=&gt; #&lt;FinanceItem id: 1, created_at: "2014-11-22 03:00:32",
-    updated_at: "2014-11-22 03:00:32" &gt;
-pry(main)&gt; l.created_at
-=&gt; Sat, 22 Nov 2014 11:00:32 CST +08:00
-pry(main)&gt; l.created_at.to_s(:db)
-=&gt; "2014-11-22 03:00:32"
+<pre><code>&gt; l = FinanceItem.create
+#=&gt; #&lt;FinanceItem id: 1, created_at: "2014-11-22 03:00:32", updated_at: "2014-11-22 03:00:32" &gt;
+&gt; l.created_at
+#=&gt; Sat, 22 Nov 2014 11:00:32 CST +08:00
+&gt; l.created_at.to_s(:db)
+#=&gt; "2014-11-22 03:00:32"
 </code></pre>
 
-<h4>Datetime output is different</h4>
-
-<p>Here is the reason.</p>
+<p><code>to_s(:db)</code> will output in time UTC which is always not us want.</p>
 
 <pre><code>TimeWithZone to_s(:db)
-:db format outputs time in UTC; all others output time in local
+:db format outputs time in UTC;
+all others output time in local
 </code></pre>
 
 <h4><code>default_timezone</code> is so necessary</h4>
@@ -66,59 +63,71 @@ and enables time zone awareness for Active Record.</p>
 
 <p><code>config.active_record.default_timezone</code> determines whether to use Time.local
  (if set to :local) or Time.utc (if set to :utc) when pulling dates and times
-from the database.
-The default is :utc.</p>
+from the database.  The default is :utc.</p>
 
-<p><code>utc()</code>
-Returns a Time or DateTime instance that represents the time in UTC.</p>
+<pre><code>`utc()`
+Returns a Time or DateTime instance that represents the time in UTC.
 
-<p><code>local()</code>
+`local()`
 Method for creating new ActiveSupport::TimeWithZone instance
-in time zone of self from given values.</p>
+in time zone of self from given values.
 
-<pre><code>Time.zone = 'Hawaii'                    # =&gt; "Hawaii"
+Time.zone = 'Hawaii'                    # =&gt; "Hawaii"
 Time.zone.local(2007, 2, 1, 15, 30, 45) # =&gt; Thu, 01 Feb 2007 15:30:45 HST -10:00
 </code></pre>
 
-<h4>Take care when parse date string</h4>
+<h4>DateTime.parse vs Time.zone.parse</h4>
 
-<p>Let&rsquo;s run the test</p>
+<pre><code>&gt; a = DateTime.parse('2014-11-22 12:35:05')
+#=&gt; Sat, 22 Nov 2014 12:35:05 +0000
+&gt; a.to_s(:rfc822)
+#=&gt; "Sat, 22 Nov 2014 12:35:05 +0000"
+&gt; a.in_time_zone.to_s(:rfc822)
+#=&gt; "Sat, 22 Nov 2014 20:35:05 +0800"
 
-<pre><code>pry(main)&gt; a = DateTime.parse('2014-11-22 12:35:05')
-=&gt; Sat, 22 Nov 2014 12:35:05 +0000
-pry(main)&gt; a.to_s(:rfc822)
-=&gt; "Sat, 22 Nov 2014 12:35:05 +0000"
-pry(main)&gt; a.in_time_zone.to_s(:rfc822)
-=&gt; "Sat, 22 Nov 2014 20:35:05 +0800"
-
-pry(main)&gt; b = Time.zone.parse('2014-11-22 12:35:05')
-=&gt; 2014-11-22 12:35:05
-pry(main)&gt; b.to_s(:rfc822)
-=&gt; "Sat, 22 Nov 2014 12:35:05 +0800"
-pry(main)&gt; c = '2014-11-22 12:35:05'.to_time
-=&gt; 2014-11-22 12:35:05
-pry(main)&gt; c.to_s
-=&gt; "2014-11-22 12:35:05 +0800"
+&gt; b = Time.zone.parse('2014-11-22 12:35:05')
+#=&gt; 2014-11-22 12:35:05
+&gt; b.to_s(:rfc822)
+#=&gt; "Sat, 22 Nov 2014 12:35:05 +0800"
+&gt; c = '2014-11-22 12:35:05'.to_time
+#=&gt; 2014-11-22 12:35:05
+&gt; c.to_s
+#=&gt; "2014-11-22 12:35:05 +0800"
 </code></pre>
 
 <p>Notice that <code>Time.zone.parse</code> has <code>+0800</code> timezone offset.</p>
 
-<h3>Conclusion</h3>
+<h3>Time.now vs Time.current</h3>
 
-<p>Always set following options.</p>
+<p>Let&rsquo;s see the definition of <code>Time.current</code></p>
+
+<pre><code># File activesupport/lib/active_support/core_ext/time/calculations.rb, line 29
+def current
+  ::Time.zone ? ::Time.zone.now : ::Time.now
+end
+</code></pre>
+
+<p>Time.now uses the system time because it&rsquo;s is part of the Ruby standard library.
+Time.zone.now will set time with <code>config.time_zone</code>.</p>
+
+<h3>In a word</h3>
+
+<p>Set the following config:</p>
 
 <pre><code>active_record.default_timezone = :local
+# or others
 time_zone = 'Beijing'
 </code></pre>
 
-<p>Use <code>Time.zone.parse</code> do <strong>not</strong> use <code>DateTime.parse</code>.</p>
+<p>Use <code>Time.zone.parse</code> do <strong>not</strong> use <code>DateTime.parse</code>.
+Use <code>Time.zone.now</code> or <code>Time.current</code> do <strong>not</strong> use <code>Time.now</code>.</p>
 ]]></content>
   </entry>
   
   <entry>
     <title type="html"><![CDATA[Turbolink Best Practice]]></title>
     <link href="http://lingceng.github.io/blog/2014/10/16/turbolink-best-practice/"/>
-    <updated>2014-10-16T12:12:00+08:00</updated>
+    <updated>2014-10-16T12:12:00-05:00</updated>
     <id>http://lingceng.github.io/blog/2014/10/16/turbolink-best-practice</id>
     <content type="html"><![CDATA[<h2>What does Turbolink do?</h2>
 

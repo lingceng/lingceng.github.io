@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Test | Lingceng's Blog]]></title>
   <link href="http://lingceng.github.io/blog/categories/test/atom.xml" rel="self"/>
   <link href="http://lingceng.github.io/"/>
-  <updated>2014-11-26T16:55:35+08:00</updated>
+  <updated>2015-01-07T05:03:03-06:00</updated>
   <id>http://lingceng.github.io/</id>
   <author>
     <name><![CDATA[Lingceng]]></name>
@@ -16,7 +16,7 @@
   <entry>
     <title type="html"><![CDATA[minitest mock and stud]]></title>
     <link href="http://lingceng.github.io/blog/2014/03/18/minitest-mock-and-stud/"/>
-    <updated>2014-03-18T08:28:00+08:00</updated>
+    <updated>2014-03-18T08:28:00-05:00</updated>
     <id>http://lingceng.github.io/blog/2014/03/18/minitest-mock-and-stud</id>
     <content type="html"><![CDATA[<h3>capture io</h3>
 
@@ -161,7 +161,7 @@ see <a href="https://github.com/seattlerb/minitest/blob/master/test/minitest/tes
   <entry>
     <title type="html"><![CDATA[basics about minitest]]></title>
     <link href="http://lingceng.github.io/blog/2014/03/17/basics-about-minitest/"/>
-    <updated>2014-03-17T07:58:00+08:00</updated>
+    <updated>2014-03-17T07:58:00-05:00</updated>
     <id>http://lingceng.github.io/blog/2014/03/17/basics-about-minitest</id>
     <content type="html"><![CDATA[<ul>
 <li>home :: <a href="https://github.com/seattlerb/minitest">https://github.com/seattlerb/minitest</a></li>

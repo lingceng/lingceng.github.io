@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Vim | Lingceng's Blog]]></title>
   <link href="http://lingceng.github.io/blog/categories/vim/atom.xml" rel="self"/>
   <link href="http://lingceng.github.io/"/>
-  <updated>2014-11-26T16:55:35+08:00</updated>
+  <updated>2015-01-07T05:03:03-06:00</updated>
   <id>http://lingceng.github.io/</id>
   <author>
     <name><![CDATA[Lingceng]]></name>
@@ -16,7 +16,7 @@
   <entry>
     <title type="html"><![CDATA[vim tips]]></title>
     <link href="http://lingceng.github.io/blog/2014/03/14/vim-tips/"/>
-    <updated>2014-03-14T22:39:00+08:00</updated>
+    <updated>2014-03-14T22:39:00-05:00</updated>
     <id>http://lingceng.github.io/blog/2014/03/14/vim-tips</id>
     <content type="html"><![CDATA[<p>HERE IS MY <a href="https://gist.github.com/lingceng/6097985">vimrc</a></p>
 
