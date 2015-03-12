@@ -145,7 +145,7 @@ And put <code>&lt;%= csrf_meta_tags %&gt;</code> in page head.</p>
       
   <header>
     
-      <h1 class="entry-title"><a href="/blog/2014/11/22/use-timezone-in-rails/">Use Timezone in Rails</a></h1>
+      <h1 class="entry-title"><a href="/blog/2014/11/22/use-timezone-in-rails/">Rails Time Best Practice</a></h1>
     
     
       <p class="meta">
@@ -168,9 +168,7 @@ And put <code>&lt;%= csrf_meta_tags %&gt;</code> in page head.</p>
   </header>
 
 
-  <div class="entry-content"><h4>Create Table and config</h4>
-
-<p>Let&rsquo;s create a table first.</p>
+  <div class="entry-content"><h4>Let&rsquo;s create demo table and config first</h4>
 
 <pre><code>class CreateHellos &lt; ActiveRecord::Migration
   def change
@@ -251,7 +249,7 @@ a.strftime("%Y-%m-%d %H:%M:%S")
 =&gt; "2015-03-12 16:56:21"
 </code></pre>
 
-<p>As we can see, <code>to_s(:db)</code> is NOT consistent in Time and TimeWithZone.
+<p>As we can see, <code>to_s(:db)</code> is NOT consistent between Time and TimeWithZone.
 Calling <code>to_s(:db)</code> on TimeWithZone is always error-prone unless you know what
 you are doing.
 So you&rsquo;d better NOT use <code>to_s(:db)</code>.</p>
@@ -272,6 +270,8 @@ b.to_s(:rfc822)
 </code></pre>
 
 <p>Notice that <code>Time.zone.parse</code> has <code>+0800</code> timezone offset.</p>
+
+<h3>Some time tip</h3>
 
 <pre><code>time = '2014-11-22 12:35:05'.to_time
 #=&gt; 2014-11-22 12:35:05
@@ -307,8 +307,11 @@ def current
 end
 </code></pre>
 
-<p>Time.now uses the system time because it&rsquo;s is part of the Ruby standard library.
-Time.zone.now will set time with <code>config.time_zone</code>.</p>
+<p>Time.now uses the <strong>system time zone</strong> because it&rsquo;s is part of the Ruby standard library.
+Time.zone.now will set zone with <code>config.time_zone</code>.</p>
+
+<p>Using <code>Time.now</code> make troubles when your system time zone is different with
+<code>config.time_zone</code></p>
 
 <h3>Best practice</h3>
 
@@ -1284,7 +1287,7 @@ PWD=/home/lingceng
       </li>
     
       <li class="post">
-        <a href="/blog/2014/11/22/use-timezone-in-rails/">Use Timezone in Rails</a>
+        <a href="/blog/2014/11/22/use-timezone-in-rails/">Rails Time Best Practice</a>
       </li>
     
       <li class="post">

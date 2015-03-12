@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Ruby | Lingceng's Blog]]></title>
   <link href="http://lingceng.github.io/blog/categories/ruby/atom.xml" rel="self"/>
   <link href="http://lingceng.github.io/"/>
-  <updated>2015-03-12T23:24:15+08:00</updated>
+  <updated>2015-03-12T23:32:33+08:00</updated>
   <id>http://lingceng.github.io/</id>
   <author>
     <name><![CDATA[Lingceng]]></name>
@@ -14,13 +14,11 @@
 
   
   <entry>
-    <title type="html"><![CDATA[Use Timezone In Rails]]></title>
+    <title type="html"><![CDATA[Rails Time Best Practice]]></title>
     <link href="http://lingceng.github.io/blog/2014/11/22/use-timezone-in-rails/"/>
     <updated>2014-11-22T18:38:00+08:00</updated>
     <id>http://lingceng.github.io/blog/2014/11/22/use-timezone-in-rails</id>
-    <content type="html"><![CDATA[<h4>Create Table and config</h4>
-
-<p>Let&rsquo;s create a table first.</p>
+    <content type="html"><![CDATA[<h4>Let&rsquo;s create demo table and config first</h4>
 
 <pre><code>class CreateHellos &lt; ActiveRecord::Migration
   def change
@@ -101,7 +99,7 @@ a.strftime("%Y-%m-%d %H:%M:%S")
 =&gt; "2015-03-12 16:56:21"
 </code></pre>
 
-<p>As we can see, <code>to_s(:db)</code> is NOT consistent in Time and TimeWithZone.
+<p>As we can see, <code>to_s(:db)</code> is NOT consistent between Time and TimeWithZone.
 Calling <code>to_s(:db)</code> on TimeWithZone is always error-prone unless you know what
 you are doing.
 So you&rsquo;d better NOT use <code>to_s(:db)</code>.</p>
@@ -122,6 +120,8 @@ b.to_s(:rfc822)
 </code></pre>
 
 <p>Notice that <code>Time.zone.parse</code> has <code>+0800</code> timezone offset.</p>
+
+<h3>Some time tip</h3>
 
 <pre><code>time = '2014-11-22 12:35:05'.to_time
 #=&gt; 2014-11-22 12:35:05
@@ -157,8 +157,11 @@ def current
 end
 </code></pre>
 
-<p>Time.now uses the system time because it&rsquo;s is part of the Ruby standard library.
-Time.zone.now will set time with <code>config.time_zone</code>.</p>
+<p>Time.now uses the <strong>system time zone</strong> because it&rsquo;s is part of the Ruby standard library.
+Time.zone.now will set zone with <code>config.time_zone</code>.</p>
+
+<p>Using <code>Time.now</code> make troubles when your system time zone is different with
+<code>config.time_zone</code></p>
 
 <h3>Best practice</h3>
 
