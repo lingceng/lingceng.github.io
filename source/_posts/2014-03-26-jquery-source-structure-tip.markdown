@@ -25,6 +25,9 @@ It seems not that same with how we use jQuery. secret is the aliases.
 $ = jQuery;
 
 // we can use the `jQuery.fn.newFeature = function() {}` to extend the jQuery instance function
+// Why we can add fn key to jQuery?
+// Answer is jQuery is a function and function is a object too. So we can add
+// properties to function
 jQuery.fn = jQuery.prototype;
 {% endcodeblock %}
 
