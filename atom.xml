@@ -4,7 +4,7 @@
   <title><![CDATA[Lingceng's Blog]]></title>
   <link href="http://lingceng.github.io/atom.xml" rel="self"/>
   <link href="http://lingceng.github.io/"/>
-  <updated>2015-01-07T05:03:03-06:00</updated>
+  <updated>2015-03-12T10:25:17+08:00</updated>
   <id>http://lingceng.github.io/</id>
   <author>
     <name><![CDATA[Lingceng]]></name>
@@ -16,7 +16,7 @@
   <entry>
     <title type="html"><![CDATA[When Rails InvalidAuthenticityToken Happens]]></title>
     <link href="http://lingceng.github.io/blog/2014/11/26/when-rails-invalidauthenticitytoken-happens/"/>
-    <updated>2014-11-26T16:31:00-06:00</updated>
+    <updated>2014-11-26T16:31:00+08:00</updated>
     <id>http://lingceng.github.io/blog/2014/11/26/when-rails-invalidauthenticitytoken-happens</id>
     <content type="html"><![CDATA[<p><code>InvalidAuthenticityToken</code> happens if you enabled <code>protect_from_forgery</code>
 but does not handle token well.</p>
@@ -62,7 +62,7 @@ And put <code>&lt;%= csrf_meta_tags %&gt;</code> in page head.</p>
   <entry>
     <title type="html"><![CDATA[Use Timezone In Rails]]></title>
     <link href="http://lingceng.github.io/blog/2014/11/22/use-timezone-in-rails/"/>
-    <updated>2014-11-22T18:38:00-06:00</updated>
+    <updated>2014-11-22T18:38:00+08:00</updated>
     <id>http://lingceng.github.io/blog/2014/11/22/use-timezone-in-rails</id>
     <content type="html"><![CDATA[<h4>Create Table and config</h4>
 
@@ -173,7 +173,7 @@ Use <code>Time.zone.now</code> or <code>Time.current</code> do <strong>not</stro
   <entry>
     <title type="html"><![CDATA[Turbolink Best Practice]]></title>
     <link href="http://lingceng.github.io/blog/2014/10/16/turbolink-best-practice/"/>
-    <updated>2014-10-16T12:12:00-05:00</updated>
+    <updated>2014-10-16T12:12:00+08:00</updated>
     <id>http://lingceng.github.io/blog/2014/10/16/turbolink-best-practice</id>
     <content type="html"><![CDATA[<h2>What does Turbolink do?</h2>
 
@@ -335,7 +335,7 @@ And then you will not benefit from turbolink speed boost.</p>
   <entry>
     <title type="html"><![CDATA[jQuery Source Structure Tip]]></title>
     <link href="http://lingceng.github.io/blog/2014/03/26/jquery-source-structure-tip/"/>
-    <updated>2014-03-26T09:12:00-05:00</updated>
+    <updated>2014-03-26T09:12:00+08:00</updated>
     <id>http://lingceng.github.io/blog/2014/03/26/jquery-source-structure-tip</id>
     <content type="html"><![CDATA[<p>I&rsquo;m puzzled when I first see the jQuery source code.
 I finaly find a clue after several attempts.</p>
@@ -364,10 +364,16 @@ I finaly find a clue after several attempts.</p>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
 <span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
 </pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="c1">// we can use the dollar sign to call the jQuery function</span>
 </span><span class='line'><span class="nx">$</span> <span class="o">=</span> <span class="nx">jQuery</span><span class="p">;</span>
 </span><span class='line'>
 </span><span class='line'><span class="c1">// we can use the `jQuery.fn.newFeature = function() {}` to extend the jQuery instance function</span>
+</span><span class='line'><span class="c1">// Why we can add fn key to jQuery?</span>
+</span><span class='line'><span class="c1">// Answer is jQuery is a function and function is a object too. So we can add</span>
+</span><span class='line'><span class="c1">// properties to function</span>
 </span><span class='line'><span class="nx">jQuery</span><span class="p">.</span><span class="nx">fn</span> <span class="o">=</span> <span class="nx">jQuery</span><span class="p">.</span><span class="nx">prototype</span><span class="p">;</span>
 </span></code></pre></td></tr></table></div></figure>
 
@@ -465,7 +471,7 @@ I finaly find a clue after several attempts.</p>
   <entry>
     <title type="html"><![CDATA[minitest mock and stud]]></title>
     <link href="http://lingceng.github.io/blog/2014/03/18/minitest-mock-and-stud/"/>
-    <updated>2014-03-18T08:28:00-05:00</updated>
+    <updated>2014-03-18T08:28:00+08:00</updated>
     <id>http://lingceng.github.io/blog/2014/03/18/minitest-mock-and-stud</id>
     <content type="html"><![CDATA[<h3>capture io</h3>
 
@@ -591,7 +597,7 @@ see <a href="https://github.com/seattlerb/minitest/blob/master/test/minitest/tes
   <entry>
     <title type="html"><![CDATA[basics about minitest]]></title>
     <link href="http://lingceng.github.io/blog/2014/03/17/basics-about-minitest/"/>
-    <updated>2014-03-17T07:58:00-05:00</updated>
+    <updated>2014-03-17T07:58:00+08:00</updated>
     <id>http://lingceng.github.io/blog/2014/03/17/basics-about-minitest</id>
     <content type="html"><![CDATA[<ul>
 <li>home :: <a href="https://github.com/seattlerb/minitest">https://github.com/seattlerb/minitest</a></li>
@@ -712,7 +718,7 @@ end
   <entry>
     <title type="html"><![CDATA[vim tips]]></title>
     <link href="http://lingceng.github.io/blog/2014/03/14/vim-tips/"/>
-    <updated>2014-03-14T22:39:00-05:00</updated>
+    <updated>2014-03-14T22:39:00+08:00</updated>
     <id>http://lingceng.github.io/blog/2014/03/14/vim-tips</id>
     <content type="html"><![CDATA[<p>HERE IS MY <a href="https://gist.github.com/lingceng/6097985">vimrc</a></p>
 
@@ -802,7 +808,7 @@ set nohlsearch
   <entry>
     <title type="html"><![CDATA[git get start]]></title>
     <link href="http://lingceng.github.io/blog/2014/03/13/git-get-start/"/>
-    <updated>2014-03-13T07:21:00-05:00</updated>
+    <updated>2014-03-13T07:21:00+08:00</updated>
     <id>http://lingceng.github.io/blog/2014/03/13/git-get-start</id>
     <content type="html"><![CDATA[<p>config</p>
 
@@ -878,7 +884,7 @@ git log --graph --oneline --all
   <entry>
     <title type="html"><![CDATA[Run Cron Every 5 Hours]]></title>
     <link href="http://lingceng.github.io/blog/2013/11/30/run-cron-every-5-hours/"/>
-    <updated>2013-11-30T16:56:00-06:00</updated>
+    <updated>2013-11-30T16:56:00+08:00</updated>
     <id>http://lingceng.github.io/blog/2013/11/30/run-cron-every-5-hours</id>
     <content type="html"><![CDATA[<p>> crontab -e</p>
 
@@ -931,7 +937,7 @@ PWD=/home/lingceng
   <entry>
     <title type="html"><![CDATA[Hello World]]></title>
     <link href="http://lingceng.github.io/blog/2013/10/08/hello-world/"/>
-    <updated>2013-10-08T13:41:00-05:00</updated>
+    <updated>2013-10-08T13:41:00+08:00</updated>
     <id>http://lingceng.github.io/blog/2013/10/08/hello-world</id>
     <content type="html"><![CDATA[<p>Hello everyone! Here&rsquo;s my first post on my blog!</p>
 ]]></content>

@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Ruby | Lingceng's Blog]]></title>
   <link href="http://lingceng.github.io/blog/categories/ruby/atom.xml" rel="self"/>
   <link href="http://lingceng.github.io/"/>
-  <updated>2015-01-07T05:03:03-06:00</updated>
+  <updated>2015-03-12T10:25:17+08:00</updated>
   <id>http://lingceng.github.io/</id>
   <author>
     <name><![CDATA[Lingceng]]></name>
@@ -16,7 +16,7 @@
   <entry>
     <title type="html"><![CDATA[Use Timezone In Rails]]></title>
     <link href="http://lingceng.github.io/blog/2014/11/22/use-timezone-in-rails/"/>
-    <updated>2014-11-22T18:38:00-06:00</updated>
+    <updated>2014-11-22T18:38:00+08:00</updated>
     <id>http://lingceng.github.io/blog/2014/11/22/use-timezone-in-rails</id>
     <content type="html"><![CDATA[<h4>Create Table and config</h4>
 
@@ -127,7 +127,7 @@ Use <code>Time.zone.now</code> or <code>Time.current</code> do <strong>not</stro
   <entry>
     <title type="html"><![CDATA[Turbolink Best Practice]]></title>
     <link href="http://lingceng.github.io/blog/2014/10/16/turbolink-best-practice/"/>
-    <updated>2014-10-16T12:12:00-05:00</updated>
+    <updated>2014-10-16T12:12:00+08:00</updated>
     <id>http://lingceng.github.io/blog/2014/10/16/turbolink-best-practice</id>
     <content type="html"><![CDATA[<h2>What does Turbolink do?</h2>
 
@@ -297,7 +297,7 @@ And then you will not benefit from turbolink speed boost.</p>
   <entry>
     <title type="html"><![CDATA[minitest mock and stud]]></title>
     <link href="http://lingceng.github.io/blog/2014/03/18/minitest-mock-and-stud/"/>
-    <updated>2014-03-18T08:28:00-05:00</updated>
+    <updated>2014-03-18T08:28:00+08:00</updated>
     <id>http://lingceng.github.io/blog/2014/03/18/minitest-mock-and-stud</id>
     <content type="html"><![CDATA[<h3>capture io</h3>
 
@@ -442,7 +442,7 @@ see <a href="https://github.com/seattlerb/minitest/blob/master/test/minitest/tes
   <entry>
     <title type="html"><![CDATA[basics about minitest]]></title>
     <link href="http://lingceng.github.io/blog/2014/03/17/basics-about-minitest/"/>
-    <updated>2014-03-17T07:58:00-05:00</updated>
+    <updated>2014-03-17T07:58:00+08:00</updated>
     <id>http://lingceng.github.io/blog/2014/03/17/basics-about-minitest</id>
     <content type="html"><![CDATA[<ul>
 <li>home :: <a href="https://github.com/seattlerb/minitest">https://github.com/seattlerb/minitest</a></li>
