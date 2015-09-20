@@ -4,7 +4,7 @@
   <title><![CDATA[Lingceng's Blog]]></title>
   <link href="http://lingceng.github.io/atom.xml" rel="self"/>
   <link href="http://lingceng.github.io/"/>
-  <updated>2015-03-13T00:15:32+08:00</updated>
+  <updated>2015-09-20T19:15:45+08:00</updated>
   <id>http://lingceng.github.io/</id>
   <author>
     <name><![CDATA[Lingceng]]></name>
@@ -64,7 +64,10 @@ And put <code>&lt;%= csrf_meta_tags %&gt;</code> in page head.</p>
     <link href="http://lingceng.github.io/blog/2014/11/22/rails-time-best-practice/"/>
     <updated>2014-11-22T18:38:00+08:00</updated>
     <id>http://lingceng.github.io/blog/2014/11/22/rails-time-best-practice</id>
-    <content type="html"><![CDATA[<h4>Let&rsquo;s create demo table and config first</h4>
+    <content type="html"><![CDATA[<h4>Setup</h4>
+
+<p>Let&rsquo;s create a demo table and do some configurations in a rails project.
+Then we&rsquo;ll do some tests about time in <code>rails console</code>.</p>
 
 <pre><code>class CreateHellos &lt; ActiveRecord::Migration
   def change
@@ -75,7 +78,7 @@ And put <code>&lt;%= csrf_meta_tags %&gt;</code> in page head.</p>
 end
 </code></pre>
 
-<p>Add following to <code>config/application.rb</code> to config timezone.</p>
+<p>Add following to <code>config/application.rb</code></p>
 
 <pre><code>Rails.application.config.active_record.default_timezone = :local
 Rails.application.config.time_zone = 'Beijing'
@@ -88,14 +91,15 @@ and enables time zone awareness for Active Record.</p>
  (if set to :local) or Time.utc (if set to :utc) when pulling dates and times
 from the database.  The default is :utc.</p>
 
-<h4>Rails <code>to_s(:db)</code> vs <code>to_s</code></h4>
+<h4><code>to_s(:db)</code> is error-prone</h4>
 
-<p>Run codes in rails console.</p>
+<p>Run following codes in rails console.
+Here CST stands for (China Standard Time) which is zone name for Beijing.</p>
 
 <pre><code>l = FinanceItem.create
 #=&gt; #&lt;FinanceItem id: 1, created_at: "2014-11-22 03:00:32", updated_at: "2014-11-22 03:00:32" &gt;
 l.created_at
-=&gt; Sat, 22 Nov 2014 11:00:32 CST +08:00
+#=&gt; Sat, 22 Nov 2014 11:00:32 CST +08:00
 </code></pre>
 
 <p>The timezone offset is <strong>+08:00</strong> because I set <code>config.time_zone = 'Beijing'</code></p>
@@ -106,13 +110,14 @@ l.created_at
 
 <p>Rails use ActiveSupport::TimeWithZone for datetime field.</p>
 
-<pre><code>&gt; l.created_at.strftime("%Y-%m-%d %H:%M%S")
+<pre><code>l.created_at.strftime("%Y-%m-%d %H:%M%S")
 #=&gt; "2014-11-22 11:00:32"
-&gt; l.created_at.to_s(:db)
+l.created_at.to_s(:db)
 #=&gt; "2014-11-22 03:00:32"
 </code></pre>
 
-<p>We can see  two date string diff. Because <code>to_s(:db)</code> output time string in UTC.
+<p>We can see, two date strings are different.
+Because <code>to_s(:db)</code> always output time string in UTC.
 <code>strftime</code> or <code>to_s</code> ouptut time string with configured time zone.</p>
 
 <p>Here is the <code>TimewithZone#to_s(format)</code> source:</p>
@@ -132,8 +137,9 @@ def to_s(format = :default)
 end
 </code></pre>
 
-<p>However when subject is <strong>Time</strong>, <code>to_s(:db)</code>  and <code>strftime("%Y-%m-%d %H:%M:%S")</code>
-outputs the same.</p>
+<p>How about <code>Time#to_s(:db)</code> and <code>Time#strftime("%Y-%m-%d %H:%M:%S")</code>?
+Here zone name is CST because my system local is &lsquo;Beijing&rsquo;.
+It&rsquo;s different with TimeWithZone which get zone from project configurations <code>config.time_zone</code>.</p>
 
 <pre><code>a = Time.now
 =&gt; 2015-03-12 16:56:21
@@ -145,18 +151,25 @@ a.strftime("%Y-%m-%d %H:%M:%S")
 =&gt; "2015-03-12 16:56:21"
 </code></pre>
 
+<p><code>Time#to_s(:db)</code> and <code>Time#strftime("%Y-%m-%d %H:%M:%S")</code> output the same.
+We can find out that <code>Time#to_s(:db)</code> is actually called Time#strftime(&lsquo;%Y-%m-%d %H:%M:%S&rsquo;) from source</p>
+
 <p>As we can see, <code>to_s(:db)</code> is NOT consistent between Time and TimeWithZone.
-Calling <code>to_s(:db)</code> on TimeWithZone is always error-prone unless you know what
-you are doing.
-So you&rsquo;d better NOT use <code>to_s(:db)</code>.</p>
+TimeWithZone#to_s(:db) will generate time string of UTC.
+Time#to_s(:db) will return time string of configured local.</p>
 
-<h4>DateTime.parse vs Time.zone.parse</h4>
+<p>So calling <code>to_s(:db)</code> is always error-prone. Do not use it unless you know what you are doing.
+And you&rsquo;d better not use Time and TimeWithZone interchangeably.</p>
 
-<pre><code>&gt; a = DateTime.parse('2014-11-22 12:35:05')
+<h4>Time.zone.parse get time with timezone</h4>
+
+<p>Let&rsquo;s try following codes.</p>
+
+<pre><code>a = DateTime.parse('2014-11-22 12:35:05')
 #=&gt; Sat, 22 Nov 2014 12:35:05 +0000
-&gt; a.to_s(:rfc822)
+a.to_s(:rfc822)
 #=&gt; "Sat, 22 Nov 2014 12:35:05 +0000"
-&gt; a.in_time_zone.to_s(:rfc822)
+a.in_time_zone.to_s(:rfc822)
 #=&gt; "Sat, 22 Nov 2014 20:35:05 +0800"
 
 b = Time.zone.parse('2014-11-22 12:35:05')
@@ -165,33 +178,10 @@ b.to_s(:rfc822)
 #=&gt; "Sat, 22 Nov 2014 12:35:05 +0800"
 </code></pre>
 
-<p>Notice that <code>Time.zone.parse</code> has <code>+0800</code> timezone offset.</p>
+<p>Notice that <code>Time.zone.parse</code> has <code>+0800</code> timezone offset but <code>DateTime.parse</code>
+has &lsquo;+0000&rsquo; timezone offset.</p>
 
-<h3>Some time tip</h3>
-
-<pre><code>time = '2014-11-22 12:35:05'.to_time
-#=&gt; 2014-11-22 12:35:05
-time.to_s
-#=&gt; "2014-11-22 12:35:05 +0800"
-time.class
-#=&gt; Time
-</code></pre>
-
-<p>Use <code>to_time</code> in rails will consider timezone offset.</p>
-
-<pre><code>time.zone
-#=&gt; "CST"
-</code></pre>
-
-<p>Here CST stand for (China Standard Time)</p>
-
-<p>Checkout time zone name and offset</p>
-
-<pre><code>time.strftime('%Z')
-#=&gt; "CST"
-time.strftime('%z')
-#=&gt; "+0800"
-</code></pre>
+<p>So <code>Time.zone.parse</code> may be better for you.</p>
 
 <h3>Time.now vs Time.current</h3>
 
@@ -217,9 +207,11 @@ Time.zone.now will set zone with <code>config.time_zone</code>.</p>
 config.time_zone = 'YourLocalName'
 </code></pre>
 
-<p>Use <code>Time.zone.parse</code> and do <strong>NOT</strong> use <code>DateTime.parse</code>.
-Use <code>Time.zone.now</code> or <code>Time.current</code> and do <strong>NOT</strong> use <code>Time.now</code>.
-Thus we can keep all time class to TimeWithZone and get consistent behavior.</p>
+<p>Use <code>Time.zone.parse</code> and do <strong>NOT</strong> use <code>DateTime.parse</code>.</p>
+
+<p>Use <code>Time.zone.now</code> or <code>Time.current</code> and do <strong>NOT</strong> use <code>Time.now</code>.</p>
+
+<p>Thus we can keep all time class to TimeWithZone and get consistent behavior.</p>
 ]]></content>
   </entry>
   
@@ -233,12 +225,14 @@ Thus we can keep all time class to TimeWithZone and get consistent behavior.</p>
 <p><a href="https://github.com/rails/turbolinks">Turbolink</a> makes browser to only replace
 page&rsquo;s <code>&lt;body&gt;</code> and <code>&lt;title&gt;</code> to simulate page jumping when click a link.</p>
 
-<p>It&rsquo;s fast because no need to recompile the JavaScript and CSS.
-As you can see, we must keep stuffs in head the same, or things will go wrong.</p>
+<p>It&rsquo;s fast because no need to recompile the JavaScript or CSS.</p>
 
-<h4>Turbolink has other features make it fast</h4>
+<p>As you can see, we must keep stuffs in <code>&lt;head&gt;</code> the same between pages when jumping with Turbolink.  In other words, Things will go wrong if the pages have
+different content in <code>&lt;head&gt;</code>.</p>
 
-<p>Use client cache pages.</p>
+<h4>Turbolink has other features to make it fast.</h4>
+
+<p>Turbolink uses client cache pages.</p>
 
 <pre><code># View current page cache size
 Turbolinks.pagesCached();
@@ -246,7 +240,7 @@ Turbolinks.pagesCached();
 Turbolinks.pagesCached(20);
 </code></pre>
 
-<p>Use transition cache.
+<p>Turbolink uses transition cache.
 Transition will immediately display the cached copy of page and then replace
 with remote returned one.</p>
 
@@ -271,7 +265,8 @@ So Turbolink provide a JavaScript-and-CSS-based one.</p>
 
 <h2>You want some JavaScript only included in some page?</h2>
 
-<p>Mark to <code>&lt;body&gt;</code> when need specific page logic, trigger it according to mark, eg.</p>
+<p>Mark to <code>&lt;body&gt;</code> when need specific page logic, trigger it according to mark.
+I want javascript only run in topics pages:</p>
 
 <pre><code>// In app/views/layouts/application.html.erb
 &lt;body data-controller-name="&lt;%= controller_name %&gt;"&gt;
@@ -290,14 +285,12 @@ $(document).ready -&gt;
 //= require topics
 </code></pre>
 
-<p>Note: This will also avoid <code>config.precompile.assets+=%w{user}</code> in Rails.</p>
-
 <h2>What will happen when add JavaScript in page body?</h2>
 
 <p>You should not add JavaScript to <code>&lt;body&gt;</code>, they will be re-evaluated.
 Especially when doing event bind, it will cause event binding multiple times.</p>
 
-<p>Note that you can add <code>data-turbolinks-eval=false</code> to prevent re-evaluating.</p>
+<p>You can add <code>data-turbolinks-eval=false</code> to prevent re-evaluating if you did want it.</p>
 
 <pre><code>&lt;script type="text/javascript" data-turbolinks-eval=false&gt;
   console.log("I'm only run once on the initial page load");
@@ -316,7 +309,7 @@ Especially when doing event bind, it will cause event binding multiple times.</p
 &lt;/script&gt;
 </code></pre>
 
-<p>When you click a link on page A to page B, the &lsquo;hello&rsquo; will <strong>not</strong> printed.
+<p>When you click a link on page A and jump to page B, the &lsquo;hello&rsquo; will <strong>not</strong> printed.
 The script tag will be ignored.</p>
 
 <p>It&rsquo;s the same when you make it a <code>src</code> link.</p>
@@ -325,7 +318,7 @@ The script tag will be ignored.</p>
 &lt;script type="text/javascript" src='hello.js'&gt; &lt;/script&gt;
 </code></pre>
 
-<p>Only if you add a <code>data-turbolinks-track</code> tag.</p>
+<p>You add a <code>data-turbolinks-track</code> tag to make it work. But it has drawbacks.</p>
 
 <pre><code>&lt;script type="text/javascript" src="http://lingceng.github.io/hello.js" data-turbolinks-track&gt;&lt;/script&gt;
 </code></pre>
@@ -338,12 +331,10 @@ Once through Turbolinks to detect that the assets changed,
 and then again do a full redirect to that page.</p>
 
 <p>You should always add <code>data-turbolinks-track</code> to JavaScript and CSS links.
-This will trigger full page load when your assets changed.
-It is only useful to clear cache in a page instance.</p>
+This will trigger full page load when your assets changed.</p>
 
 <p>When page A and page B have different <code>track targets</code>,
-every switch between them will cause <code>double load</code>.
-So, you&rsquo;d better not rely on <code>data-turbolinks-track</code> to jumps between different head content.</p>
+every switch between them will cause <code>double load</code>.</p>
 
 <p>See the <a href="https://github.com/rails/turbolinks/blob/master/lib%2Fassets%2Fjavascripts%2Fturbolinks.js.coffee#L231">code</a>
 to know the details</p>

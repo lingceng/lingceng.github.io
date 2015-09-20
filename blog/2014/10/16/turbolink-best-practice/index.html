@@ -39,7 +39,7 @@ page&rsquo;s &lt;body&gt; and &lt;title&gt; to simulate page jumping when click 
   <header role="banner"><hgroup>
   <h1><a href="/">Lingceng's Blog</a></h1>
   
-    <h2>Just another developer blog</h2>
+    <h2>Make it now!</h2>
   
 </hgroup>
 
@@ -97,12 +97,14 @@ page&rsquo;s &lt;body&gt; and &lt;title&gt; to simulate page jumping when click 
 <p><a href="https://github.com/rails/turbolinks">Turbolink</a> makes browser to only replace
 page&rsquo;s <code>&lt;body&gt;</code> and <code>&lt;title&gt;</code> to simulate page jumping when click a link.</p>
 
-<p>It&rsquo;s fast because no need to recompile the JavaScript and CSS.
-As you can see, we must keep stuffs in head the same, or things will go wrong.</p>
+<p>It&rsquo;s fast because no need to recompile the JavaScript or CSS.</p>
 
-<h4>Turbolink has other features make it fast</h4>
+<p>As you can see, we must keep stuffs in <code>&lt;head&gt;</code> the same between pages when jumping with Turbolink.  In other words, Things will go wrong if the pages have
+different content in <code>&lt;head&gt;</code>.</p>
 
-<p>Use client cache pages.</p>
+<h4>Turbolink has other features to make it fast.</h4>
+
+<p>Turbolink uses client cache pages.</p>
 
 <pre><code># View current page cache size
 Turbolinks.pagesCached();
@@ -110,7 +112,7 @@ Turbolinks.pagesCached();
 Turbolinks.pagesCached(20);
 </code></pre>
 
-<p>Use transition cache.
+<p>Turbolink uses transition cache.
 Transition will immediately display the cached copy of page and then replace
 with remote returned one.</p>
 
@@ -135,7 +137,8 @@ So Turbolink provide a JavaScript-and-CSS-based one.</p>
 
 <h2>You want some JavaScript only included in some page?</h2>
 
-<p>Mark to <code>&lt;body&gt;</code> when need specific page logic, trigger it according to mark, eg.</p>
+<p>Mark to <code>&lt;body&gt;</code> when need specific page logic, trigger it according to mark.
+I want javascript only run in topics pages:</p>
 
 <pre><code>// In app/views/layouts/application.html.erb
 &lt;body data-controller-name="&lt;%= controller_name %&gt;"&gt;
@@ -154,14 +157,12 @@ $(document).ready -&gt;
 //= require topics
 </code></pre>
 
-<p>Note: This will also avoid <code>config.precompile.assets+=%w{user}</code> in Rails.</p>
-
 <h2>What will happen when add JavaScript in page body?</h2>
 
 <p>You should not add JavaScript to <code>&lt;body&gt;</code>, they will be re-evaluated.
 Especially when doing event bind, it will cause event binding multiple times.</p>
 
-<p>Note that you can add <code>data-turbolinks-eval=false</code> to prevent re-evaluating.</p>
+<p>You can add <code>data-turbolinks-eval=false</code> to prevent re-evaluating if you did want it.</p>
 
 <pre><code>&lt;script type="text/javascript" data-turbolinks-eval=false&gt;
   console.log("I'm only run once on the initial page load");
@@ -180,7 +181,7 @@ Especially when doing event bind, it will cause event binding multiple times.</p
 &lt;/script&gt;
 </code></pre>
 
-<p>When you click a link on page A to page B, the &lsquo;hello&rsquo; will <strong>not</strong> printed.
+<p>When you click a link on page A and jump to page B, the &lsquo;hello&rsquo; will <strong>not</strong> printed.
 The script tag will be ignored.</p>
 
 <p>It&rsquo;s the same when you make it a <code>src</code> link.</p>
@@ -189,7 +190,7 @@ The script tag will be ignored.</p>
 &lt;script type="text/javascript" src='hello.js'&gt; &lt;/script&gt;
 </code></pre>
 
-<p>Only if you add a <code>data-turbolinks-track</code> tag.</p>
+<p>You add a <code>data-turbolinks-track</code> tag to make it work. But it has drawbacks.</p>
 
 <pre><code>&lt;script type="text/javascript" src="/hello.js" data-turbolinks-track&gt;&lt;/script&gt;
 </code></pre>
@@ -202,12 +203,10 @@ Once through Turbolinks to detect that the assets changed,
 and then again do a full redirect to that page.</p>
 
 <p>You should always add <code>data-turbolinks-track</code> to JavaScript and CSS links.
-This will trigger full page load when your assets changed.
-It is only useful to clear cache in a page instance.</p>
+This will trigger full page load when your assets changed.</p>
 
 <p>When page A and page B have different <code>track targets</code>,
-every switch between them will cause <code>double load</code>.
-So, you&rsquo;d better not rely on <code>data-turbolinks-track</code> to jumps between different head content.</p>
+every switch between them will cause <code>double load</code>.</p>
 
 <p>See the <a href="https://github.com/rails/turbolinks/blob/master/lib%2Fassets%2Fjavascripts%2Fturbolinks.js.coffee#L231">code</a>
 to know the details</p>
