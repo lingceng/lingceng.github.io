@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: SQL | Lingceng's Blog]]></title>
+  <link href="http://lingceng.github.io/blog/categories/sql/atom.xml" rel="self"/>
+  <link href="http://lingceng.github.io/"/>
+  <updated>2015-10-10T13:38:25+08:00</updated>
+  <id>http://lingceng.github.io/</id>
+  <author>
+    <name><![CDATA[Lingceng]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Union select statements in Rails]]></title>
+    <link href="http://lingceng.github.io/blog/2015/10/10/union-select-statements-in-rails/"/>
+    <updated>2015-10-10T11:42:00+08:00</updated>
+    <id>http://lingceng.github.io/blog/2015/10/10/union-select-statements-in-rails</id>
+    <content type="html"><![CDATA[<p>Here we have a table named <code>user_statuses</code> like following</p>
+
+<pre><code> name    | status
+ --------+-------
+  'jack' |   1
+  'jack' |   2
+  'sam'  |   6
+  'lucy' |   1
+  'toy'  |   2
+  'toy'  |   7
+  'jack' |   7
+</code></pre>
+
+<p>I want to collect the status with follwing rule:</p>
+
+<ul>
+<li>Keep all [1-2] statuses</li>
+<li>Ignore other status above 2 if one has any [1-2] status</li>
+<li>keep only one ohter status above 2 if one do not has any [1-2] status</li>
+</ul>
+
+
+<p>So the result should like following:</p>
+
+<pre><code> name    | status
+ --------+-------
+  'jack' |   1
+  'jack' |   2
+  'sam'  |   6
+  'lucy' |   1
+  'toy'  |   2
+</code></pre>
+
+<p>The real life case is more complicated. I want to achieve this rule in SQL.
+As a result I can do some group or something else later.</p>
+
+<p>After some searches, I found out <code>union all</code> can do the job.
+But call <code>union</code> on ActiveRelation returns a Arel::Nodes::Union but ActiveRelation
+Gem <a href="https://github.com/brianhempel/active_record_union">active record union</a> get a
+good solution.</p>
+
+<p>Here&rsquo;s my demo sulution:</p>
+
+<pre><code>  statuses = [1, 2]
+  left = UserStatus.where(status: statuses).select(:name, :status)
+  right = UserStatus.select(:name, 'MIN(status) as status').
+    group(:name).
+    having('MIN(status) &gt; 2')
+  query = left.union_all(right)
+</code></pre>
+]]></content>
+  </entry>
+  
+</feed>
