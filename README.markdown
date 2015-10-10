@@ -11,3 +11,7 @@
     rake preview    # Watches, and mounts a webserver at http://localhost:4000
     rake deploy     # push _deploy to the master branch
 
+## For first git checkout
+
+    git checkout source
+    git clone git@github.com:lingceng/lingceng.github.io.git _deploy

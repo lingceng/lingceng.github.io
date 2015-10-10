@@ -37,7 +37,7 @@ The real life case is more complicated. I want to achieve this rule in SQL.
 As a result I can do some group or something else later.
 
 After some searches, I found out `union all` can do the job.
-But call `union` on ActiveRelation returns a Arel::Nodes::Union but ActiveRelation
+But call `union` on ActiveRelation returns a Arel::Nodes::Union but ActiveRelation.
 Gem [active record union](https://github.com/brianhempel/active_record_union) get a
 good solution.
 
