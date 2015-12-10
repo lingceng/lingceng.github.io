@@ -13,38 +13,48 @@ page's `<body>` and `<title>` to simulate page jumping when click a link.
 
 It's fast because no need to recompile the JavaScript or CSS.
 
-As you can see, we must keep stuffs in `<head>` the same between pages when jumping with Turbolink.  In other words, Things will go wrong if the pages have
+As you can see, we must keep stuffs in `<head>` the same between pages
+when jumping with Turbolink.  In other words, Things will go wrong if the pages have
 different content in `<head>`.
-
-#### Turbolink has other features to make it fast.
-
-Turbolink uses client cache pages.
-
-    # View current page cache size
-    Turbolinks.pagesCached();
-    # Set the cache size
-    Turbolinks.pagesCached(20);
-
-Turbolink uses transition cache.
-Transition will immediately display the cached copy of page and then replace
-with remote returned one.
-
-    # enable transition cache
-    Turbolinks.enableTransitionCache();
-
-
-Browser native process bar will not work when using Turbolink.
-So Turbolink provide a JavaScript-and-CSS-based one.
-
-    Turbolinks.enableProgressBar();
 
 ## What's the best practice?
 
-+ ** Never change `<HEAD>` content except `title` **
-+ ** Put all JavaScript and CSS in `<HEAD>` **
-+ ** Use `jquery.turbolink` to fix `DOMContentLoaded` or `jQuery.ready()` in jQuery. **
+Put all JavaScript and CSS in `<HEAD>` and keep them the same in every page.
+Use [jquery.turbolink](https://coderwall.com/p/ypzfdw/faster-page-loads-with-turbolinks) to
+hijack `jQuery.ready()` in jQuery like following:
 
-## You want some JavaScript only included in some page?
+    jQuery
+    jQuery.turbolinks
+    ...other scripts go here...
+    Turbolinks
+
+[Here](https://coderwall.com/p/ypzfdw/faster-page-loads-with-turbolinks)
+explains more:
+
+> The reason for jQuery.turbolinks being before all scripts is so to let
+> it hijack the `$(function() { ... })` call that your other scripts will use.
+>
+> Turbolinks then needs to be at the end because it has to be the last
+> to install the click handler, so not to interfere with other scripts.
+
+## Take care of some dangerous things
+Global delegated events will effect every page. eg. You add a script as
+following and "clicked button" will be printed when you click a button
+in every pages.
+
+    $(document).on('click', 'button', function(){
+      console.log("clicked button")
+    })
+
+Global `setInterval` or `setTimeout` need to be clear too! DEMO:
+
+    $(document).one('page:before-change', function(event) {
+      clearTheTimer();
+    }
+
+See more [here](http://staal.io/blog/2013/01/18/dangers-of-turbolinks/)
+
+## How to control javascript init for every page?
 
 Mark to `<body>` when need specific page logic, trigger it according to mark.
 I want javascript only run in topics pages:
@@ -65,22 +75,36 @@ I want javascript only run in topics pages:
     // Add topics to appliction.js
     //= require topics
 
-## What will happen when add JavaScript in page body?
+## You can put javascript at the end of body. But it's not recommended.
+You will loose benefit with HTTP cache when you put javascript at the and of the
+body.
 
-You should not add JavaScript to `<body>`, they will be re-evaluated.
-Especially when doing event bind, it will cause event binding multiple times.
+## Turbolink has other features to make it fast.
 
-You can add `data-turbolinks-eval=false` to prevent re-evaluating if you did want it.
+Turbolink uses client cache pages.
 
-    <script type="text/javascript" data-turbolinks-eval=false>
-      console.log("I'm only run once on the initial page load");
-    </script>
+    # View current page cache size
+    Turbolinks.pagesCached();
+    # Set the cache size
+    Turbolinks.pagesCached(20);
+
+Turbolink uses transition cache.
+Transition will immediately display the cached copy of page and then replace
+with remote returned one.
+
+    # enable transition cache
+    Turbolinks.enableTransitionCache();
+
+Browser native process bar will not work when using Turbolink.
+So Turbolink provide a JavaScript-and-CSS-based one. eg. in 2.5 version
+
+    Turbolinks.enableProgressBar();
 
 ## What will happen when I changed head content?
 
 It depends on how you change it.
 
-If you add some `<script type="text/javascript">` tag, eg.
+If you add some `<script type="text/javascript">` tag in head, eg.
 
     // On page B
     <script type="text/javascript">
