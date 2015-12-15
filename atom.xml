@@ -4,7 +4,7 @@
   <title><![CDATA[Lingceng's Blog]]></title>
   <link href="http://lingceng.github.io/atom.xml" rel="self"/>
   <link href="http://lingceng.github.io/"/>
-  <updated>2015-12-15T18:21:20+08:00</updated>
+  <updated>2015-12-15T18:31:58+08:00</updated>
   <id>http://lingceng.github.io/</id>
   <author>
     <name><![CDATA[Lingceng]]></name>
@@ -44,7 +44,7 @@ Then put the two files into <code>vender/assets/sweet-alert</code>.
 <code>sweet-alert</code> here is a new created folder.</p>
 
 <p>The <code>vender/assets/sweet-alert</code> folder will be treat as base path to query
-assets. So we can refer the <code>sweet-alert.js</code> in out application.js as following:</p>
+assets. So we can refer the <code>sweet-alert.js</code> in our application.js as following:</p>
 
 <pre><code> //= require sweet-alert
 </code></pre>
