@@ -9,7 +9,8 @@
   <meta name="author" content="Lingceng">
 
   
-  <meta name="description" content="Here we have a table named user_statuses like following name | status --------+------- 'jack' | 1 'jack' | 2 'sam' | 6 'lucy' | 1 'toy' | 2 'toy' | 7 &hellip;">
+  <meta name="description" content="TLDR: Put all javascript library files under app/assets/libfolder.
+Refer the files without the libfolder We always need to import some javascript &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -77,6 +78,75 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2015/12/15/put-javascript-library-files-together-in-rails/">Put Javascript Library Files Together in Rails</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2015-12-15T17:06:00+08:00" pubdate data-updated="true">Dec 15<span>th</span>, 2015</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p><strong>TLDR: Put all javascript library files under <code>app/assets/libfolder</code>.
+Refer the files without the <code>libfolder</code></strong></p>
+
+<p>We always need to import some javascript libs to our Rails application.
+Some libs has correspondent gems.
+For example, <strong>jquery.js</strong> has a <strong>jquery-rails gem</strong>.</p>
+
+<p>But some other libs may not has the correspondent gems.
+What&rsquo;s more, it may be a waste to use a &ldquo;wrapper gem&rdquo; to just import a javascript file.
+Some wrapper gem may not up-to-date to the origin javascript lib.
+So we need to import javascript libs manually in some cases.</p>
+
+<p>Rails default use <a href="https://github.com/sstephenson/sprockets">sprockets</a> to
+manage assets.
+And we always split assets into <code>javascripts</code>, <code>stylesheets</code>, <code>images</code> and <code>fonts</code> folders.
+But if we do split a javascript library into these files, it maybe a little messy.</p>
+
+<p><strong>Acturally we can put the files together in a same foler.</strong></p>
+
+<p>For example, I want to import <a href="https://github.com/lipis/bootstrap-sweetalert">bootstrap-sweetalert</a>  into
+my Rails app.
+I download the <code>sweet-alert.less</code> and <code>sweet-alert.js</code>.
+Then put the two files into <code>vender/assets/sweet-alert</code>.
+<code>sweet-alert</code> here is a new created folder.</p>
+
+<p>The <code>vender/assets/sweet-alert</code> folder will be treat as base path to query
+assets. So we can refer the <code>sweet-alert.js</code> in out application.js as following:</p>
+
+<pre><code> //= require sweet-alert
+</code></pre>
+
+<p>We can do the same for <code>sweet-alert.less</code> in our application.less.</p>
+
+<p>Note that we have <a href="https://www.codefellows.org/blog/5-ways-to-manage-front-end-assets-in-rails">other ways to manage the assets</a>. But it&rsquo;s another topic then.</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -1267,86 +1337,6 @@ git log --graph --oneline --all
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2013/11/30/run-cron-every-5-hours/">Run Cron Every 5 Hours</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-11-30T16:56:00+08:00" pubdate data-updated="true">Nov 30<span>th</span>, 2013</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>> crontab -e</p>
-
-<figure class='code'><figcaption><span>Run Cron Every 5 Hours </span></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class='sh'><span class='line'><span class="c"># set the shell</span>
-</span><span class='line'><span class="nv">SHELL</span><span class="o">=</span>/bin/sh
-</span><span class='line'><span class="nv">PATH</span><span class="o">=</span>/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
-</span><span class='line'>
-</span><span class='line'><span class="c"># m h dom mon dow usercommand</span>
-</span><span class='line'>0 */5 * * * /path/hello.sh &gt;&gt; /path/hello.log 2&gt;&amp;1
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h4>Setting the PATH is Always Necessary</h4>
-
-<p><em>Crontab ignores login configuration</em>, which leads to a command not found.
-I have tested <em>env</em> command with crontab on my Ubuntu12.04 and I got the following result:</p>
-
-<pre><code>HOME=/home/lingceng
-LOGNAME=lingceng
-PATH=/usr/bin:/bin
-LANG=en_US.UTF-8
-SHELL=/bin/sh
-PWD=/home/lingceng
-</code></pre>
-
-<h4>Not Really Every 5 Hours</h4>
-
-<p>The demo shell script <strong>just runs at 0, 5, 15, 20 o&#8217;clock</strong>, 20 to 0 is just 4 hours.</p>
-
-<h4>Check Cron log</h4>
-
-<p>Cron log default put <em>/var/log/syslog</em>, use following command to monitor it:</p>
-
-<pre><code>tail -f /var/log/syslog | grep CRON
-</code></pre>
-
-<h4>Get More Help</h4>
-
-<p>> <a href="http://unixhelp.ed.ac.uk/CGI/man-cgi?crontab+5">man 5 crontab</a></p>
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/blog/page/2/">&larr; Older</a>
@@ -1362,6 +1352,10 @@ PWD=/home/lingceng
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2015/12/15/put-javascript-library-files-together-in-rails/">Put Javascript Library Files Together in Rails</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2015/10/10/union-select-statements-in-rails/">Union Select Statements in Rails</a>
       </li>
     
@@ -1375,10 +1369,6 @@ PWD=/home/lingceng
     
       <li class="post">
         <a href="/blog/2014/10/16/turbolink-best-practice/">Turbolink Best Practice</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2014/03/26/jquery-source-structure-tip/">jQuery Source Structure Tip</a>
       </li>
     
   </ul>

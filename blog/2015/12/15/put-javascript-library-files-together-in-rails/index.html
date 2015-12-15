@@ -5,11 +5,12 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Category: Ruby - Lingceng's Blog</title>
+  <title>Put javascript library files together in Rails - Lingceng's Blog</title>
   <meta name="author" content="Lingceng">
 
   
-  <meta name="description" content="Category: Ruby">
+  <meta name="description" content="TLDR: Put all javascript library files under app/assets/libfolder.
+Refer the files without the libfolder We always need to import some javascript &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +19,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://lingceng.github.ioblog/categories/ruby">
+  <link rel="canonical" href="http://lingceng.github.io/blog/2015/12/15/put-javascript-library-files-together-in-rails">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/atom.xml" rel="alternate" title="Lingceng's Blog" type="application/atom+xml">
@@ -76,78 +77,122 @@
   <div id="main">
     <div id="content">
       <div>
-<article role="article">
+<article class="hentry" role="article">
   
   <header>
-    <h1 class="entry-title">Category: Ruby</h1>
+    
+      <h1 class="entry-title">Put Javascript Library Files Together in Rails</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2015-12-15T17:06:00+08:00" pubdate data-updated="true">Dec 15<span>th</span>, 2015</time>
+        
+      </p>
     
   </header>
-  
-  <div id="blog-archives" class="category">
 
 
+<div class="entry-content"><p><strong>TLDR: Put all javascript library files under <code>app/assets/libfolder</code>.
+Refer the files without the <code>libfolder</code></strong></p>
 
-  
-  <h2>2014</h2>
+<p>We always need to import some javascript libs to our Rails application.
+Some libs has correspondent gems.
+For example, <strong>jquery.js</strong> has a <strong>jquery-rails gem</strong>.</p>
 
-<article>
-  
-<h1><a href="/blog/2014/11/22/rails-time-best-practice/">Rails Time Best Practice</a></h1>
-<time datetime="2014-11-22T18:38:00+08:00" pubdate><span class='month'>Nov</span> <span class='day'>22</span> <span class='year'>2014</span></time>
+<p>But some other libs may not has the correspondent gems.
+What&rsquo;s more, it may be a waste to use a &ldquo;wrapper gem&rdquo; to just import a javascript file.
+Some wrapper gem may not up-to-date to the origin javascript lib.
+So we need to import javascript libs manually in some cases.</p>
 
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/rails/'>Rails</a>, <a class='category' href='/blog/categories/ruby/'>Ruby</a></span>
-</footer>
+<p>Rails default use <a href="https://github.com/sstephenson/sprockets">sprockets</a> to
+manage assets.
+And we always split assets into <code>javascripts</code>, <code>stylesheets</code>, <code>images</code> and <code>fonts</code> folders.
+But if we do split a javascript library into these files, it maybe a little messy.</p>
 
+<p><strong>Acturally we can put the files together in a same foler.</strong></p>
 
-</article>
+<p>For example, I want to import <a href="https://github.com/lipis/bootstrap-sweetalert">bootstrap-sweetalert</a>  into
+my Rails app.
+I download the <code>sweet-alert.less</code> and <code>sweet-alert.js</code>.
+Then put the two files into <code>vender/assets/sweet-alert</code>.
+<code>sweet-alert</code> here is a new created folder.</p>
 
+<p>The <code>vender/assets/sweet-alert</code> folder will be treat as base path to query
+assets. So we can refer the <code>sweet-alert.js</code> in out application.js as following:</p>
 
+<pre><code> //= require sweet-alert
+</code></pre>
 
-<article>
-  
-<h1><a href="/blog/2014/10/16/turbolink-best-practice/">Turbolink Best Practice</a></h1>
-<time datetime="2014-10-16T12:12:00+08:00" pubdate><span class='month'>Oct</span> <span class='day'>16</span> <span class='year'>2014</span></time>
+<p>We can do the same for <code>sweet-alert.less</code> in our application.less.</p>
 
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/rails/'>Rails</a>, <a class='category' href='/blog/categories/ruby/'>Ruby</a></span>
-</footer>
-
-
-</article>
-
-
-
-<article>
-  
-<h1><a href="/blog/2014/03/18/minitest-mock-and-stud/">minitest mock and stud</a></h1>
-<time datetime="2014-03-18T08:28:00+08:00" pubdate><span class='month'>Mar</span> <span class='day'>18</span> <span class='year'>2014</span></time>
-
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/ruby/'>Ruby</a>, <a class='category' href='/blog/categories/test/'>Test</a></span>
-</footer>
-
-
-</article>
-
-
-
-<article>
-  
-<h1><a href="/blog/2014/03/17/basics-about-minitest/">basics about minitest</a></h1>
-<time datetime="2014-03-17T07:58:00+08:00" pubdate><span class='month'>Mar</span> <span class='day'>17</span> <span class='year'>2014</span></time>
-
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/ruby/'>Ruby</a>, <a class='category' href='/blog/categories/test/'>Test</a></span>
-</footer>
-
-
-</article>
-
+<p>Note that we have <a href="https://www.codefellows.org/blog/5-ways-to-manage-front-end-assets-in-rails">other ways to manage the assets</a>. But it&rsquo;s another topic then.</p>
 </div>
 
+
+  <footer>
+    <p class="meta">
+      
   
+
+<span class="byline author vcard">Posted by <span class="fn">Lingceng</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2015-12-15T17:06:00+08:00" pubdate data-updated="true">Dec 15<span>th</span>, 2015</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/javascript/'>Javascript</a>, <a class='category' href='/blog/categories/rails/'>Rails</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2015/10/10/union-select-statements-in-rails/" title="Previous Post: Union select statements in Rails">&laquo; Union select statements in Rails</a>
+      
+      
+    </p>
+  </footer>
 </article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
 
 </div>
 
@@ -202,7 +247,10 @@
       var disqus_shortname = 'lingceng';
       
         
-        var disqus_script = 'count.js';
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://lingceng.github.io/blog/2015/12/15/put-javascript-library-files-together-in-rails/';
+        var disqus_url = 'http://lingceng.github.io/blog/2015/12/15/put-javascript-library-files-together-in-rails/';
+        var disqus_script = 'embed.js';
       
     (function () {
       var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;

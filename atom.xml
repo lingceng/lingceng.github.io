@@ -4,7 +4,7 @@
   <title><![CDATA[Lingceng's Blog]]></title>
   <link href="http://lingceng.github.io/atom.xml" rel="self"/>
   <link href="http://lingceng.github.io/"/>
-  <updated>2015-12-10T18:27:13+08:00</updated>
+  <updated>2015-12-15T18:13:26+08:00</updated>
   <id>http://lingceng.github.io/</id>
   <author>
     <name><![CDATA[Lingceng]]></name>
@@ -12,6 +12,48 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Put javascript library files together in Rails]]></title>
+    <link href="http://lingceng.github.io/blog/2015/12/15/put-javascript-library-files-together-in-rails/"/>
+    <updated>2015-12-15T17:06:00+08:00</updated>
+    <id>http://lingceng.github.io/blog/2015/12/15/put-javascript-library-files-together-in-rails</id>
+    <content type="html"><![CDATA[<p><strong>TLDR: Put all javascript library files under <code>app/assets/libfolder</code>.
+Refer the files without the <code>libfolder</code></strong></p>
+
+<p>We always need to import some javascript libs to our Rails application.
+Some libs has correspondent gems.
+For example, <strong>jquery.js</strong> has a <strong>jquery-rails gem</strong>.</p>
+
+<p>But some other libs may not has the correspondent gems.
+What&rsquo;s more, it may be a waste to use a &ldquo;wrapper gem&rdquo; to just import a javascript file.
+Some wrapper gem may not up-to-date to the origin javascript lib.
+So we need to import javascript libs manually in some cases.</p>
+
+<p>Rails default use <a href="https://github.com/sstephenson/sprockets">sprockets</a> to
+manage assets.
+And we always split assets into <code>javascripts</code>, <code>stylesheets</code>, <code>images</code> and <code>fonts</code> folders.
+But if we do split a javascript library into these files, it maybe a little messy.</p>
+
+<p><strong>Acturally we can put the files together in a same foler.</strong></p>
+
+<p>For example, I want to import <a href="https://github.com/lipis/bootstrap-sweetalert">bootstrap-sweetalert</a>  into
+my Rails app.
+I download the <code>sweet-alert.less</code> and <code>sweet-alert.js</code>.
+Then put the two files into <code>vender/assets/sweet-alert</code>.
+<code>sweet-alert</code> here is a new created folder.</p>
+
+<p>The <code>vender/assets/sweet-alert</code> folder will be treat as base path to query
+assets. So we can refer the <code>sweet-alert.js</code> in out application.js as following:</p>
+
+<pre><code> //= require sweet-alert
+</code></pre>
+
+<p>We can do the same for <code>sweet-alert.less</code> in our application.less.</p>
+
+<p>Note that we have <a href="https://www.codefellows.org/blog/5-ways-to-manage-front-end-assets-in-rails">other ways to manage the assets</a>. But it&rsquo;s another topic then.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Union select statements in Rails]]></title>
