@@ -4,7 +4,7 @@
   <title><![CDATA[Lingceng's Blog]]></title>
   <link href="http://lingceng.github.io/atom.xml" rel="self"/>
   <link href="http://lingceng.github.io/"/>
-  <updated>2015-12-15T20:25:27+08:00</updated>
+  <updated>2015-12-18T18:56:21+08:00</updated>
   <id>http://lingceng.github.io/</id>
   <author>
     <name><![CDATA[Lingceng]]></name>
@@ -35,7 +35,7 @@ manage assets.
 And we always split assets into <code>javascripts</code>, <code>stylesheets</code>, <code>images</code> and <code>fonts</code> folders.
 But if we split a javascript library into these files, it maybe a little messy.</p>
 
-<p><strong>Acturally we can put the files together in a same foler.</strong></p>
+<p><strong>Actually we can put the files together in a same foler.</strong></p>
 
 <p>For example, I want to import <a href="https://github.com/lipis/bootstrap-sweetalert">bootstrap-sweetalert</a>  into
 my Rails app.
