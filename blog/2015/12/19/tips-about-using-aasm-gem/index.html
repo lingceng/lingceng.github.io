@@ -1,0 +1,374 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Tips About Using AASM gem - Lingceng's Blog</title>
+  <meta name="author" content="Lingceng">
+
+  
+  <meta name="description" content="Recently, I&rsquo;m using aasm gem to do order production status control.
+Here I have some tips about using aasm gem. I&rsquo;m using aasm 4.5.0 and &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://lingceng.github.io/blog/2015/12/19/tips-about-using-aasm-gem">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="Lingceng's Blog" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/libs/jquery.min.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+-->
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-68645869-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Lingceng's Blog</a></h1>
+  
+    <h2>Make it now!</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:lingceng.github.io" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Tips About Using AASM Gem</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2015-12-19T12:26:00+08:00" pubdate data-updated="true">Dec 19<span>th</span>, 2015</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>Recently, I&rsquo;m using <a href="https://github.com/aasm/aasm">aasm gem</a> to do order production status control.
+Here I have some tips about using aasm gem.</p>
+
+<p>I&rsquo;m using aasm 4.5.0 and rails 4.2.0. First, I post a snippet here for better explanation.</p>
+
+<figure class='code'><figcaption><span>order.rb </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">Order</span>
+</span><span class='line'>  <span class="kp">include</span> <span class="no">AASM</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">aasm</span> <span class="ss">column</span><span class="p">:</span> <span class="ss">:production_status</span> <span class="k">do</span>
+</span><span class='line'>    <span class="n">state</span> <span class="ss">:idle</span><span class="p">,</span> <span class="ss">initial</span><span class="p">:</span> <span class="kp">true</span>
+</span><span class='line'>    <span class="n">state</span> <span class="ss">:at_center</span>
+</span><span class='line'>    <span class="n">state</span> <span class="ss">:ready</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">after_all_transitions</span> <span class="ss">:_save_production_status_change</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">event</span> <span class="ss">:check_in</span><span class="p">,</span> <span class="ss">before</span><span class="p">:</span> <span class="ss">:set_current_step_to_center</span><span class="p">,</span> <span class="ss">guard</span><span class="p">:</span> <span class="ss">:_status_fit</span> <span class="k">do</span>
+</span><span class='line'>      <span class="n">transitions</span> <span class="ss">from</span><span class="p">:</span> <span class="o">[</span><span class="ss">:idle</span><span class="o">]</span><span class="p">,</span> <span class="ss">to</span><span class="p">:</span> <span class="ss">:at_center</span><span class="p">,</span> <span class="ss">after</span><span class="p">:</span> <span class="ss">:_change_status_to_repairing</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">event</span> <span class="ss">:to_ready</span><span class="p">,</span> <span class="ss">before</span><span class="p">:</span> <span class="ss">:set_current_step</span><span class="p">,</span> <span class="ss">guard</span><span class="p">:</span> <span class="ss">:_status_fit</span> <span class="k">do</span>
+</span><span class='line'>      <span class="n">transitions</span> <span class="ss">from</span><span class="p">:</span> <span class="o">[</span><span class="ss">:at_center</span><span class="p">,</span> <span class="ss">:idle</span><span class="o">]</span><span class="p">,</span> <span class="ss">to</span><span class="p">:</span> <span class="ss">:ready</span><span class="p">,</span> <span class="ss">after</span><span class="p">:</span> <span class="ss">:_change_status_to_repairing</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>    <span class="o">.</span><span class="n">.</span><span class="o">.</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="o">.</span><span class="n">.</span><span class="o">.</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>How to keep actions in transaction?</h2>
+
+<p>Of course, you can acheive it by wrapping actions in a transaction. eg.</p>
+
+<pre><code>Order.transaction do
+  order.check_in
+  order.save
+end
+</code></pre>
+
+<p>However, aasm also provide a bang method to acheive it. eg.</p>
+
+<pre><code>order.check_in!
+</code></pre>
+
+<p>But the two forms is not the same.</p>
+
+<p>Please take care the save point if you choose to use <code>order.check_in!</code>.
+<code>order.check_in!</code> internally calls save after <code>new_state enter</code> callback.
+So, changes in callbacks after <code>new_state enter</code>  will not auto-save.</p>
+
+<p>See the list of callbacks.</p>
+
+<pre><code>begin
+  event           before
+  event           guards
+  transition      guards
+  old_state       before_exit
+  old_state       exit
+                  after_all_transitions
+  transition      after
+  new_state       before_enter
+  new_state       enter
+  ...update state...               # here is the save point
+  event         success            # if persist successful
+  old_state       after_exit
+  new_state       after_enter
+  event           after
+rescue
+  event           error
+end
+</code></pre>
+
+<p>Let&rsquo;s see a example. If I wrote the <code>check_in</code> event like following:</p>
+
+<pre><code>event :check_in, before: :set_current_step_to_center, guard: :_status_fit,
+  after: :_change_status_to_repairing do
+  transitions from: [:idle], to: :at_center
+end
+
+def _change_status_to_repairing
+  status = 'repairing'
+end
+</code></pre>
+
+<p>The <code>_change_status_to_repairing</code> is at <code>event after</code> callback.
+So, when I run <code>order.check_in!</code>, <code>order.status</code> will not persist.</p>
+
+<pre><code>order.check_in!
+order.reload.status == 'repairing'
+# =&gt; false
+</code></pre>
+
+<p>Of cause, you can call save in <code>_change_status_to_repairing</code>
+But the order will be persisted even when you run non-bang method
+<code>order.check_in</code>.</p>
+
+<pre><code>def _change_status_to_repairing
+  status = 'repairing'
+  save
+end
+</code></pre>
+
+<p>Oh. Maybe you should choose to use the first form.</p>
+
+<h2>Avoid using Proc.new with optional argument in guards and callbacks</h2>
+
+<p>See <a href="https://github.com/aasm/aasm/issues/293">https://github.com/aasm/aasm/issues/293</a></p>
+
+<h2>Take care of before event filter</h2>
+
+<p>See <a href="https://github.com/aasm/aasm/issues/294">https://github.com/aasm/aasm/issues/294</a></p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Lingceng</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2015-12-19T12:26:00+08:00" pubdate data-updated="true">Dec 19<span>th</span>, 2015</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/rails/'>Rails</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2015/12/15/put-javascript-library-files-together-in-rails/" title="Previous Post: Put javascript library files together in Rails">&laquo; Put javascript library files together in Rails</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2015/12/19/tips-about-using-aasm-gem/">Tips About Using AASM Gem</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/12/15/put-javascript-library-files-together-in-rails/">Put Javascript Library Files Together in Rails</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/10/10/union-select-statements-in-rails/">Union Select Statements in Rails</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/11/26/when-rails-invalidauthenticitytoken-happens/">When Rails InvalidAuthenticityToken Happens</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/11/22/rails-time-best-practice/">Rails Time Best Practice</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2015 - Lingceng -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'lingceng';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://lingceng.github.io/blog/2015/12/19/tips-about-using-aasm-gem/';
+        var disqus_url = 'http://lingceng.github.io/blog/2015/12/19/tips-about-using-aasm-gem/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = ('https:' == document.location.protocol ? 'https://' : 'http://') + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

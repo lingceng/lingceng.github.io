@@ -9,8 +9,8 @@
   <meta name="author" content="Lingceng">
 
   
-  <meta name="description" content="TLDR: Put all javascript library files under app/assets/libfolder.
-Refer the files without the libfolder We always need to import some javascript &hellip;">
+  <meta name="description" content="Recently, I&rsquo;m using aasm gem to do order production status control.
+Here I have some tips about using aasm gem. I&rsquo;m using aasm 4.5.0 and &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -78,6 +78,176 @@ Refer the files without the libfolder We always need to import some javascript &
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2015/12/19/tips-about-using-aasm-gem/">Tips About Using AASM Gem</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2015-12-19T12:26:00+08:00" pubdate data-updated="true">Dec 19<span>th</span>, 2015</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Recently, I&rsquo;m using <a href="https://github.com/aasm/aasm">aasm gem</a> to do order production status control.
+Here I have some tips about using aasm gem.</p>
+
+<p>I&rsquo;m using aasm 4.5.0 and rails 4.2.0. First, I post a snippet here for better explanation.</p>
+
+<figure class='code'><figcaption><span>order.rb </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">Order</span>
+</span><span class='line'>  <span class="kp">include</span> <span class="no">AASM</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">aasm</span> <span class="ss">column</span><span class="p">:</span> <span class="ss">:production_status</span> <span class="k">do</span>
+</span><span class='line'>    <span class="n">state</span> <span class="ss">:idle</span><span class="p">,</span> <span class="ss">initial</span><span class="p">:</span> <span class="kp">true</span>
+</span><span class='line'>    <span class="n">state</span> <span class="ss">:at_center</span>
+</span><span class='line'>    <span class="n">state</span> <span class="ss">:ready</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">after_all_transitions</span> <span class="ss">:_save_production_status_change</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">event</span> <span class="ss">:check_in</span><span class="p">,</span> <span class="ss">before</span><span class="p">:</span> <span class="ss">:set_current_step_to_center</span><span class="p">,</span> <span class="ss">guard</span><span class="p">:</span> <span class="ss">:_status_fit</span> <span class="k">do</span>
+</span><span class='line'>      <span class="n">transitions</span> <span class="ss">from</span><span class="p">:</span> <span class="o">[</span><span class="ss">:idle</span><span class="o">]</span><span class="p">,</span> <span class="ss">to</span><span class="p">:</span> <span class="ss">:at_center</span><span class="p">,</span> <span class="ss">after</span><span class="p">:</span> <span class="ss">:_change_status_to_repairing</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">event</span> <span class="ss">:to_ready</span><span class="p">,</span> <span class="ss">before</span><span class="p">:</span> <span class="ss">:set_current_step</span><span class="p">,</span> <span class="ss">guard</span><span class="p">:</span> <span class="ss">:_status_fit</span> <span class="k">do</span>
+</span><span class='line'>      <span class="n">transitions</span> <span class="ss">from</span><span class="p">:</span> <span class="o">[</span><span class="ss">:at_center</span><span class="p">,</span> <span class="ss">:idle</span><span class="o">]</span><span class="p">,</span> <span class="ss">to</span><span class="p">:</span> <span class="ss">:ready</span><span class="p">,</span> <span class="ss">after</span><span class="p">:</span> <span class="ss">:_change_status_to_repairing</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>    <span class="o">.</span><span class="n">.</span><span class="o">.</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="o">.</span><span class="n">.</span><span class="o">.</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>How to keep actions in transaction?</h2>
+
+<p>Of course, you can acheive it by wrapping actions in a transaction. eg.</p>
+
+<pre><code>Order.transaction do
+  order.check_in
+  order.save
+end
+</code></pre>
+
+<p>However, aasm also provide a bang method to acheive it. eg.</p>
+
+<pre><code>order.check_in!
+</code></pre>
+
+<p>But the two forms is not the same.</p>
+
+<p>Please take care the save point if you choose to use <code>order.check_in!</code>.
+<code>order.check_in!</code> internally calls save after <code>new_state enter</code> callback.
+So, changes in callbacks after <code>new_state enter</code>  will not auto-save.</p>
+
+<p>See the list of callbacks.</p>
+
+<pre><code>begin
+  event           before
+  event           guards
+  transition      guards
+  old_state       before_exit
+  old_state       exit
+                  after_all_transitions
+  transition      after
+  new_state       before_enter
+  new_state       enter
+  ...update state...               # here is the save point
+  event         success            # if persist successful
+  old_state       after_exit
+  new_state       after_enter
+  event           after
+rescue
+  event           error
+end
+</code></pre>
+
+<p>Let&rsquo;s see a example. If I wrote the <code>check_in</code> event like following:</p>
+
+<pre><code>event :check_in, before: :set_current_step_to_center, guard: :_status_fit,
+  after: :_change_status_to_repairing do
+  transitions from: [:idle], to: :at_center
+end
+
+def _change_status_to_repairing
+  status = 'repairing'
+end
+</code></pre>
+
+<p>The <code>_change_status_to_repairing</code> is at <code>event after</code> callback.
+So, when I run <code>order.check_in!</code>, <code>order.status</code> will not persist.</p>
+
+<pre><code>order.check_in!
+order.reload.status == 'repairing'
+# =&gt; false
+</code></pre>
+
+<p>Of cause, you can call save in <code>_change_status_to_repairing</code>
+But the order will be persisted even when you run non-bang method
+<code>order.check_in</code>.</p>
+
+<pre><code>def _change_status_to_repairing
+  status = 'repairing'
+  save
+end
+</code></pre>
+
+<p>Oh. Maybe you should choose to use the first form.</p>
+
+<h2>Avoid using Proc.new with optional argument in guards and callbacks</h2>
+
+<p>See <a href="https://github.com/aasm/aasm/issues/293">https://github.com/aasm/aasm/issues/293</a></p>
+
+<h2>Take care of before event filter</h2>
+
+<p>See <a href="https://github.com/aasm/aasm/issues/294">https://github.com/aasm/aasm/issues/294</a></p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -1234,109 +1404,6 @@ it  # inner tag
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2014/03/13/git-get-start/">Git Get Start</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2014-03-13T07:21:00+08:00" pubdate data-updated="true">Mar 13<span>th</span>, 2014</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>config</p>
-
-<pre><code>git config --global user.name "John Doe"
-git config --global user.email "johndoe@example.com"
-</code></pre>
-
-<p>how to get help</p>
-
-<pre><code>git config --help
-git help config
-man git-config
-</code></pre>
-
-<p>start up</p>
-
-<pre><code>git init
-git add .
-git commit -m "Depot Scaffold"
-
-add and commit
-git commit -a -m "Depot Scaffold"
-</code></pre>
-
-<p>compare with version before last commit and last commit</p>
-
-<pre><code>git diff HEAD^ HEAD
-
-# show diff stat
-git diff --stat
-
-# show the tree-like view
-git log --graph --oneline --all
-</code></pre>
-
-<p>specify the file path</p>
-
-<pre><code>git diff HEAD^ HEAD app/models/product.rb
-</code></pre>
-
-<p>git ammend the last commit</p>
-
-<pre><code>git commit -amend
-</code></pre>
-
-<p>powerful edit commit command</p>
-
-<pre><code>git rebase --interactive HEAD^5
-</code></pre>
-
-<p>git include delelted files</p>
-
-<pre><code>git add -A
-</code></pre>
-
-<p>Creates a remote named &ldquo;origin&rdquo; pointing at your GitHub repository</p>
-
-<pre><code>git remote add origin https://github.com/username/Hello-World.git
-</code></pre>
-
-<p>Sends your commits in the &ldquo;master&rdquo; branch to GitHub</p>
-
-<pre><code>git push origin master
-</code></pre>
-
-<p>pull down changes</p>
-
-<pre><code>git pull orgin master
-</code></pre>
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/blog/page/2/">&larr; Older</a>
@@ -1352,6 +1419,10 @@ git log --graph --oneline --all
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2015/12/19/tips-about-using-aasm-gem/">Tips About Using AASM Gem</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2015/12/15/put-javascript-library-files-together-in-rails/">Put Javascript Library Files Together in Rails</a>
       </li>
     
@@ -1365,10 +1436,6 @@ git log --graph --oneline --all
     
       <li class="post">
         <a href="/blog/2014/11/22/rails-time-best-practice/">Rails Time Best Practice</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2014/10/16/turbolink-best-practice/">Turbolink Best Practice</a>
       </li>
     
   </ul>
