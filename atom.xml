@@ -4,7 +4,7 @@
   <title><![CDATA[Lingceng's Blog]]></title>
   <link href="http://lingceng.github.io/atom.xml" rel="self"/>
   <link href="http://lingceng.github.io/"/>
-  <updated>2015-12-23T20:41:02+08:00</updated>
+  <updated>2015-12-23T21:02:11+08:00</updated>
   <id>http://lingceng.github.io/</id>
   <author>
     <name><![CDATA[Lingceng]]></name>
@@ -28,7 +28,7 @@ arr = [['a', 'b', 'c'], ['1', '2', '3']]
 arr.map(&amp;:to_csv).join
 </code></pre>
 
-<p>And export CSV is easy in rails. Let&rsquo;s see the following snippet:</p>
+<p>And exporting CSV is easy in rails. Let&rsquo;s see the following snippet:</p>
 
 <pre><code>def index
   @products = Product.order(:name)
