@@ -154,6 +154,10 @@ I find out that <a href="http://devdocs.io/rails/abstractcontroller/rendering#me
 <span class='line-number'>11</span>
 <span class='line-number'>12</span>
 <span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
 </pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">def</span> <span class="nf">generate_csv_data</span><span class="p">(</span><span class="n">template</span> <span class="o">=</span> <span class="kp">nil</span><span class="p">)</span>
 </span><span class='line'>  <span class="n">template</span> <span class="o">||=</span> <span class="s2">&quot;</span><span class="si">#{</span><span class="n">controller_name</span><span class="si">}</span><span class="s2">/</span><span class="si">#{</span><span class="n">action_name</span><span class="si">}</span><span class="s2">.html.slim&quot;</span>
 </span><span class='line'>  <span class="n">content</span> <span class="o">=</span> <span class="n">render_to_string</span><span class="p">(</span><span class="n">template</span><span class="p">)</span>
@@ -163,6 +167,10 @@ I find out that <a href="http://devdocs.io/rails/abstractcontroller/rendering#me
 </span><span class='line'>  <span class="n">data</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">css</span><span class="p">(</span><span class="s1">&#39;tr&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">map</span> <span class="k">do</span> <span class="o">|</span><span class="n">r</span><span class="o">|</span>
 </span><span class='line'>    <span class="n">r</span><span class="o">.</span><span class="n">css</span><span class="p">(</span><span class="s1">&#39;td,th&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="o">&amp;</span><span class="ss">:text</span><span class="p">)</span><span class="o">.</span><span class="n">to_csv</span>
 </span><span class='line'>  <span class="k">end</span><span class="o">.</span><span class="n">join</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1"># Convert from utf8 to gbk to make it compatible with Windows Office Excel</span>
+</span><span class='line'>  <span class="c1"># And Mac number can work with GBK too</span>
+</span><span class='line'>  <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;GBK&#39;</span><span class="p">)</span>
 </span><span class='line'><span class="k">end</span>
 </span><span class='line'>
 </span><span class='line'><span class="c1"># Respond csv file when csv format requested</span>
