@@ -14,7 +14,7 @@ We can convert a 2-D array to a csv string like folllowing:
     arr = [['a', 'b', 'c'], ['1', '2', '3']]
     arr.map(&:to_csv).join
 
-And export CSV is easy in rails. Let's see the following snippet:
+And exporting CSV is easy in rails. Let's see the following snippet:
 
     def index
       @products = Product.order(:name)
@@ -48,6 +48,10 @@ def generate_csv_data(template = nil)
   data = table.css('tr').map do |r|
     r.css('td,th').map(&:text).to_csv
   end.join
+
+  # Convert from utf8 to gbk to make it compatible with Windows Office Excel
+  # And Mac number can work with GBK too
+  data = data.encode('GBK', undef: :replace, replace: "")
 end
 
 # Respond csv file when csv format requested
