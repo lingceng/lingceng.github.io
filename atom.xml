@@ -4,7 +4,7 @@
   <title><![CDATA[Lingceng's Blog]]></title>
   <link href="http://lingceng.github.io/atom.xml" rel="self"/>
   <link href="http://lingceng.github.io/"/>
-  <updated>2015-12-25T13:10:13+08:00</updated>
+  <updated>2015-12-26T16:15:56+08:00</updated>
   <id>http://lingceng.github.io/</id>
   <author>
     <name><![CDATA[Lingceng]]></name>
@@ -84,7 +84,7 @@ I find out that <a href="http://devdocs.io/rails/abstractcontroller/rendering#me
 </span><span class='line'>
 </span><span class='line'>  <span class="c1"># Convert from utf8 to gbk to make it compatible with Windows Office Excel</span>
 </span><span class='line'>  <span class="c1"># And Mac number can work with GBK too</span>
-</span><span class='line'>  <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;GBK&#39;</span><span class="p">)</span>
+</span><span class='line'>  <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;GBK&#39;</span><span class="p">,</span> <span class="k">undef</span><span class="p">:</span> <span class="ss">:replace</span><span class="p">,</span> <span class="ss">replace</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
 </span><span class='line'><span class="k">end</span>
 </span><span class='line'>
 </span><span class='line'><span class="c1"># Respond csv file when csv format requested</span>

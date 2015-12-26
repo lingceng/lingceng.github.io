@@ -170,7 +170,7 @@ I find out that <a href="http://devdocs.io/rails/abstractcontroller/rendering#me
 </span><span class='line'>
 </span><span class='line'>  <span class="c1"># Convert from utf8 to gbk to make it compatible with Windows Office Excel</span>
 </span><span class='line'>  <span class="c1"># And Mac number can work with GBK too</span>
-</span><span class='line'>  <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;GBK&#39;</span><span class="p">)</span>
+</span><span class='line'>  <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;GBK&#39;</span><span class="p">,</span> <span class="k">undef</span><span class="p">:</span> <span class="ss">:replace</span><span class="p">,</span> <span class="ss">replace</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
 </span><span class='line'><span class="k">end</span>
 </span><span class='line'>
 </span><span class='line'><span class="c1"># Respond csv file when csv format requested</span>
