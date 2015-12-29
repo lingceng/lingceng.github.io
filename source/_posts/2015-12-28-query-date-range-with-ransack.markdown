@@ -54,37 +54,9 @@ The *created_at_lt* will convert to '2015-01-01 59:59'.
 
 ### DRY
 I customed the ransack predicates to avoid duplication.
-
-{% codeblock config/initializers/ransack.rb lang:ruby %}
-# Custom ransack predicate to simplify query for date range
-#
-# See lib/ransack.rb in ransack gem
-# See wiki https://github.com/activerecord-hackery/ransack/wiki/Custom-Predicates
-Ransack.configure do |config|
-
-  config.add_predicate 'beginning_of_day_gteq',
-    arel_predicate: 'gteq',
-    formatter: proc { |v| v.to_date.beginning_of_day },
-    validator: proc { |v| v.present? },
-    type: :string
-
-  config.add_predicate 'end_of_day_lt',
-    arel_predicate: 'lt',
-    formatter: proc { |v| v.to_date.end_of_day },
-    validator: proc { |v| v.present? },
-    type: :string
-end
-{% endcodeblock %}
-
 So I can just write the view like following:
 
-{% codeblock app/views/production_status_changes/index.html.erb lang:erb %}
-<%= search_form_for @q, url: production_status_changes_path, class: 'form-inline' do |f| %>
-  <%=  f.label 'Create At' %>
-  <%= f.search_field :created_at_beginning_of_day, class: 'form-control input-sm', 'datepicker' => true %>
-  <%= f.search_field :created_at_end_of_day_lt, class: 'form-control input-sm',  'datepicker' => true %>
-<% end %>
-{% endcodeblock %}
+<script src="https://gist.github.com/lingceng/65c58512d9bbb50799c7.js"></script>
 
 ### Maybe Another Way
 Maybe we can change the js datepicker to set time to 59:59 by default.
