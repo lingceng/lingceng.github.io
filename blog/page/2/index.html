@@ -9,9 +9,8 @@
   <meta name="author" content="Lingceng">
 
   
-  <meta name="description" content="home :: https://github.com/seattlerb/minitest
-rdoc :: http://docs.seattlerb.org/minitest
-vim :: https://github.com/sunaku/vim-ruby-minitest With &hellip;">
+  <meta name="description" content="TLDR: Put all javascript library files under app/assets/libfolder.
+Refer the files without the libfolder We always need to import some javascript &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -85,7 +84,7 @@ vim :: https://github.com/sunaku/vim-ruby-minitest With &hellip;">
       
   <header>
     
-      <h1 class="entry-title"><a href="/blog/2014/03/17/basics-about-minitest/">Basics About Minitest</a></h1>
+      <h1 class="entry-title"><a href="/blog/2015/12/15/put-javascript-library-files-together-in-rails/">Put Javascript Library Files Together in Rails</a></h1>
     
     
       <p class="meta">
@@ -101,125 +100,131 @@ vim :: https://github.com/sunaku/vim-ruby-minitest With &hellip;">
   
 
 
-<time datetime="2014-03-17T07:58:00+08:00" pubdate data-updated="true">Mar 17<span>th</span>, 2014</time>
+<time datetime="2015-12-15T17:06:00+08:00" pubdate data-updated="true">Dec 15<span>th</span>, 2015</time>
         
       </p>
     
   </header>
 
 
-  <div class="entry-content"><ul>
-<li>home :: <a href="https://github.com/seattlerb/minitest">https://github.com/seattlerb/minitest</a></li>
-<li>rdoc :: <a href="http://docs.seattlerb.org/minitest">http://docs.seattlerb.org/minitest</a></li>
-<li>vim  :: <a href="https://github.com/sunaku/vim-ruby-minitest">https://github.com/sunaku/vim-ruby-minitest</a></li>
+  <div class="entry-content"><p><strong>TLDR: Put all javascript library files under <code>app/assets/libfolder</code>.
+Refer the files without the <code>libfolder</code></strong></p>
+
+<p>We always need to import some javascript libs to our Rails application.
+Some libs has correspondent gems.
+For example, <strong>jquery.js</strong> has a <strong>jquery-rails gem</strong>.</p>
+
+<p>But some other libs may not have the correspondent gems.
+What&rsquo;s more, it may be a waste to use a &ldquo;wrapper gem&rdquo; to just import a javascript file.
+Some wrapper gem may not up-to-date to the origin javascript lib.
+So we need to import javascript libs manually in some cases.</p>
+
+<p>Rails default use <a href="https://github.com/sstephenson/sprockets">sprockets</a> to
+manage assets.
+And we always split assets into <code>javascripts</code>, <code>stylesheets</code>, <code>images</code> and <code>fonts</code> folders.
+But if we split a javascript library into these files, it maybe a little messy.</p>
+
+<p><strong>Actually we can put the files together in a same foler.</strong></p>
+
+<p>For example, I want to import <a href="https://github.com/lipis/bootstrap-sweetalert">bootstrap-sweetalert</a>  into
+my Rails app.
+I download the <code>sweet-alert.less</code> and <code>sweet-alert.js</code>.
+Then put the two files into <code>vender/assets/sweet-alert</code>.
+<code>sweet-alert</code> here is a new created folder.</p>
+
+<p>The <code>vender/assets/sweet-alert</code> folder will be treat as base path to query
+assets. So we can refer the <code>sweet-alert.js</code> in our application.js as following:</p>
+
+<pre><code> //= require sweet-alert
+</code></pre>
+
+<p>We can do the same for <code>sweet-alert.less</code> in our application.less.</p>
+
+<p>Note that we have <a href="https://www.codefellows.org/blog/5-ways-to-manage-front-end-assets-in-rails">other ways to manage the assets</a>. But it&rsquo;s another topic then.</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2015/10/10/union-select-statements-in-rails/">Union Select Statements in Rails</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2015-10-10T11:42:00+08:00" pubdate data-updated="true">Oct 10<span>th</span>, 2015</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Here we have a table named <code>user_statuses</code> like following</p>
+
+<pre><code> name    | status
+ --------+-------
+  'jack' |   1
+  'jack' |   2
+  'sam'  |   6
+  'lucy' |   1
+  'toy'  |   2
+  'toy'  |   7
+  'jack' |   7
+</code></pre>
+
+<p>I want to collect the status with follwing rule:</p>
+
+<ul>
+<li>Keep all [1-2] statuses</li>
+<li>Ignore other status above 2 if one has any [1-2] status</li>
+<li>keep only one ohter status above 2 if one do not has any [1-2] status</li>
 </ul>
 
 
-<p>With Ruby 1.9, MiniTest entered standard lib.
-MiniTest is pretty small and readable, here is all source file list:</p>
+<p>So the result should like following:</p>
 
-<blockquote><p>lib:
-hoe  minitest</p>
-
-<p>lib/hoe:
-minitest.rb</p>
-
-<p>lib/minitest:
-autorun.rb  benchmark.rb  hell.rb  mock.rb  parallel_each.rb  pride.rb  spec.rb  unit.rb</p></blockquote>
-
-<h3>Assert Methods</h3>
-
-<p>See  Minitest::Assertions doc or unit.rb source</p>
-
-<pre><code>assert assert_equal assert_raises
-capture_io
-refute refute_empty
-...
+<pre><code> name    | status
+ --------+-------
+  'jack' |   1
+  'jack' |   2
+  'sam'  |   6
+  'lucy' |   1
+  'toy'  |   2
 </code></pre>
 
-<h3>Specs Expections</h3>
+<p>The real life case is more complicated. I want to achieve this rule in SQL.
+As a result I can do some group or something else later.</p>
 
-<p>See Minitest::Expectations doc or spec.rb source</p>
+<p>After some searches, I found out <code>union all</code> can do the job.
+But call <code>union</code> on ActiveRelation returns a Arel::Nodes::Union but ActiveRelation.
+Gem <a href="https://github.com/brianhempel/active_record_union">active record union</a> get a
+good solution.</p>
 
-<pre><code>must_be must_be_close_to
-wont_be_empty
-...
-</code></pre>
+<p>Here&rsquo;s my demo sulution:</p>
 
-<p>Most methods just redirect to assert methods internally.
-<strong>describe</strong> method is added to <strong>Kernel</strong> to start the DSL road;
-expectations method is added to <strong>Object</strong></p>
-
-<pre><code>class Object
-  include MiniTest::Expectations unless ENV["MT_NO_EXPECTATIONS"]
-end
-</code></pre>
-
-<h3>Simple Start</h3>
-
-<p>Given that you&rsquo;d like to test the following class:</p>
-
-<pre><code>class Meme
-  def i_can_has_cheezburger?
-    "OHAI!"
-  end
-
-  def will_it_blend?
-    "YES!"
-  end
-end
-</code></pre>
-
-<p>Unit tests</p>
-
-<pre><code>require 'minitest/autorun'
-
-class TestMeme &lt; MiniTest::Unit::TestCase
-  def setup
-    @meme = Meme.new
-  end
-
-  def test_that_kitty_can_eat
-    assert_equal "OHAI!", @meme.i_can_has_cheezburger?
-  end
-
-  def test_that_it_will_not_blend
-    refute_match /^no/i, @meme.will_it_blend?
-  end
-
-  def test_that_will_be_skipped
-    skip "test this later"
-  end
-end
-</code></pre>
-
-<p>Specs</p>
-
-<pre><code># the following have required in autorun
-# no need to repeat !
-# require 'minitest/unit'
-# require 'minitest/spec'
-# require 'minitest/mock'
-
-require 'minitest/autorun'
-
-describe Meme do
-  before do
-    @meme = Meme.new
-  end
-
-  describe "when asked about cheeseburgers" do
-    it "must respond positively" do
-      @meme.i_can_has_cheezburger?.must_equal "OHAI!"
-    end
-  end
-
-  describe "when asked about blending possibilities" do
-    it "won't say no" do
-      @meme.will_it_blend?.wont_match /^no/i
-    end
-  end
-end
+<pre><code>  statuses = [1, 2]
+  left = UserStatus.where(status: statuses).select(:name, :status)
+  right = UserStatus.select(:name, 'MIN(status) as status').
+    group(:name).
+    having('MIN(status) &gt; 2')
+  query = left.union_all(right)
 </code></pre>
 </div>
   
@@ -233,7 +238,7 @@ end
       
   <header>
     
-      <h1 class="entry-title"><a href="/blog/2014/03/14/vim-tips/">Vim Tips</a></h1>
+      <h1 class="entry-title"><a href="/blog/2014/11/26/when-rails-invalidauthenticitytoken-happens/">When Rails InvalidAuthenticityToken Happens</a></h1>
     
     
       <p class="meta">
@@ -249,264 +254,51 @@ end
   
 
 
-<time datetime="2014-03-14T22:39:00+08:00" pubdate data-updated="true">Mar 14<span>th</span>, 2014</time>
+<time datetime="2014-11-26T16:31:00+08:00" pubdate data-updated="true">Nov 26<span>th</span>, 2014</time>
         
       </p>
     
   </header>
 
 
-  <div class="entry-content"><p>HERE IS MY <a href="https://gist.github.com/lingceng/6097985">vimrc</a></p>
+  <div class="entry-content"><p><code>InvalidAuthenticityToken</code> happens if you enabled <code>protect_from_forgery</code>
+but does not handle token well.</p>
 
-<h3>wonderful block insert</h3>
+<p>In <code>appliction_controller.rb</code></p>
 
-<pre><code>in Visual block mode:
-|v_b_I|    I    insert the same text in front of all the selected lines
-|v_b_A|    A    append the same text after all the selected lines
+<pre><code>protect_from_forgery
 </code></pre>
 
-<h3>search word under cursor</h3>
+<p>This will automatically include a security token in all forms and Ajax
+requests generated by Rails. If the security token doesn&rsquo;t match what was
+expected, the session will be reset.</p>
 
-<pre><code>* to search current word, n to next, N to previous
+<p>In page <code>&lt;head&gt;</code></p>
+
+<pre><code>&lt;%= csrf_meta_tags %&gt;
 </code></pre>
 
-<h3>arround tag</h3>
+<p>Is basically fulfilling the same thing as hidden form fields but is there to give
+javascript requests that aren&rsquo;t tied to a form an easy way of getting the token.</p>
 
-<pre><code>:help v_a
-at  # arround tag
-it  # inner tag
+<p>If you use the jquery-ujs library the content of that meta tag is automatically
+added (as a request header) to any ajax requests made.</p>
+
+<p><code>jquery-ujs</code> add a ajax filter to append token to parameter</p>
+
+<pre><code>// ajaxPrefilter is a jquery method
+$.ajaxPrefilter(function(options, originalOptions, xhr) {
+  if ( !options.crossDomain ) { rails.CSRFProtection(xhr); }
+});
 </code></pre>
 
-<h3>use mark</h3>
+<p>Note: Only HTML and JavaScript requests are checked.
+See more about <code>ActionController::RequestForgeryProtection</code> in rails API.</p>
 
-<pre><code>ma # mark a
-`a # go to a
-`A # go to A between buffers
-</code></pre>
+<h3>Conclusion</h3>
 
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2014/03/14/vim-tips/">Read on &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2014/03/13/git-get-start/">Git Get Start</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2014-03-13T07:21:00+08:00" pubdate data-updated="true">Mar 13<span>th</span>, 2014</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>config</p>
-
-<pre><code>git config --global user.name "John Doe"
-git config --global user.email "johndoe@example.com"
-</code></pre>
-
-<p>how to get help</p>
-
-<pre><code>git config --help
-git help config
-man git-config
-</code></pre>
-
-<p>start up</p>
-
-<pre><code>git init
-git add .
-git commit -m "Depot Scaffold"
-
-add and commit
-git commit -a -m "Depot Scaffold"
-</code></pre>
-
-<p>compare with version before last commit and last commit</p>
-
-<pre><code>git diff HEAD^ HEAD
-
-# show diff stat
-git diff --stat
-
-# show the tree-like view
-git log --graph --oneline --all
-</code></pre>
-
-<p>specify the file path</p>
-
-<pre><code>git diff HEAD^ HEAD app/models/product.rb
-</code></pre>
-
-<p>git ammend the last commit</p>
-
-<pre><code>git commit -amend
-</code></pre>
-
-<p>powerful edit commit command</p>
-
-<pre><code>git rebase --interactive HEAD^5
-</code></pre>
-
-<p>git include delelted files</p>
-
-<pre><code>git add -A
-</code></pre>
-
-<p>Creates a remote named &ldquo;origin&rdquo; pointing at your GitHub repository</p>
-
-<pre><code>git remote add origin https://github.com/username/Hello-World.git
-</code></pre>
-
-<p>Sends your commits in the &ldquo;master&rdquo; branch to GitHub</p>
-
-<pre><code>git push origin master
-</code></pre>
-
-<p>pull down changes</p>
-
-<pre><code>git pull orgin master
-</code></pre>
-</div>
-  
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2013/11/30/run-cron-every-5-hours/">Run Cron Every 5 Hours</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-11-30T16:56:00+08:00" pubdate data-updated="true">Nov 30<span>th</span>, 2013</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>> crontab -e</p>
-
-<figure class='code'><figcaption><span>Run Cron Every 5 Hours </span></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class='sh'><span class='line'><span class="c"># set the shell</span>
-</span><span class='line'><span class="nv">SHELL</span><span class="o">=</span>/bin/sh
-</span><span class='line'><span class="nv">PATH</span><span class="o">=</span>/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
-</span><span class='line'>
-</span><span class='line'><span class="c"># m h dom mon dow usercommand</span>
-</span><span class='line'>0 */5 * * * /path/hello.sh &gt;&gt; /path/hello.log 2&gt;&amp;1
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h4>Setting the PATH is Always Necessary</h4>
-
-<p><em>Crontab ignores login configuration</em>, which leads to a command not found.
-I have tested <em>env</em> command with crontab on my Ubuntu12.04 and I got the following result:</p>
-
-<pre><code>HOME=/home/lingceng
-LOGNAME=lingceng
-PATH=/usr/bin:/bin
-LANG=en_US.UTF-8
-SHELL=/bin/sh
-PWD=/home/lingceng
-</code></pre>
-
-<h4>Not Really Every 5 Hours</h4>
-
-<p>The demo shell script <strong>just runs at 0, 5, 15, 20 o&#8217;clock</strong>, 20 to 0 is just 4 hours.</p>
-
-<h4>Check Cron log</h4>
-
-<p>Cron log default put <em>/var/log/syslog</em>, use following command to monitor it:</p>
-
-<pre><code>tail -f /var/log/syslog | grep CRON
-</code></pre>
-
-<h4>Get More Help</h4>
-
-<p>> <a href="http://unixhelp.ed.ac.uk/CGI/man-cgi?crontab+5">man 5 crontab</a></p>
-</div>
-  
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2013/10/08/hello-world/">Hello World</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-10-08T13:41:00+08:00" pubdate data-updated="true">Oct 8<span>th</span>, 2013</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>Hello everyone! Here&rsquo;s my first post on my blog!</p>
+<p>Always import <code>jquery-ujs</code> when enabled <code>protect_from_forgery</code>
+And put <code>&lt;%= csrf_meta_tags %&gt;</code> in page head.</p>
 </div>
   
   
@@ -515,6 +307,8 @@ PWD=/home/lingceng
     </article>
   
   <div class="pagination">
+    
+      <a class="prev" href="/blog/page/3/">&larr; Older</a>
     
     <a href="/blog/archives">Blog Archives</a>
     

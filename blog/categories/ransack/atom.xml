@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Ransack | Lingceng's Blog]]></title>
   <link href="http://lingceng.github.io/blog/categories/ransack/atom.xml" rel="self"/>
   <link href="http://lingceng.github.io/"/>
-  <updated>2015-12-28T21:19:31+08:00</updated>
+  <updated>2015-12-29T11:55:15+08:00</updated>
   <id>http://lingceng.github.io/</id>
   <author>
     <name><![CDATA[Lingceng]]></name>
@@ -99,83 +99,11 @@ So I add some codes in my controller:</p>
 
 <h3>DRY</h3>
 
-<p>I customed the ransack predicates to avoid duplication.</p>
+<p>I customed the ransack predicates to avoid duplication.
+So I can just write the view like following:</p>
 
-<p><div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span>config/initializers/ransack.rb </span></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="o">&lt;</span><span class="sr">/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="sr">&lt;h1&gt;Custom ransack predicate to simplify query for date range&lt;/</span><span class="n">h1</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nb">p</span><span class="o">&gt;</span><span class="c1">#&lt;/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">h1</span><span class="o">&gt;</span><span class="no">See</span> <span class="n">lib</span><span class="o">/</span><span class="n">ransack</span><span class="o">.</span><span class="n">rb</span> <span class="k">in</span> <span class="n">ransack</span> <span class="n">gem</span><span class="o">&lt;</span><span class="sr">/h1&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="sr">&lt;h1&gt;See wiki &lt;a href=&quot;https:/</span><span class="o">/</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">activerecord</span><span class="o">-</span><span class="n">hackery</span><span class="o">/</span><span class="n">ransack</span><span class="o">/</span><span class="n">wiki</span><span class="o">/</span><span class="no">Custom</span><span class="o">-</span><span class="no">Predicates</span><span class="s2">&quot;&gt;https://github.com/activerecord-hackery/ransack/wiki/Custom-Predicates&lt;/a&gt;&lt;/h1&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="s2">&lt;p&gt;Ransack.configure do |config|&lt;/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="s2">&lt;p&gt;  config.add_predicate &amp;lsquo;beginning_of_day_gteq&amp;rsquo;,&lt;/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="s2">&lt;pre&gt;&lt;code&gt;arel_predicate: &#39;gteq&#39;,</span>
-</span><span class='line'><span class="s2">formatter: proc { |v| v.to_date.beginning_of_day },</span>
-</span><span class='line'><span class="s2">validator: proc { |v| v.present? },</span>
-</span><span class='line'><span class="s2">type: :string</span>
-</span><span class='line'><span class="s2">&lt;/code&gt;&lt;/pre&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="s2">&lt;p&gt;  config.add_predicate &amp;lsquo;end_of_day_lt&amp;rsquo;,&lt;/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="s2">&lt;pre&gt;&lt;code&gt;arel_predicate: &#39;lt&#39;,</span>
-</span><span class='line'><span class="s2">formatter: proc { |v| v.to_date.end_of_day },</span>
-</span><span class='line'><span class="s2">validator: proc { |v| v.present? },</span>
-</span><span class='line'><span class="s2">type: :string</span>
-</span><span class='line'><span class="s2">&lt;/code&gt;&lt;/pre&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="s2">&lt;p&gt;end</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+<script src="https://gist.github.com/lingceng/65c58512d9bbb50799c7.js"></script>
 
-<p>So I can just write the view like following:</p>
-
-<p><div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span>app/views/production_status_changes/index.html.erb </span></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class='erb'><span class='line'><span class="x">&amp;lt;%= search_form_for @q, url: production_status_changes_path, class: &amp;lsquo;form-inline&amp;rsquo; do |f| </span><span class="err">%&gt;</span><span class="x"></span>
-</span><span class='line'><span class="x">  &amp;lt;%=  f.label &amp;lsquo;Create At&amp;rsquo; </span><span class="err">%&gt;</span><span class="x"></span>
-</span><span class='line'><span class="x">  &amp;lt;%= f.search_field :created_at_beginning_of_day, class: &amp;lsquo;form-control input-sm&amp;rsquo;, &amp;lsquo;datepicker&amp;rsquo; =&gt; true </span><span class="err">%&gt;</span><span class="x"></span>
-</span><span class='line'><span class="x">  &amp;lt;%= f.search_field :created_at_end_of_day_lt, class: &amp;lsquo;form-control input-sm&amp;rsquo;,  &amp;lsquo;datepicker&amp;rsquo; =&gt; true </span><span class="err">%&gt;</span><span class="x"></span>
-</span><span class='line'><span class="x">&amp;lt;% end </span><span class="err">%&gt;</span><span class="x"></span>
-</span></code></pre></td></tr></table></div></figure></notextile></div></p>
 
 <h3>Maybe Another Way</h3>
 

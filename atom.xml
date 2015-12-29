@@ -4,7 +4,7 @@
   <title><![CDATA[Lingceng's Blog]]></title>
   <link href="http://lingceng.github.io/atom.xml" rel="self"/>
   <link href="http://lingceng.github.io/"/>
-  <updated>2015-12-28T21:19:31+08:00</updated>
+  <updated>2015-12-29T11:55:15+08:00</updated>
   <id>http://lingceng.github.io/</id>
   <author>
     <name><![CDATA[Lingceng]]></name>
@@ -92,62 +92,10 @@ So I add some codes in my controller:</p>
 
 <h3>DRY</h3>
 
-<p>I customed the ransack predicates to avoid duplication.</p>
+<p>I customed the ransack predicates to avoid duplication.
+So I can just write the view like following:</p>
 
-<figure class='code'><figcaption><span>config/initializers/ransack.rb </span></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="c1"># Custom ransack predicate to simplify query for date range</span>
-</span><span class='line'><span class="c1">#</span>
-</span><span class='line'><span class="c1"># See lib/ransack.rb in ransack gem</span>
-</span><span class='line'><span class="c1"># See wiki https://github.com/activerecord-hackery/ransack/wiki/Custom-Predicates</span>
-</span><span class='line'><span class="no">Ransack</span><span class="o">.</span><span class="n">configure</span> <span class="k">do</span> <span class="o">|</span><span class="n">config</span><span class="o">|</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="n">config</span><span class="o">.</span><span class="n">add_predicate</span> <span class="s1">&#39;beginning_of_day_gteq&#39;</span><span class="p">,</span>
-</span><span class='line'>    <span class="n">arel_predicate</span><span class="p">:</span> <span class="s1">&#39;gteq&#39;</span><span class="p">,</span>
-</span><span class='line'>    <span class="ss">formatter</span><span class="p">:</span> <span class="nb">proc</span> <span class="p">{</span> <span class="o">|</span><span class="n">v</span><span class="o">|</span> <span class="n">v</span><span class="o">.</span><span class="n">to_date</span><span class="o">.</span><span class="n">beginning_of_day</span> <span class="p">},</span>
-</span><span class='line'>    <span class="ss">validator</span><span class="p">:</span> <span class="nb">proc</span> <span class="p">{</span> <span class="o">|</span><span class="n">v</span><span class="o">|</span> <span class="n">v</span><span class="o">.</span><span class="n">present?</span> <span class="p">},</span>
-</span><span class='line'>    <span class="ss">type</span><span class="p">:</span> <span class="ss">:string</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="n">config</span><span class="o">.</span><span class="n">add_predicate</span> <span class="s1">&#39;end_of_day_lt&#39;</span><span class="p">,</span>
-</span><span class='line'>    <span class="n">arel_predicate</span><span class="p">:</span> <span class="s1">&#39;lt&#39;</span><span class="p">,</span>
-</span><span class='line'>    <span class="ss">formatter</span><span class="p">:</span> <span class="nb">proc</span> <span class="p">{</span> <span class="o">|</span><span class="n">v</span><span class="o">|</span> <span class="n">v</span><span class="o">.</span><span class="n">to_date</span><span class="o">.</span><span class="n">end_of_day</span> <span class="p">},</span>
-</span><span class='line'>    <span class="ss">validator</span><span class="p">:</span> <span class="nb">proc</span> <span class="p">{</span> <span class="o">|</span><span class="n">v</span><span class="o">|</span> <span class="n">v</span><span class="o">.</span><span class="n">present?</span> <span class="p">},</span>
-</span><span class='line'>    <span class="ss">type</span><span class="p">:</span> <span class="ss">:string</span>
-</span><span class='line'><span class="k">end</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>So I can just write the view like following:</p>
-
-<figure class='code'><figcaption><span>app/views/production_status_changes/index.html.erb </span></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class='erb'><span class='line'><span class="cp">&lt;%=</span> <span class="n">search_form_for</span> <span class="vi">@q</span><span class="p">,</span> <span class="ss">url</span><span class="p">:</span> <span class="n">production_status_changes_path</span><span class="p">,</span> <span class="ss">class</span><span class="p">:</span> <span class="s1">&#39;form-inline&#39;</span> <span class="k">do</span> <span class="o">|</span><span class="n">f</span><span class="o">|</span> <span class="cp">%&gt;</span><span class="x"></span>
-</span><span class='line'><span class="x">  </span><span class="cp">&lt;%=</span>  <span class="n">f</span><span class="o">.</span><span class="n">label</span> <span class="s1">&#39;Create At&#39;</span> <span class="cp">%&gt;</span><span class="x"></span>
-</span><span class='line'><span class="x">  </span><span class="cp">&lt;%=</span> <span class="n">f</span><span class="o">.</span><span class="n">search_field</span> <span class="ss">:created_at_beginning_of_day</span><span class="p">,</span> <span class="ss">class</span><span class="p">:</span> <span class="s1">&#39;form-control input-sm&#39;</span><span class="p">,</span> <span class="s1">&#39;datepicker&#39;</span> <span class="o">=&gt;</span> <span class="kp">true</span> <span class="cp">%&gt;</span><span class="x"></span>
-</span><span class='line'><span class="x">  </span><span class="cp">&lt;%=</span> <span class="n">f</span><span class="o">.</span><span class="n">search_field</span> <span class="ss">:created_at_end_of_day_lt</span><span class="p">,</span> <span class="ss">class</span><span class="p">:</span> <span class="s1">&#39;form-control input-sm&#39;</span><span class="p">,</span>  <span class="s1">&#39;datepicker&#39;</span> <span class="o">=&gt;</span> <span class="kp">true</span> <span class="cp">%&gt;</span><span class="x"></span>
-</span><span class='line'><span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">%&gt;</span><span class="x"></span>
-</span></code></pre></td></tr></table></div></figure>
+<script src="https://gist.github.com/lingceng/65c58512d9bbb50799c7.js"></script>
 
 
 <h3>Maybe Another Way</h3>
