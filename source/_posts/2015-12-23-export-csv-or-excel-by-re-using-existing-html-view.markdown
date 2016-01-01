@@ -58,7 +58,7 @@ end
 format.csv { send_data generate_csv_data }
 {% endcodeblock %}
 
-Here I get the view page as a string. And extract the table in the string with [nogogiri](http://www.nokogiri.org/).
+Here I get the view page as a string. And extract the table in the string with [nokogiri](http://www.nokogiri.org/).
 We can also convert it into an excel easily.
 See full codes [here](https://gist.github.com/lingceng/840f97f17128d8a9fd3b)
 
