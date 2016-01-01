@@ -5,11 +5,13 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Category: Javascript - Lingceng's Blog</title>
+  <title>Lingceng's Blog</title>
   <meta name="author" content="Lingceng">
 
   
-  <meta name="description" content="Category: Javascript">
+  <meta name="description" content="home :: https://github.com/seattlerb/minitest
+rdoc :: http://docs.seattlerb.org/minitest
+vim :: https://github.com/sunaku/vim-ruby-minitest With &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +20,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://lingceng.github.ioblog/categories/javascript">
+  <link rel="canonical" href="http://lingceng.github.io/blog/page/11">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/atom.xml" rel="alternate" title="Lingceng's Blog" type="application/atom+xml">
@@ -74,40 +76,167 @@
 </nav>
   <div id="main">
     <div id="content">
-      <div>
-<article role="article">
+      <div class="blog-index">
   
+  
+  
+    <article>
+      
   <header>
-    <h1 class="entry-title">Category: Javascript</h1>
+    
+      <h1 class="entry-title"><a href="/blog/2014/03/17/basics-about-minitest/">Basics About Minitest</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-03-17T07:58:00+08:00" pubdate data-updated="true">Mar 17<span>th</span>, 2014</time>
+        
+      </p>
     
   </header>
-  
-  <div id="blog-archives" class="category">
 
 
-
-  
-  <h2>2015</h2>
-
-<article>
-  
-<h1><a href="/blog/2015/12/15/put-javascript-library-files-together-in-rails/">Put javascript library files together in Rails</a></h1>
-<time datetime="2015-12-15T17:06:00+08:00" pubdate><span class='month'>Dec</span> <span class='day'>15</span> <span class='year'>2015</span></time>
-
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/javascript/'>Javascript</a>, <a class='category' href='/blog/categories/rails/'>Rails</a></span>
-</footer>
+  <div class="entry-content"><ul>
+<li>home :: <a href="https://github.com/seattlerb/minitest">https://github.com/seattlerb/minitest</a></li>
+<li>rdoc :: <a href="http://docs.seattlerb.org/minitest">http://docs.seattlerb.org/minitest</a></li>
+<li>vim  :: <a href="https://github.com/sunaku/vim-ruby-minitest">https://github.com/sunaku/vim-ruby-minitest</a></li>
+</ul>
 
 
-</article>
+<p>With Ruby 1.9, MiniTest entered standard lib.
+MiniTest is pretty small and readable, here is all source file list:</p>
 
+<blockquote><p>lib:
+hoe  minitest</p>
+
+<p>lib/hoe:
+minitest.rb</p>
+
+<p>lib/minitest:
+autorun.rb  benchmark.rb  hell.rb  mock.rb  parallel_each.rb  pride.rb  spec.rb  unit.rb</p></blockquote>
+
+<h3>Assert Methods</h3>
+
+<p>See  Minitest::Assertions doc or unit.rb source</p>
+
+<pre><code>assert assert_equal assert_raises
+capture_io
+refute refute_empty
+...
+</code></pre>
+
+<h3>Specs Expections</h3>
+
+<p>See Minitest::Expectations doc or spec.rb source</p>
+
+<pre><code>must_be must_be_close_to
+wont_be_empty
+...
+</code></pre>
+
+<p>Most methods just redirect to assert methods internally.
+<strong>describe</strong> method is added to <strong>Kernel</strong> to start the DSL road;
+expectations method is added to <strong>Object</strong></p>
+
+<pre><code>class Object
+  include MiniTest::Expectations unless ENV["MT_NO_EXPECTATIONS"]
+end
+</code></pre>
+
+<h3>Simple Start</h3>
+
+<p>Given that you&rsquo;d like to test the following class:</p>
+
+<pre><code>class Meme
+  def i_can_has_cheezburger?
+    "OHAI!"
+  end
+
+  def will_it_blend?
+    "YES!"
+  end
+end
+</code></pre>
+
+<p>Unit tests</p>
+
+<pre><code>require 'minitest/autorun'
+
+class TestMeme &lt; MiniTest::Unit::TestCase
+  def setup
+    @meme = Meme.new
+  end
+
+  def test_that_kitty_can_eat
+    assert_equal "OHAI!", @meme.i_can_has_cheezburger?
+  end
+
+  def test_that_it_will_not_blend
+    refute_match /^no/i, @meme.will_it_blend?
+  end
+
+  def test_that_will_be_skipped
+    skip "test this later"
+  end
+end
+</code></pre>
+
+<p>Specs</p>
+
+<pre><code># the following have required in autorun
+# no need to repeat !
+# require 'minitest/unit'
+# require 'minitest/spec'
+# require 'minitest/mock'
+
+require 'minitest/autorun'
+
+describe Meme do
+  before do
+    @meme = Meme.new
+  end
+
+  describe "when asked about cheeseburgers" do
+    it "must respond positively" do
+      @meme.i_can_has_cheezburger?.must_equal "OHAI!"
+    end
+  end
+
+  describe "when asked about blending possibilities" do
+    it "won't say no" do
+      @meme.will_it_blend?.wont_match /^no/i
+    end
+  end
+end
+</code></pre>
 </div>
-
   
-</article>
+  
 
+
+    </article>
+  
+  <div class="pagination">
+    
+      <a class="prev" href="/blog/page/12/">&larr; Older</a>
+    
+    <a href="/blog/archives">Blog Archives</a>
+    
+    <a class="next" href="/blog/page/10/">Newer &rarr;</a>
+    
+  </div>
 </div>
-
 <aside class="sidebar">
   
     <section>
@@ -137,13 +266,8 @@
   </ul>
 </section>
 
-
-
-
-
   
 </aside>
-
 
     </div>
   </div>

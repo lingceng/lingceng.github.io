@@ -9,15 +9,8 @@
   <meta name="author" content="Lingceng">
 
   
-  <meta name="description" content="capture io Use capture_io to test output. 1
-2
-3
-4
-5
-6
-7
-out, err = capture_io do puts &quot;Some info&quot; warn &quot;You did a bad thing&quot;
-end &hellip;">
+  <meta name="description" content="TLDR: Put all javascript library files under app/assets/libfolder.
+Refer the files without the libfolder We always need to import some javascript &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -58,8 +51,6 @@ end &hellip;">
   <header role="banner"><hgroup>
   <h1><a href="/">Lingceng's Blog</a></h1>
   
-    <h2>Make it now!</h2>
-  
 </hgroup>
 
 </header>
@@ -70,7 +61,7 @@ end &hellip;">
   
 <form action="http://google.com/search" method="get">
   <fieldset role="search">
-    <input type="hidden" name="q" value="site:lingceng.github.io" />
+    <input type="hidden" name="sitesearch" value="lingceng.github.io" />
     <input class="search" type="text" name="q" results="0" placeholder="Search"/>
   </fieldset>
 </form>
@@ -78,6 +69,7 @@ end &hellip;">
 <ul class="main-navigation">
   <li><a href="/">Blog</a></li>
   <li><a href="/blog/archives">Archives</a></li>
+  <li><a href="/blog/about">About</a></li>
 </ul>
 
 </nav>
@@ -91,7 +83,7 @@ end &hellip;">
       
   <header>
     
-      <h1 class="entry-title"><a href="/blog/2014/03/18/minitest-mock-and-stud/">Minitest Mock and Stud</a></h1>
+      <h1 class="entry-title"><a href="/blog/2015/12/15/put-javascript-library-files-together-in-rails/">Put Javascript Library Files Together in Rails</a></h1>
     
     
       <p class="meta">
@@ -107,348 +99,49 @@ end &hellip;">
   
 
 
-<time datetime="2014-03-18T08:28:00+08:00" pubdate data-updated="true">Mar 18<span>th</span>, 2014</time>
+<time datetime="2015-12-15T17:06:00+08:00" pubdate data-updated="true">Dec 15<span>th</span>, 2015</time>
         
       </p>
     
   </header>
 
 
-  <div class="entry-content"><h3>capture io</h3>
+  <div class="entry-content"><p><strong>TLDR: Put all javascript library files under <code>app/assets/libfolder</code>.
+Refer the files without the <code>libfolder</code></strong></p>
 
-<p>Use <code>capture_io</code> to test output.</p>
+<p>We always need to import some javascript libs to our Rails application.
+Some libs has correspondent gems.
+For example, <strong>jquery.js</strong> has a <strong>jquery-rails gem</strong>.</p>
 
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">out</span><span class="p">,</span> <span class="n">err</span> <span class="o">=</span> <span class="n">capture_io</span> <span class="k">do</span>
-</span><span class='line'>  <span class="nb">puts</span> <span class="s2">&quot;Some info&quot;</span>
-</span><span class='line'>  <span class="nb">warn</span> <span class="s2">&quot;You did a bad thing&quot;</span>
-</span><span class='line'><span class="k">end</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">assert_match</span> <span class="sr">%r%info%</span><span class="p">,</span> <span class="n">out</span>
-</span><span class='line'><span class="n">assert_match</span> <span class="sr">%r%bad%</span><span class="p">,</span> <span class="n">err</span>
-</span></code></pre></td></tr></table></div></figure>
+<p>But some other libs may not have the correspondent gems.
+What&rsquo;s more, it may be a waste to use a &ldquo;wrapper gem&rdquo; to just import a javascript file.
+Some wrapper gem may not up-to-date to the origin javascript lib.
+So we need to import javascript libs manually in some cases.</p>
 
+<p>Rails default use <a href="https://github.com/sstephenson/sprockets">sprockets</a> to
+manage assets.
+And we always split assets into <code>javascripts</code>, <code>stylesheets</code>, <code>images</code> and <code>fonts</code> folders.
+But if we split a javascript library into these files, it maybe a little messy.</p>
 
-<h3>mock</h3>
+<p><strong>Actually we can put the files together in a same foler.</strong></p>
 
-<p><code>capture_io</code> uses StringIO to wrap $stdout and $stderr.
-How to simulate user input or socket talks? Mock may do the job.</p>
+<p>For example, I want to import <a href="https://github.com/lipis/bootstrap-sweetalert">bootstrap-sweetalert</a>  into
+my Rails app.
+I download the <code>sweet-alert.less</code> and <code>sweet-alert.js</code>.
+Then put the two files into <code>vender/assets/sweet-alert</code>.
+<code>sweet-alert</code> here is a new created folder.</p>
 
-<figure class='code'><figcaption><span>stupidc.rb </span></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">Stupidc</span>
-</span><span class='line'>  <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="n">input</span><span class="o">=</span><span class="no">STDIN</span><span class="p">,</span> <span class="n">output</span><span class="o">=</span><span class="no">STDOUT</span><span class="p">)</span>
-</span><span class='line'>    <span class="vi">@input</span> <span class="o">=</span> <span class="n">input</span>
-</span><span class='line'>    <span class="vi">@output</span> <span class="o">=</span> <span class="n">output</span>
-</span><span class='line'>  <span class="k">end</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="k">def</span> <span class="nf">say_hello</span><span class="p">()</span>
-</span><span class='line'>    <span class="vi">@output</span><span class="o">.</span><span class="n">puts</span> <span class="s1">&#39;hello&#39;</span>
-</span><span class='line'>  <span class="k">end</span>
-</span><span class='line'><span class="k">end</span>
-</span></code></pre></td></tr></table></div></figure>
+<p>The <code>vender/assets/sweet-alert</code> folder will be treat as base path to query
+assets. So we can refer the <code>sweet-alert.js</code> in our application.js as following:</p>
 
+<pre><code> //= require sweet-alert
+</code></pre>
 
+<p>We can do the same for <code>sweet-alert.less</code> in our application.less.</p>
 
-
-<figure class='code'><figcaption><span>stupidc_spec.rb </span></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="nb">require</span> <span class="s1">&#39;minitest/autorun&#39;</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">describe</span> <span class="no">Stupidc</span> <span class="k">do</span>
-</span><span class='line'>  <span class="n">before</span> <span class="k">do</span>
-</span><span class='line'>    <span class="vi">@input</span> <span class="o">=</span> <span class="ss">MiniTest</span><span class="p">:</span><span class="ss">:Mock</span><span class="o">.</span><span class="n">new</span>
-</span><span class='line'>    <span class="vi">@output</span> <span class="o">=</span> <span class="ss">MiniTest</span><span class="p">:</span><span class="ss">:Mock</span><span class="o">.</span><span class="n">new</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="vi">@stupidc</span> <span class="o">=</span> <span class="no">Stupidc</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="vi">@input</span><span class="p">,</span> <span class="vi">@output</span><span class="p">)</span>
-</span><span class='line'>  <span class="k">end</span>
-</span><span class='line'>
-</span><span class='line'>
-</span><span class='line'>  <span class="n">it</span> <span class="s2">&quot;should copy file to source when file is target&quot;</span> <span class="k">do</span>
-</span><span class='line'>    <span class="vi">@output</span><span class="o">.</span><span class="n">expect</span> <span class="ss">:puts</span><span class="p">,</span> <span class="kp">nil</span><span class="p">,</span> <span class="o">[</span><span class="s1">&#39;hello&#39;</span><span class="o">]</span>
-</span><span class='line'>    <span class="vi">@stupidc</span><span class="o">.</span><span class="n">say_hello</span><span class="p">()</span>
-</span><span class='line'>    <span class="vi">@output</span><span class="o">.</span><span class="n">verify</span>
-</span><span class='line'>  <span class="k">end</span>
-</span><span class='line'><span class="k">end</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>stub</h3>
-
-<p>Stub has similar function with mock, but no need to inject a property.
-Stub can simulate module methods or instance methods (They are the same in ruby, all class is the instance of Class) with ease.
-see <a href="https://github.com/seattlerb/minitest/blob/master/test/minitest/test_minitest_mock.rb">test</a></p>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">def</span> <span class="nf">test_stub_yield_self</span>
-</span><span class='line'>  <span class="n">obj</span> <span class="o">=</span> <span class="s2">&quot;foo&quot;</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="n">val</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">stub</span> <span class="ss">:to_s</span><span class="p">,</span> <span class="s2">&quot;bar&quot;</span> <span class="k">do</span> <span class="o">|</span><span class="n">s</span><span class="o">|</span>
-</span><span class='line'>    <span class="n">s</span><span class="o">.</span><span class="n">to_s</span>
-</span><span class='line'>  <span class="k">end</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="vi">@tc</span><span class="o">.</span><span class="n">assert_equal</span> <span class="s2">&quot;bar&quot;</span><span class="p">,</span> <span class="n">val</span>
-</span><span class='line'><span class="k">end</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-
+<p>Note that we have <a href="https://www.codefellows.org/blog/5-ways-to-manage-front-end-assets-in-rails">other ways to manage the assets</a>. But it&rsquo;s another topic then.</p>
 </div>
   
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2014/03/17/basics-about-minitest/">Basics About Minitest</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2014-03-17T07:58:00+08:00" pubdate data-updated="true">Mar 17<span>th</span>, 2014</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><ul>
-<li>home :: <a href="https://github.com/seattlerb/minitest">https://github.com/seattlerb/minitest</a></li>
-<li>rdoc :: <a href="http://docs.seattlerb.org/minitest">http://docs.seattlerb.org/minitest</a></li>
-<li>vim  :: <a href="https://github.com/sunaku/vim-ruby-minitest">https://github.com/sunaku/vim-ruby-minitest</a></li>
-</ul>
-
-
-<p>With Ruby 1.9, MiniTest entered standard lib.
-MiniTest is pretty small and readable, here is all source file list:</p>
-
-<blockquote><p>lib:
-hoe  minitest</p>
-
-<p>lib/hoe:
-minitest.rb</p>
-
-<p>lib/minitest:
-autorun.rb  benchmark.rb  hell.rb  mock.rb  parallel_each.rb  pride.rb  spec.rb  unit.rb</p></blockquote>
-
-<h3>Assert Methods</h3>
-
-<p>See  Minitest::Assertions doc or unit.rb source</p>
-
-<pre><code>assert assert_equal assert_raises
-capture_io
-refute refute_empty
-...
-</code></pre>
-
-<h3>Specs Expections</h3>
-
-<p>See Minitest::Expectations doc or spec.rb source</p>
-
-<pre><code>must_be must_be_close_to
-wont_be_empty
-...
-</code></pre>
-
-<p>Most methods just redirect to assert methods internally.
-<strong>describe</strong> method is added to <strong>Kernel</strong> to start the DSL road;
-expectations method is added to <strong>Object</strong></p>
-
-<pre><code>class Object
-  include MiniTest::Expectations unless ENV["MT_NO_EXPECTATIONS"]
-end
-</code></pre>
-
-<h3>Simple Start</h3>
-
-<p>Given that you&rsquo;d like to test the following class:</p>
-
-<pre><code>class Meme
-  def i_can_has_cheezburger?
-    "OHAI!"
-  end
-
-  def will_it_blend?
-    "YES!"
-  end
-end
-</code></pre>
-
-<p>Unit tests</p>
-
-<pre><code>require 'minitest/autorun'
-
-class TestMeme &lt; MiniTest::Unit::TestCase
-  def setup
-    @meme = Meme.new
-  end
-
-  def test_that_kitty_can_eat
-    assert_equal "OHAI!", @meme.i_can_has_cheezburger?
-  end
-
-  def test_that_it_will_not_blend
-    refute_match /^no/i, @meme.will_it_blend?
-  end
-
-  def test_that_will_be_skipped
-    skip "test this later"
-  end
-end
-</code></pre>
-
-<p>Specs</p>
-
-<pre><code># the following have required in autorun
-# no need to repeat !
-# require 'minitest/unit'
-# require 'minitest/spec'
-# require 'minitest/mock'
-
-require 'minitest/autorun'
-
-describe Meme do
-  before do
-    @meme = Meme.new
-  end
-
-  describe "when asked about cheeseburgers" do
-    it "must respond positively" do
-      @meme.i_can_has_cheezburger?.must_equal "OHAI!"
-    end
-  end
-
-  describe "when asked about blending possibilities" do
-    it "won't say no" do
-      @meme.will_it_blend?.wont_match /^no/i
-    end
-  end
-end
-</code></pre>
-</div>
-  
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2014/03/14/vim-tips/">Vim Tips</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2014-03-14T22:39:00+08:00" pubdate data-updated="true">Mar 14<span>th</span>, 2014</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>HERE IS MY <a href="https://gist.github.com/lingceng/6097985">vimrc</a></p>
-
-<h3>wonderful block insert</h3>
-
-<pre><code>in Visual block mode:
-|v_b_I|    I    insert the same text in front of all the selected lines
-|v_b_A|    A    append the same text after all the selected lines
-</code></pre>
-
-<h3>search word under cursor</h3>
-
-<pre><code>* to search current word, n to next, N to previous
-</code></pre>
-
-<h3>arround tag</h3>
-
-<pre><code>:help v_a
-at  # arround tag
-it  # inner tag
-</code></pre>
-
-<h3>use mark</h3>
-
-<pre><code>ma # mark a
-`a # go to a
-`A # go to A between buffers
-</code></pre>
-
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2014/03/14/vim-tips/">Read on &rarr;</a>
-    </footer>
   
 
 
@@ -491,13 +184,6 @@ it  # inner tag
       </li>
     
   </ul>
-</section>
-<section>
-  <h1>About Me</h1>
-  <p> My name is Kexian Zhong, lingceng is my nickname. I&#8217;m a Rails developer, live in Beijing, China.</p>
-  <a href="https://github.com/lingceng"> Github </a>
-  <a href="https://twitter.com/lingceng"> Twitter </a>
-  <a href="https://www.linkedin.com/in/lingceng"> Linkedin </a><br/>
 </section>
 
   

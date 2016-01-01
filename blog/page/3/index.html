@@ -9,8 +9,8 @@
   <meta name="author" content="Lingceng">
 
   
-  <meta name="description" content="Setup Let&rsquo;s create a demo table and do some configurations in a rails project.
-Then we&rsquo;ll do some tests about time in rails console. &hellip;">
+  <meta name="description" content="Recently, I&rsquo;m using aasm gem to do order production status control.
+Here I have some tips about using aasm gem. I&rsquo;m using aasm 4.5.0 and &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -51,8 +51,6 @@ Then we&rsquo;ll do some tests about time in rails console. &hellip;">
   <header role="banner"><hgroup>
   <h1><a href="/">Lingceng's Blog</a></h1>
   
-    <h2>Make it now!</h2>
-  
 </hgroup>
 
 </header>
@@ -63,7 +61,7 @@ Then we&rsquo;ll do some tests about time in rails console. &hellip;">
   
 <form action="http://google.com/search" method="get">
   <fieldset role="search">
-    <input type="hidden" name="q" value="site:lingceng.github.io" />
+    <input type="hidden" name="sitesearch" value="lingceng.github.io" />
     <input class="search" type="text" name="q" results="0" placeholder="Search"/>
   </fieldset>
 </form>
@@ -71,6 +69,7 @@ Then we&rsquo;ll do some tests about time in rails console. &hellip;">
 <ul class="main-navigation">
   <li><a href="/">Blog</a></li>
   <li><a href="/blog/archives">Archives</a></li>
+  <li><a href="/blog/about">About</a></li>
 </ul>
 
 </nav>
@@ -84,7 +83,7 @@ Then we&rsquo;ll do some tests about time in rails console. &hellip;">
       
   <header>
     
-      <h1 class="entry-title"><a href="/blog/2014/11/22/rails-time-best-practice/">Rails Time Best Practice</a></h1>
+      <h1 class="entry-title"><a href="/blog/2015/12/19/tips-about-using-aasm-gem/">Tips About Using AASM Gem</a></h1>
     
     
       <p class="meta">
@@ -100,473 +99,20 @@ Then we&rsquo;ll do some tests about time in rails console. &hellip;">
   
 
 
-<time datetime="2014-11-22T18:38:00+08:00" pubdate data-updated="true">Nov 22<span>nd</span>, 2014</time>
+<time datetime="2015-12-19T12:26:00+08:00" pubdate data-updated="true">Dec 19<span>th</span>, 2015</time>
         
       </p>
     
   </header>
 
 
-  <div class="entry-content"><h4>Setup</h4>
+  <div class="entry-content"><p>Recently, I&rsquo;m using <a href="https://github.com/aasm/aasm">aasm gem</a> to do order production status control.
+Here I have some tips about using aasm gem.</p>
 
-<p>Let&rsquo;s create a demo table and do some configurations in a rails project.
-Then we&rsquo;ll do some tests about time in <code>rails console</code>.</p>
+<p>I&rsquo;m using aasm 4.5.0 and rails 4.2.0. First, I post a snippet here for better explanation.</p>
 
-<pre><code>class CreateHellos &lt; ActiveRecord::Migration
-  def change
-    create_table :hellos do |t|
-      t.timestamps
-    end
-  end
-end
-</code></pre>
-
-<p>Add following to <code>config/application.rb</code></p>
-
-<pre><code>Rails.application.config.active_record.default_timezone = :local
-Rails.application.config.time_zone = 'Beijing'
-</code></pre>
-
-<p><code>config.time_zone</code> sets the default time zone for the application
-and enables time zone awareness for Active Record.</p>
-
-<p><code>config.active_record.default_timezone</code> determines whether to use Time.local
- (if set to :local) or Time.utc (if set to :utc) when pulling dates and times
-from the database.  The default is :utc.</p>
-
-<h4><code>to_s(:db)</code> is error-prone</h4>
-
-<p>Run following codes in rails console.
-Here CST stands for (China Standard Time) which is zone name for Beijing.</p>
-
-<pre><code>l = FinanceItem.create
-#=&gt; #&lt;FinanceItem id: 1, created_at: "2014-11-22 03:00:32", updated_at: "2014-11-22 03:00:32" &gt;
-l.created_at
-#=&gt; Sat, 22 Nov 2014 11:00:32 CST +08:00
-</code></pre>
-
-<p>The timezone offset is <strong>+08:00</strong> because I set <code>config.time_zone = 'Beijing'</code></p>
-
-<pre><code>l.created_at.class
-#=&gt; ActiveSupport::TimeWithZone
-</code></pre>
-
-<p>Rails use ActiveSupport::TimeWithZone for datetime field.</p>
-
-<pre><code>l.created_at.strftime("%Y-%m-%d %H:%M%S")
-#=&gt; "2014-11-22 11:00:32"
-l.created_at.to_s(:db)
-#=&gt; "2014-11-22 03:00:32"
-</code></pre>
-
-<p>We can see, two date strings are different.
-Because <code>to_s(:db)</code> always output time string in UTC.
-<code>strftime</code> or <code>to_s</code> ouptut time string with configured time zone.</p>
-
-<p>Here is the <code>TimewithZone#to_s(format)</code> source:</p>
-
-<pre><code>:default - default value, mimics Ruby 1.9 Time#to_s format.
-:db - format outputs time in UTC :db time. See Time#to_formatted_s(:db).
-Any key in Time::DATE_FORMATS can be used. See active_support/core_ext/time/conversions.rb.
-# File activesupport/lib/active_support/time_with_zone.rb, line 193
-def to_s(format = :default)
-  if format == :db
-    utc.to_s(format)
-  elsif formatter = ::Time::DATE_FORMATS[format]
-    formatter.respond_to?(:call) ? formatter.call(self).to_s : strftime(formatter)
-  else
-    "#{time.strftime("%Y-%m-%d %H:%M:%S")} #{formatted_offset(false, 'UTC')}" # mimicking Ruby 1.9 Time#to_s format
-  end
-end
-</code></pre>
-
-<p>How about <code>Time#to_s(:db)</code> and <code>Time#strftime("%Y-%m-%d %H:%M:%S")</code>?
-Here zone name is CST because my system local is &lsquo;Beijing&rsquo;.
-It&rsquo;s different with TimeWithZone which get zone from project configurations <code>config.time_zone</code>.</p>
-
-<pre><code>a = Time.now
-=&gt; 2015-03-12 16:56:21
-a.zone
-=&gt; "CST"
-a.to_s(:db)
-=&gt; "2015-03-12 16:56:21"
-a.strftime("%Y-%m-%d %H:%M:%S")
-=&gt; "2015-03-12 16:56:21"
-</code></pre>
-
-<p><code>Time#to_s(:db)</code> and <code>Time#strftime("%Y-%m-%d %H:%M:%S")</code> output the same.
-We can find out that <code>Time#to_s(:db)</code> is actually called Time#strftime(&lsquo;%Y-%m-%d %H:%M:%S&rsquo;) from source</p>
-
-<p>As we can see, <code>to_s(:db)</code> is NOT consistent between Time and TimeWithZone.
-TimeWithZone#to_s(:db) will generate time string of UTC.
-Time#to_s(:db) will return time string of configured local.</p>
-
-<p>So calling <code>to_s(:db)</code> is always error-prone. Do not use it unless you know what you are doing.
-And you&rsquo;d better not use Time and TimeWithZone interchangeably.</p>
-
-<h4>Time.zone.parse get time with timezone</h4>
-
-<p>Let&rsquo;s try following codes.</p>
-
-<pre><code>a = DateTime.parse('2014-11-22 12:35:05')
-#=&gt; Sat, 22 Nov 2014 12:35:05 +0000
-a.to_s(:rfc822)
-#=&gt; "Sat, 22 Nov 2014 12:35:05 +0000"
-a.in_time_zone.to_s(:rfc822)
-#=&gt; "Sat, 22 Nov 2014 20:35:05 +0800"
-
-b = Time.zone.parse('2014-11-22 12:35:05')
-#=&gt; 2014-11-22 12:35:05
-b.to_s(:rfc822)
-#=&gt; "Sat, 22 Nov 2014 12:35:05 +0800"
-</code></pre>
-
-<p>Notice that <code>Time.zone.parse</code> has <code>+0800</code> timezone offset but <code>DateTime.parse</code>
-has &lsquo;+0000&rsquo; timezone offset.</p>
-
-<p>So <code>Time.zone.parse</code> may be better for you.</p>
-
-<h3>Time.now vs Time.current</h3>
-
-<p>Let&rsquo;s see the definition of <code>Time.current</code></p>
-
-<pre><code># File activesupport/lib/active_support/core_ext/time/calculations.rb, line 29
-def current
-  ::Time.zone ? ::Time.zone.now : ::Time.now
-end
-</code></pre>
-
-<p>Time.now uses the <strong>system time zone</strong> because it&rsquo;s is part of the Ruby standard library.
-Time.zone.now will set zone with <code>config.time_zone</code>.</p>
-
-<p>Using <code>Time.now</code> make troubles when your system time zone is different with
-<code>config.time_zone</code></p>
-
-<h3>Best practice</h3>
-
-<p>Set the following config.</p>
-
-<pre><code>config.active_record.default_timezone = :local
-config.time_zone = 'YourLocalName'
-</code></pre>
-
-<p>Use <code>Time.zone.parse</code> and do <strong>NOT</strong> use <code>DateTime.parse</code>.</p>
-
-<p>Use <code>Time.zone.now</code> or <code>Time.current</code> and do <strong>NOT</strong> use <code>Time.now</code>.</p>
-
-<p>Thus we can keep all time class to TimeWithZone and get consistent behavior.</p>
-</div>
-  
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2014/10/16/turbolink-best-practice/">Turbolink Best Practice</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2014-10-16T12:12:00+08:00" pubdate data-updated="true">Oct 16<span>th</span>, 2014</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><h2>What does Turbolink do?</h2>
-
-<p><a href="https://github.com/rails/turbolinks">Turbolink</a> makes browser to only replace
-page&rsquo;s <code>&lt;body&gt;</code> and <code>&lt;title&gt;</code> to simulate page jumping when click a link.</p>
-
-<p>It&rsquo;s fast because no need to recompile the JavaScript or CSS.</p>
-
-<p>As you can see, we must keep stuffs in <code>&lt;head&gt;</code> the same between pages
-when jumping with Turbolink.  In other words, Things will go wrong if the pages have
-different content in <code>&lt;head&gt;</code>.</p>
-
-<h2>What&rsquo;s the best practice?</h2>
-
-<p>Put all JavaScript and CSS in <code>&lt;HEAD&gt;</code> and keep them the same in every page.
-Use <a href="https://coderwall.com/p/ypzfdw/faster-page-loads-with-turbolinks">jquery.turbolink</a> to
-hijack <code>jQuery.ready()</code> in jQuery like following:</p>
-
-<pre><code>jQuery
-jQuery.turbolinks
-...other scripts go here...
-Turbolinks
-</code></pre>
-
-<p><a href="https://coderwall.com/p/ypzfdw/faster-page-loads-with-turbolinks">Here</a>
-explains more:</p>
-
-<blockquote><p>The reason for jQuery.turbolinks being before all scripts is so to let
-it hijack the <code>$(function() { ... })</code> call that your other scripts will use.</p>
-
-<p>Turbolinks then needs to be at the end because it has to be the last
-to install the click handler, so not to interfere with other scripts.</p></blockquote>
-
-<h2>Take care of some dangerous things</h2>
-
-<p>Global delegated events will effect every page. eg. You add a script as
-following and &ldquo;clicked button&rdquo; will be printed when you click a button
-in every pages.</p>
-
-<pre><code>$(document).on('click', 'button', function(){
-  console.log("clicked button")
-})
-</code></pre>
-
-<p>Global <code>setInterval</code> or <code>setTimeout</code> need to be clear too! DEMO:</p>
-
-<pre><code>$(document).one('page:before-change', function(event) {
-  clearTheTimer();
-}
-</code></pre>
-
-<p>See more <a href="http://staal.io/blog/2013/01/18/dangers-of-turbolinks/">here</a></p>
-
-<h2>How to control javascript init for every page?</h2>
-
-<p>Mark to <code>&lt;body&gt;</code> when need specific page logic, trigger it according to mark.
-I want javascript only run in topics pages:</p>
-
-<pre><code>// In app/views/layouts/application.html.erb
-&lt;body data-controller-name="&lt;%= controller_name %&gt;"&gt;
-
-// In topics.coffee
-window.Topics =
-  replies_per_page: 50
-  init : () -&gt;
-    console.log "hello"
-
-$(document).ready -&gt;
-  if $('body').data('controller-name') in ['topics']
-    Topics.init()
-
-// Add topics to appliction.js
-//= require topics
-</code></pre>
-
-<h2>You can put javascript at the end of body. But it&rsquo;s not recommended.</h2>
-
-<p>You will loose benefit with HTTP cache when you put javascript at the and of the
-body.</p>
-
-<h2>Turbolink has other features to make it fast.</h2>
-
-<p>Turbolink uses client cache pages.</p>
-
-<pre><code># View current page cache size
-Turbolinks.pagesCached();
-# Set the cache size
-Turbolinks.pagesCached(20);
-</code></pre>
-
-<p>Turbolink uses transition cache.
-Transition will immediately display the cached copy of page and then replace
-with remote returned one.</p>
-
-<pre><code># enable transition cache
-Turbolinks.enableTransitionCache();
-</code></pre>
-
-<p>Browser native process bar will not work when using Turbolink.
-So Turbolink provide a JavaScript-and-CSS-based one. eg. in 2.5 version</p>
-
-<pre><code>Turbolinks.enableProgressBar();
-</code></pre>
-
-<h2>What will happen when I changed head content?</h2>
-
-<p>It depends on how you change it.</p>
-
-<p>If you add some <code>&lt;script type="text/javascript"&gt;</code> tag in head, eg.</p>
-
-<pre><code>// On page B
-&lt;script type="text/javascript"&gt;
-  console.log('hello')
-&lt;/script&gt;
-</code></pre>
-
-<p>When you click a link on page A and jump to page B, the &lsquo;hello&rsquo; will <strong>not</strong> printed.
-The script tag will be ignored.</p>
-
-<p>It&rsquo;s the same when you make it a <code>src</code> link.</p>
-
-<pre><code>// On page B
-&lt;script type="text/javascript" src='hello.js'&gt; &lt;/script&gt;
-</code></pre>
-
-<p>You add a <code>data-turbolinks-track</code> tag to make it work. But it has drawbacks.</p>
-
-<pre><code>&lt;script type="text/javascript" src="/hello.js" data-turbolinks-track&gt;&lt;/script&gt;
-</code></pre>
-
-<p>When this case, &lsquo;hello&rsquo; will be printed,
-every things seems fine except <strong>slow page load</strong>.</p>
-
-<p>You&rsquo;ll technically be requesting the same page twice.
-Once through Turbolinks to detect that the assets changed,
-and then again do a full redirect to that page.</p>
-
-<p>You should always add <code>data-turbolinks-track</code> to JavaScript and CSS links.
-This will trigger full page load when your assets changed.</p>
-
-<p>When page A and page B have different <code>track targets</code>,
-every switch between them will cause <code>double load</code>.</p>
-
-<p>See the <a href="https://github.com/rails/turbolinks/blob/master/lib%2Fassets%2Fjavascripts%2Fturbolinks.js.coffee#L231">code</a>
-to know the details</p>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-</pre></td><td class='code'><pre><code class='coffeescript'><span class='line'><span class="nv">extractTrackAssets = </span><span class="nf">(doc) -&gt;</span>
-</span><span class='line'>  <span class="k">for</span> <span class="nx">node</span> <span class="k">in</span> <span class="nx">doc</span><span class="p">.</span><span class="nx">querySelector</span><span class="p">(</span><span class="s">&#39;head&#39;</span><span class="p">).</span><span class="nx">childNodes</span> <span class="k">when</span> <span class="nx">node</span><span class="p">.</span><span class="nx">getAttribute</span><span class="o">?</span><span class="p">(</span><span class="s">&#39;data-turbolinks-track&#39;</span><span class="p">)</span><span class="o">?</span>
-</span><span class='line'>    <span class="nx">node</span><span class="p">.</span><span class="nx">getAttribute</span><span class="p">(</span><span class="s">&#39;src&#39;</span><span class="p">)</span> <span class="o">or</span> <span class="nx">node</span><span class="p">.</span><span class="nx">getAttribute</span><span class="p">(</span><span class="s">&#39;href&#39;</span><span class="p">)</span>
-</span><span class='line'>
-</span><span class='line'><span class="nv">assetsChanged = </span><span class="nf">(doc) -&gt;</span>
-</span><span class='line'>  <span class="nx">loadedAssets</span> <span class="o">||=</span> <span class="nx">extractTrackAssets</span> <span class="nb">document</span>
-</span><span class='line'>  <span class="nv">fetchedAssets  = </span><span class="nx">extractTrackAssets</span> <span class="nx">doc</span>
-</span><span class='line'>  <span class="nx">fetchedAssets</span><span class="p">.</span><span class="nx">length</span> <span class="o">isnt</span> <span class="nx">loadedAssets</span><span class="p">.</span><span class="nx">length</span> <span class="o">or</span> <span class="nx">intersection</span><span class="p">(</span><span class="nx">fetchedAssets</span><span class="p">,</span> <span class="nx">loadedAssets</span><span class="p">).</span><span class="nx">length</span> <span class="o">isnt</span> <span class="nx">loadedAssets</span><span class="p">.</span><span class="nx">length</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>One last rescue is to prevent turbolink jump by add <code>data-no-turbolink</code> tag.
-And then you will not benefit from turbolink speed boost.</p>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class='html'><span class='line'><span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">&quot;/&quot;</span><span class="nt">&gt;</span>Home (via Turbolinks)<span class="nt">&lt;/a&gt;</span>
-</span><span class='line'><span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">&quot;some-div&quot;</span> <span class="na">data-no-turbolink</span><span class="nt">&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">&quot;/&quot;</span><span class="nt">&gt;</span>Home (without Turbolinks)<span class="nt">&lt;/a&gt;</span>
-</span><span class='line'><span class="nt">&lt;/div&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-
-</div>
-  
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2014/03/26/jquery-source-structure-tip/">jQuery Source Structure Tip</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2014-03-26T09:12:00+08:00" pubdate data-updated="true">Mar 26<span>th</span>, 2014</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>I&rsquo;m puzzled when I first see the jQuery source code.
-I finaly find a clue after several attempts.</p>
-
-<p>Put aside other modules, we can find out that jQuery has the ordinary JS class structrue.</p>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">jQuery</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-</span><span class='line'>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'><span class="nx">jQuery</span><span class="p">.</span><span class="nx">prototype</span> <span class="o">=</span> <span class="p">{</span>
-</span><span class='line'>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>It seems not that same with how we use jQuery. secret is the aliases.</p>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="c1">// we can use the dollar sign to call the jQuery function</span>
-</span><span class='line'><span class="nx">$</span> <span class="o">=</span> <span class="nx">jQuery</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">// we can use the `jQuery.fn.newFeature = function() {}` to extend the jQuery instance function</span>
-</span><span class='line'><span class="c1">// Why we can add fn key to jQuery?</span>
-</span><span class='line'><span class="c1">// Answer is jQuery is a function and function is a object too. So we can add</span>
-</span><span class='line'><span class="c1">// properties to function</span>
-</span><span class='line'><span class="nx">jQuery</span><span class="p">.</span><span class="nx">fn</span> <span class="o">=</span> <span class="nx">jQuery</span><span class="p">.</span><span class="nx">prototype</span><span class="p">;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>But when <code>$("#someid")</code> always return a jQuery instance, where the <code>new</code> keyword?</p>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">jQuery</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-</span><span class='line'>    <span class="c1">// jQuery.prototype.init is the actually creator function</span>
-</span><span class='line'>    <span class="k">return</span> <span class="k">new</span> <span class="nx">jQuery</span><span class="p">.</span><span class="nx">fn</span><span class="p">.</span><span class="nx">init</span><span class="p">(</span> <span class="nx">selector</span><span class="p">,</span> <span class="nx">context</span> <span class="p">);</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">//  mount prototype on jQuery to jQuery.fn.init</span>
-</span><span class='line'><span class="nx">jQuery</span><span class="p">.</span><span class="nx">fn</span><span class="p">.</span><span class="nx">init</span><span class="p">.</span><span class="nx">prototype</span> <span class="o">=</span> <span class="nx">jquery</span><span class="p">.</span><span class="nx">fn</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Let&rsquo;s see the complete struture now.</p>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span>order.rb </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -588,50 +134,113 @@ I finaly find a clue after several attempts.</p>
 <span class='line-number'>20</span>
 <span class='line-number'>21</span>
 <span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="c1">// utils</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">Order</span>
+</span><span class='line'>  <span class="kp">include</span> <span class="no">AASM</span>
 </span><span class='line'>
-</span><span class='line'><span class="c1">// class structure</span>
-</span><span class='line'><span class="nx">jQuery</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-</span><span class='line'>    <span class="k">return</span> <span class="k">new</span> <span class="nx">jQuery</span><span class="p">.</span><span class="nx">fn</span><span class="p">.</span><span class="nx">init</span><span class="p">(</span> <span class="nx">selector</span><span class="p">,</span> <span class="nx">context</span> <span class="p">);</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'><span class="nx">jQuery</span><span class="p">.</span><span class="nx">fn</span> <span class="o">=</span> <span class="p">{</span>
-</span><span class='line'>   <span class="nx">init</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">selector</span><span class="p">,</span> <span class="nx">context</span><span class="p">)</span> <span class="p">{}</span>
-</span><span class='line'>   <span class="c1">// other core instance methods</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'><span class="nx">jQuery</span><span class="p">.</span><span class="nx">fn</span> <span class="o">=</span> <span class="nx">jQuery</span><span class="p">.</span><span class="nx">prototype</span><span class="p">;</span>
-</span><span class='line'><span class="nx">jQuery</span><span class="p">.</span><span class="nx">fn</span><span class="p">.</span><span class="nx">init</span><span class="p">.</span><span class="nx">prototype</span> <span class="o">=</span> <span class="nx">jquery</span><span class="p">.</span><span class="nx">fn</span>
+</span><span class='line'>  <span class="n">aasm</span> <span class="ss">column</span><span class="p">:</span> <span class="ss">:production_status</span> <span class="k">do</span>
+</span><span class='line'>    <span class="n">state</span> <span class="ss">:idle</span><span class="p">,</span> <span class="ss">initial</span><span class="p">:</span> <span class="kp">true</span>
+</span><span class='line'>    <span class="n">state</span> <span class="ss">:at_center</span>
+</span><span class='line'>    <span class="n">state</span> <span class="ss">:ready</span>
 </span><span class='line'>
-</span><span class='line'><span class="c1">// instance methods extend</span>
-</span><span class='line'><span class="c1">// or use this style: jQuery.fn.hello = funtion() {}</span>
-</span><span class='line'><span class="nx">jQuery</span><span class="p">.</span><span class="nx">extend</span><span class="p">(</span><span class="nx">jQuery</span><span class="p">.</span><span class="nx">fn</span><span class="p">,</span> <span class="p">{</span>
-</span><span class='line'>   <span class="c1">// ...</span>
-</span><span class='line'><span class="p">});</span>
+</span><span class='line'>    <span class="n">after_all_transitions</span> <span class="ss">:_save_production_status_change</span>
 </span><span class='line'>
-</span><span class='line'><span class="c1">// class methods extend</span>
-</span><span class='line'><span class="c1">// or use this style: jQuery.hello = funtion() {}</span>
-</span><span class='line'><span class="c1">// maybe some utils</span>
-</span><span class='line'><span class="nx">jQuery</span><span class="p">.</span><span class="nx">extend</span><span class="p">(</span><span class="nx">jQuery</span><span class="p">,</span> <span class="p">{</span>
-</span><span class='line'>  <span class="nx">isFunction</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span> <span class="nx">obj</span> <span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>    <span class="k">return</span> <span class="nx">jQuery</span><span class="p">.</span><span class="nx">type</span><span class="p">(</span><span class="nx">obj</span><span class="p">)</span> <span class="o">===</span> <span class="s2">&quot;function&quot;</span><span class="p">;</span>
-</span><span class='line'>  <span class="p">}</span>
-</span><span class='line'>  <span class="c1">// ...</span>
-</span><span class='line'><span class="p">});</span>
+</span><span class='line'>    <span class="n">event</span> <span class="ss">:check_in</span><span class="p">,</span> <span class="ss">before</span><span class="p">:</span> <span class="ss">:set_current_step_to_center</span><span class="p">,</span> <span class="ss">guard</span><span class="p">:</span> <span class="ss">:_status_fit</span> <span class="k">do</span>
+</span><span class='line'>      <span class="n">transitions</span> <span class="ss">from</span><span class="p">:</span> <span class="o">[</span><span class="ss">:idle</span><span class="o">]</span><span class="p">,</span> <span class="ss">to</span><span class="p">:</span> <span class="ss">:at_center</span><span class="p">,</span> <span class="ss">after</span><span class="p">:</span> <span class="ss">:_change_status_to_repairing</span>
+</span><span class='line'>    <span class="k">end</span>
 </span><span class='line'>
-</span><span class='line'><span class="c1">// module export or AMD</span>
-</span><span class='line'><span class="nb">window</span><span class="p">.</span><span class="nx">$</span> <span class="o">=</span> <span class="nb">window</span><span class="p">.</span><span class="nx">jQuery</span> <span class="o">=</span> <span class="nx">jQuery</span>
+</span><span class='line'>    <span class="n">event</span> <span class="ss">:to_ready</span><span class="p">,</span> <span class="ss">before</span><span class="p">:</span> <span class="ss">:set_current_step</span><span class="p">,</span> <span class="ss">guard</span><span class="p">:</span> <span class="ss">:_status_fit</span> <span class="k">do</span>
+</span><span class='line'>      <span class="n">transitions</span> <span class="ss">from</span><span class="p">:</span> <span class="o">[</span><span class="ss">:at_center</span><span class="p">,</span> <span class="ss">:idle</span><span class="o">]</span><span class="p">,</span> <span class="ss">to</span><span class="p">:</span> <span class="ss">:ready</span><span class="p">,</span> <span class="ss">after</span><span class="p">:</span> <span class="ss">:_change_status_to_repairing</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>    <span class="o">.</span><span class="n">.</span><span class="o">.</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="o">.</span><span class="n">.</span><span class="o">.</span>
+</span><span class='line'><span class="k">end</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
+<h2>How to keep actions in transaction?</h2>
 
+<p>Of course, you can acheive it by wrapping actions in a transaction. eg.</p>
+
+<pre><code>Order.transaction do
+  order.check_in
+  order.save
+end
+</code></pre>
+
+<p>However, aasm also provide a bang method to acheive it. eg.</p>
+
+<pre><code>order.check_in!
+</code></pre>
+
+<p>But the two forms is not the same.</p>
+
+<p>Please take care the save point if you choose to use <code>order.check_in!</code>.
+<code>order.check_in!</code> internally calls save after <code>new_state enter</code> callback.
+So, changes in callbacks after <code>new_state enter</code>  will not auto-save.</p>
+
+<p>See the list of callbacks.</p>
+
+<pre><code>begin
+  event           before
+  event           guards
+  transition      guards
+  old_state       before_exit
+  old_state       exit
+                  after_all_transitions
+  transition      after
+  new_state       before_enter
+  new_state       enter
+  ...update state...               # here is the save point
+  event         success            # if persist successful
+  old_state       after_exit
+  new_state       after_enter
+  event           after
+rescue
+  event           error
+end
+</code></pre>
+
+<p>Let&rsquo;s see a example. If I wrote the <code>check_in</code> event like following:</p>
+
+<pre><code>event :check_in, before: :set_current_step_to_center, guard: :_status_fit,
+  after: :_change_status_to_repairing do
+  transitions from: [:idle], to: :at_center
+end
+
+def _change_status_to_repairing
+  status = 'repairing'
+end
+</code></pre>
+
+<p>The <code>_change_status_to_repairing</code> is at <code>event after</code> callback.
+So, when I run <code>order.check_in!</code>, <code>order.status</code> will not persist.</p>
+
+<pre><code>order.check_in!
+order.reload.status == 'repairing'
+# =&gt; false
+</code></pre>
+
+<p>Of cause, you can call save in <code>_change_status_to_repairing</code>
+But the order will be persisted even when you run non-bang method
+<code>order.check_in</code>.</p>
+
+<pre><code>def _change_status_to_repairing
+  status = 'repairing'
+  save
+end
+</code></pre>
+
+<p>Oh. Maybe you should choose to use the first form.</p>
+
+<h2>Avoid using Proc.new with optional argument in guards and callbacks</h2>
+
+<p>See <a href="https://github.com/aasm/aasm/issues/293">https://github.com/aasm/aasm/issues/293</a></p>
+
+<h2>Take care of before event filter</h2>
+
+<p>See <a href="https://github.com/aasm/aasm/issues/294">https://github.com/aasm/aasm/issues/294</a></p>
 </div>
   
   
@@ -676,13 +285,6 @@ I finaly find a clue after several attempts.</p>
       </li>
     
   </ul>
-</section>
-<section>
-  <h1>About Me</h1>
-  <p> My name is Kexian Zhong, lingceng is my nickname. I&#8217;m a Rails developer, live in Beijing, China.</p>
-  <a href="https://github.com/lingceng"> Github </a>
-  <a href="https://twitter.com/lingceng"> Twitter </a>
-  <a href="https://www.linkedin.com/in/lingceng"> Linkedin </a><br/>
 </section>
 
   

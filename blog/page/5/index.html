@@ -9,9 +9,7 @@
   <meta name="author" content="Lingceng">
 
   
-  <meta name="description" content="config git config --global user.name "John Doe"
-git config --global user.email "johndoe@example.com" how to get help git config --help
-git help &hellip;">
+  <meta name="description" content="Here we have a table named user_statuses like following name | status --------+------- 'jack' | 1 'jack' | 2 'sam' | 6 'lucy' | 1 'toy' | 2 'toy' | 7 &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -52,8 +50,6 @@ git help &hellip;">
   <header role="banner"><hgroup>
   <h1><a href="/">Lingceng's Blog</a></h1>
   
-    <h2>Make it now!</h2>
-  
 </hgroup>
 
 </header>
@@ -64,7 +60,7 @@ git help &hellip;">
   
 <form action="http://google.com/search" method="get">
   <fieldset role="search">
-    <input type="hidden" name="q" value="site:lingceng.github.io" />
+    <input type="hidden" name="sitesearch" value="lingceng.github.io" />
     <input class="search" type="text" name="q" results="0" placeholder="Search"/>
   </fieldset>
 </form>
@@ -72,6 +68,7 @@ git help &hellip;">
 <ul class="main-navigation">
   <li><a href="/">Blog</a></li>
   <li><a href="/blog/archives">Archives</a></li>
+  <li><a href="/blog/about">About</a></li>
 </ul>
 
 </nav>
@@ -85,7 +82,7 @@ git help &hellip;">
       
   <header>
     
-      <h1 class="entry-title"><a href="/blog/2014/03/13/git-get-start/">Git Get Start</a></h1>
+      <h1 class="entry-title"><a href="/blog/2015/10/10/union-select-statements-in-rails/">Union Select Statements in Rails</a></h1>
     
     
       <p class="meta">
@@ -101,197 +98,63 @@ git help &hellip;">
   
 
 
-<time datetime="2014-03-13T07:21:00+08:00" pubdate data-updated="true">Mar 13<span>th</span>, 2014</time>
+<time datetime="2015-10-10T11:42:00+08:00" pubdate data-updated="true">Oct 10<span>th</span>, 2015</time>
         
       </p>
     
   </header>
 
 
-  <div class="entry-content"><p>config</p>
+  <div class="entry-content"><p>Here we have a table named <code>user_statuses</code> like following</p>
 
-<pre><code>git config --global user.name "John Doe"
-git config --global user.email "johndoe@example.com"
+<pre><code> name    | status
+ --------+-------
+  'jack' |   1
+  'jack' |   2
+  'sam'  |   6
+  'lucy' |   1
+  'toy'  |   2
+  'toy'  |   7
+  'jack' |   7
 </code></pre>
 
-<p>how to get help</p>
+<p>I want to collect the status with follwing rule:</p>
 
-<pre><code>git config --help
-git help config
-man git-config
+<ul>
+<li>Keep all [1-2] statuses</li>
+<li>Ignore other status above 2 if one has any [1-2] status</li>
+<li>keep only one ohter status above 2 if one do not has any [1-2] status</li>
+</ul>
+
+
+<p>So the result should like following:</p>
+
+<pre><code> name    | status
+ --------+-------
+  'jack' |   1
+  'jack' |   2
+  'sam'  |   6
+  'lucy' |   1
+  'toy'  |   2
 </code></pre>
 
-<p>start up</p>
+<p>The real life case is more complicated. I want to achieve this rule in SQL.
+As a result I can do some group or something else later.</p>
 
-<pre><code>git init
-git add .
-git commit -m "Depot Scaffold"
+<p>After some searches, I found out <code>union all</code> can do the job.
+But call <code>union</code> on ActiveRelation returns a Arel::Nodes::Union but ActiveRelation.
+Gem <a href="https://github.com/brianhempel/active_record_union">active record union</a> get a
+good solution.</p>
 
-add and commit
-git commit -a -m "Depot Scaffold"
+<p>Here&rsquo;s my demo sulution:</p>
+
+<pre><code>  statuses = [1, 2]
+  left = UserStatus.where(status: statuses).select(:name, :status)
+  right = UserStatus.select(:name, 'MIN(status) as status').
+    group(:name).
+    having('MIN(status) &gt; 2')
+  query = left.union_all(right)
 </code></pre>
-
-<p>compare with version before last commit and last commit</p>
-
-<pre><code>git diff HEAD^ HEAD
-
-# show diff stat
-git diff --stat
-
-# show the tree-like view
-git log --graph --oneline --all
-</code></pre>
-
-<p>specify the file path</p>
-
-<pre><code>git diff HEAD^ HEAD app/models/product.rb
-</code></pre>
-
-<p>git ammend the last commit</p>
-
-<pre><code>git commit -amend
-</code></pre>
-
-<p>powerful edit commit command</p>
-
-<pre><code>git rebase --interactive HEAD^5
-</code></pre>
-
-<p>git include delelted files</p>
-
-<pre><code>git add -A
-</code></pre>
-
-<p>Creates a remote named &ldquo;origin&rdquo; pointing at your GitHub repository</p>
-
-<pre><code>git remote add origin https://github.com/username/Hello-World.git
-</code></pre>
-
-<p>Sends your commits in the &ldquo;master&rdquo; branch to GitHub</p>
-
-<pre><code>git push origin master
-</code></pre>
-
-<p>pull down changes</p>
-
-<pre><code>git pull orgin master
-</code></pre>
-</div>
-  
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2013/11/30/run-cron-every-5-hours/">Run Cron Every 5 Hours</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-11-30T16:56:00+08:00" pubdate data-updated="true">Nov 30<span>th</span>, 2013</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>> crontab -e</p>
-
-<figure class='code'><figcaption><span>Run Cron Every 5 Hours </span></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class='sh'><span class='line'><span class="c"># set the shell</span>
-</span><span class='line'><span class="nv">SHELL</span><span class="o">=</span>/bin/sh
-</span><span class='line'><span class="nv">PATH</span><span class="o">=</span>/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
-</span><span class='line'>
-</span><span class='line'><span class="c"># m h dom mon dow usercommand</span>
-</span><span class='line'>0 */5 * * * /path/hello.sh &gt;&gt; /path/hello.log 2&gt;&amp;1
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h4>Setting the PATH is Always Necessary</h4>
-
-<p><em>Crontab ignores login configuration</em>, which leads to a command not found.
-I have tested <em>env</em> command with crontab on my Ubuntu12.04 and I got the following result:</p>
-
-<pre><code>HOME=/home/lingceng
-LOGNAME=lingceng
-PATH=/usr/bin:/bin
-LANG=en_US.UTF-8
-SHELL=/bin/sh
-PWD=/home/lingceng
-</code></pre>
-
-<h4>Not Really Every 5 Hours</h4>
-
-<p>The demo shell script <strong>just runs at 0, 5, 15, 20 o&#8217;clock</strong>, 20 to 0 is just 4 hours.</p>
-
-<h4>Check Cron log</h4>
-
-<p>Cron log default put <em>/var/log/syslog</em>, use following command to monitor it:</p>
-
-<pre><code>tail -f /var/log/syslog | grep CRON
-</code></pre>
-
-<h4>Get More Help</h4>
-
-<p>> <a href="http://unixhelp.ed.ac.uk/CGI/man-cgi?crontab+5">man 5 crontab</a></p>
-</div>
-  
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2013/10/08/hello-world/">Hello World</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-10-08T13:41:00+08:00" pubdate data-updated="true">Oct 8<span>th</span>, 2013</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>Hello everyone! Here&rsquo;s my first post on my blog!</p>
 </div>
   
   
@@ -300,6 +163,8 @@ PWD=/home/lingceng
     </article>
   
   <div class="pagination">
+    
+      <a class="prev" href="/blog/page/6/">&larr; Older</a>
     
     <a href="/blog/archives">Blog Archives</a>
     
@@ -334,13 +199,6 @@ PWD=/home/lingceng
       </li>
     
   </ul>
-</section>
-<section>
-  <h1>About Me</h1>
-  <p> My name is Kexian Zhong, lingceng is my nickname. I&#8217;m a Rails developer, live in Beijing, China.</p>
-  <a href="https://github.com/lingceng"> Github </a>
-  <a href="https://twitter.com/lingceng"> Twitter </a>
-  <a href="https://www.linkedin.com/in/lingceng"> Linkedin </a><br/>
 </section>
 
   

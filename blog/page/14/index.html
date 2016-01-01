@@ -5,11 +5,19 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Category: Javascript - Lingceng's Blog</title>
+  <title>Lingceng's Blog</title>
   <meta name="author" content="Lingceng">
 
   
-  <meta name="description" content="Category: Javascript">
+  <meta name="description" content="> crontab -e Run Cron Every 5 Hours 1
+2
+3
+4
+5
+6
+# set the shell
+SHELL=/bin/sh
+PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin # m h &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +26,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://lingceng.github.ioblog/categories/javascript">
+  <link rel="canonical" href="http://lingceng.github.io/blog/page/14">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/atom.xml" rel="alternate" title="Lingceng's Blog" type="application/atom+xml">
@@ -74,40 +82,99 @@
 </nav>
   <div id="main">
     <div id="content">
-      <div>
-<article role="article">
+      <div class="blog-index">
   
+  
+  
+    <article>
+      
   <header>
-    <h1 class="entry-title">Category: Javascript</h1>
+    
+      <h1 class="entry-title"><a href="/blog/2013/11/30/run-cron-every-5-hours/">Run Cron Every 5 Hours</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-11-30T16:56:00+08:00" pubdate data-updated="true">Nov 30<span>th</span>, 2013</time>
+        
+      </p>
     
   </header>
-  
-  <div id="blog-archives" class="category">
 
 
+  <div class="entry-content"><p>> crontab -e</p>
 
-  
-  <h2>2015</h2>
+<figure class='code'><figcaption><span>Run Cron Every 5 Hours </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'><span class="c"># set the shell</span>
+</span><span class='line'><span class="nv">SHELL</span><span class="o">=</span>/bin/sh
+</span><span class='line'><span class="nv">PATH</span><span class="o">=</span>/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+</span><span class='line'>
+</span><span class='line'><span class="c"># m h dom mon dow usercommand</span>
+</span><span class='line'>0 */5 * * * /path/hello.sh &gt;&gt; /path/hello.log 2&gt;&amp;1
+</span></code></pre></td></tr></table></div></figure>
 
-<article>
-  
-<h1><a href="/blog/2015/12/15/put-javascript-library-files-together-in-rails/">Put javascript library files together in Rails</a></h1>
-<time datetime="2015-12-15T17:06:00+08:00" pubdate><span class='month'>Dec</span> <span class='day'>15</span> <span class='year'>2015</span></time>
 
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/javascript/'>Javascript</a>, <a class='category' href='/blog/categories/rails/'>Rails</a></span>
-</footer>
+<h4>Setting the PATH is Always Necessary</h4>
 
+<p><em>Crontab ignores login configuration</em>, which leads to a command not found.
+I have tested <em>env</em> command with crontab on my Ubuntu12.04 and I got the following result:</p>
 
-</article>
+<pre><code>HOME=/home/lingceng
+LOGNAME=lingceng
+PATH=/usr/bin:/bin
+LANG=en_US.UTF-8
+SHELL=/bin/sh
+PWD=/home/lingceng
+</code></pre>
 
+<h4>Not Really Every 5 Hours</h4>
+
+<p>The demo shell script <strong>just runs at 0, 5, 15, 20 o&#8217;clock</strong>, 20 to 0 is just 4 hours.</p>
+
+<h4>Check Cron log</h4>
+
+<p>Cron log default put <em>/var/log/syslog</em>, use following command to monitor it:</p>
+
+<pre><code>tail -f /var/log/syslog | grep CRON
+</code></pre>
+
+<h4>Get More Help</h4>
+
+<p>> <a href="http://unixhelp.ed.ac.uk/CGI/man-cgi?crontab+5">man 5 crontab</a></p>
 </div>
-
   
-</article>
+  
 
+
+    </article>
+  
+  <div class="pagination">
+    
+      <a class="prev" href="/blog/page/15/">&larr; Older</a>
+    
+    <a href="/blog/archives">Blog Archives</a>
+    
+    <a class="next" href="/blog/page/13/">Newer &rarr;</a>
+    
+  </div>
 </div>
-
 <aside class="sidebar">
   
     <section>
@@ -137,13 +204,8 @@
   </ul>
 </section>
 
-
-
-
-
   
 </aside>
-
 
     </div>
   </div>
