@@ -4,7 +4,7 @@
   <title><![CDATA[Lingceng's Blog]]></title>
   <link href="http://lingceng.github.io/atom.xml" rel="self"/>
   <link href="http://lingceng.github.io/"/>
-  <updated>2016-01-02T09:18:28+08:00</updated>
+  <updated>2016-01-02T10:33:42+08:00</updated>
   <id>http://lingceng.github.io/</id>
   <author>
     <name><![CDATA[Lingceng]]></name>
@@ -335,6 +335,10 @@ end
 <h2>Take care of before event filter</h2>
 
 <p>See <a href="https://github.com/aasm/aasm/issues/294">https://github.com/aasm/aasm/issues/294</a></p>
+
+<h2>duplicate global callbacks caused by after_all_transitions</h2>
+
+<p>See <a href="https://github.com/aasm/aasm/issues/297">https://github.com/aasm/aasm/issues/297</a></p>
 ]]></content>
   </entry>
   
