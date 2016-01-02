@@ -109,3 +109,6 @@ See https://github.com/aasm/aasm/issues/293
 
 ## Take care of before event filter
 See https://github.com/aasm/aasm/issues/294
+
+## duplicate global callbacks caused by after_all_transitions
+See https://github.com/aasm/aasm/issues/297
