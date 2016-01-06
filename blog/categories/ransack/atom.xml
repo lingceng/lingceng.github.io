@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Ransack | Lingceng's Blog]]></title>
   <link href="http://lingceng.github.io/blog/categories/ransack/atom.xml" rel="self"/>
   <link href="http://lingceng.github.io/"/>
-  <updated>2016-01-02T10:33:42+08:00</updated>
+  <updated>2016-01-06T11:05:49+08:00</updated>
   <id>http://lingceng.github.io/</id>
   <author>
     <name><![CDATA[Lingceng]]></name>
@@ -95,7 +95,7 @@ So I add some codes in my controller:</p>
 </span><span class='line'><span class="sr">end</span>
 </span></code></pre></td></tr></table></div></figure></notextile></div></p>
 
-<p>The <em>created_at_lt</em> will convert to &lsquo;2015-01-01 59:59&rsquo;.</p>
+<p>The <em>created_at_lt</em> will convert to &lsquo;2015-01-01 23:59&rsquo;.</p>
 
 <h3>DRY</h3>
 
