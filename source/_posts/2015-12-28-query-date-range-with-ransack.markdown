@@ -50,7 +50,7 @@ def index
 end
 {% endcodeblock %}
 
-The *created_at_lt* will convert to '2015-01-01 59:59'.
+The *created_at_lt* will convert to '2015-01-01 23:59'.
 
 ### DRY
 I customed the ransack predicates to avoid duplication.
