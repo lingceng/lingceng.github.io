@@ -4,7 +4,7 @@
   <title><![CDATA[Lingceng's Blog]]></title>
   <link href="http://lingceng.github.io/atom.xml" rel="self"/>
   <link href="http://lingceng.github.io/"/>
-  <updated>2016-01-06T11:05:49+08:00</updated>
+  <updated>2016-01-06T17:52:05+08:00</updated>
   <id>http://lingceng.github.io/</id>
   <author>
     <name><![CDATA[Lingceng]]></name>
@@ -651,20 +651,23 @@ config.time_zone = 'YourLocalName'
     <id>http://lingceng.github.io/blog/2014/10/16/turbolink-best-practice</id>
     <content type="html"><![CDATA[<h2>What does Turbolink do?</h2>
 
-<p><a href="https://github.com/rails/turbolinks">Turbolink</a> makes browser to only replace
-page&rsquo;s <code>&lt;body&gt;</code> and <code>&lt;title&gt;</code> to simulate page jumping when click a link.</p>
+<p><a href="https://github.com/rails/turbolinks">Turbolink</a> makes browser only replace page&rsquo;s <code>&lt;body&gt;</code> and <code>&lt;title&gt;</code> to simulate page jumping.</p>
 
-<p>It&rsquo;s fast because no need to recompile the JavaScript or CSS.</p>
-
-<p>As you can see, we must keep stuffs in <code>&lt;head&gt;</code> the same between pages
-when jumping with Turbolink.  In other words, Things will go wrong if the pages have
-different content in <code>&lt;head&gt;</code>.</p>
+<p>TLDR:
+Javascript context will be kept even after page jumpings.
+So you need to take care all cases of javascript global handles.
+eg. global events bindings, global varibles, global timmers.</p>
 
 <h2>What&rsquo;s the best practice?</h2>
 
-<p>Put all JavaScript and CSS in <code>&lt;HEAD&gt;</code> and keep them the same in every page.
-Use <a href="https://coderwall.com/p/ypzfdw/faster-page-loads-with-turbolinks">jquery.turbolink</a> to
-hijack <code>jQuery.ready()</code> in jQuery like following:</p>
+<p>Put all JavaScript and CSS in <code>&lt;HEAD&gt;</code> and keep <code>&lt;HEAD&gt;</code> the same in every page.</p>
+
+<p>Use <a href="https://coderwall.com/p/ypzfdw/faster-page-loads-with-turbolinks">jquery.turbolink</a> to hijack <code>jQuery.ready()</code>.</p>
+
+<p>jquery.turbolink make sure all events binded with <strong>jQuery.ready()</strong> or <strong>jQuery()</strong> are triggered.
+No matter you are doing a fresh page load or turbolink jumps.</p>
+
+<p>You should load scripts in following order:</p>
 
 <pre><code>jQuery
 jQuery.turbolinks
@@ -673,7 +676,7 @@ Turbolinks
 </code></pre>
 
 <p><a href="https://coderwall.com/p/ypzfdw/faster-page-loads-with-turbolinks">Here</a>
-explains more:</p>
+explains why you should put tubolink at last:</p>
 
 <blockquote><p>The reason for jQuery.turbolinks being before all scripts is so to let
 it hijack the <code>$(function() { ... })</code> call that your other scripts will use.</p>
@@ -681,16 +684,29 @@ it hijack the <code>$(function() { ... })</code> call that your other scripts wi
 <p>Turbolinks then needs to be at the end because it has to be the last
 to install the click handler, so not to interfere with other scripts.</p></blockquote>
 
-<h2>Take care of some dangerous things</h2>
+<h2>Take care of dangerous global handles</h2>
 
-<p>Global delegated events will effect every page. eg. You add a script as
-following and &ldquo;clicked button&rdquo; will be printed when you click a button
-in every pages.</p>
+<p>Global delegated events will effect every page.
+eg. You add a script as following:</p>
 
 <pre><code>$(document).on('click', 'button', function(){
   console.log("clicked button")
 })
 </code></pre>
+
+<p>&ldquo;clicked button&rdquo; will be printed when you click a button <strong>in every pages</strong>.</p>
+
+<p>Another example is the hijacked jquery ready event as mentioned above.
+So you should distinguish pages in you codes. eg.</p>
+
+<pre><code>$(function() {
+  if (current_page == 'index') {
+    // do staff for index page
+  }
+});
+</code></pre>
+
+<p>See details about distinguishing pages below.</p>
 
 <p>Global <code>setInterval</code> or <code>setTimeout</code> need to be clear too! DEMO:</p>
 
@@ -703,8 +719,8 @@ in every pages.</p>
 
 <h2>How to control javascript init for every page?</h2>
 
-<p>Mark to <code>&lt;body&gt;</code> when need specific page logic, trigger it according to mark.
-I want javascript only run in topics pages:</p>
+<p>Mark <code>&lt;body&gt;</code> with tags then trigger it according to tag. eg.
+I want javascript only run in topics pages in my rails app:</p>
 
 <pre><code>// In app/views/layouts/application.html.erb
 &lt;body data-controller-name="&lt;%= controller_name %&gt;"&gt;
@@ -723,34 +739,25 @@ $(document).ready -&gt;
 //= require topics
 </code></pre>
 
-<h2>You can put javascript at the end of body. But it&rsquo;s not recommended.</h2>
+<h2>You can put javascript at the end of body.</h2>
 
-<p>You will loose benefit with HTTP cache when you put javascript at the and of the
+<p>But it&rsquo;s not recommended.
+You will loose benefit with HTTP cache when you put javascript at the and of the
 body.</p>
 
-<h2>Turbolink has other features to make it fast.</h2>
+<p>And if you add code with hijack jquery ready event like following:</p>
 
-<p>Turbolink uses client cache pages.</p>
-
-<pre><code># View current page cache size
-Turbolinks.pagesCached();
-# Set the cache size
-Turbolinks.pagesCached(20);
+<pre><code>$(document).ready -&gt;
+  console.log 'hello'
 </code></pre>
 
-<p>Turbolink uses transition cache.
-Transition will immediately display the cached copy of page and then replace
-with remote returned one.</p>
+<p>After jumps in and out with turbolink.
+The ready events will be bind twice.</p>
 
-<pre><code># enable transition cache
-Turbolinks.enableTransitionCache();
-</code></pre>
-
-<p>Browser native process bar will not work when using Turbolink.
-So Turbolink provide a JavaScript-and-CSS-based one. eg. in 2.5 version</p>
-
-<pre><code>Turbolinks.enableProgressBar();
-</code></pre>
+<p>Problem can not be solved even add the <code>data-turbolinks-eval=false</code> tag.
+<code>data-turbolinks-eval=false</code> can avoid the events being muti-binded.
+But the <code>console.log 'hello'</code> has already registered in the ready event.
+So the &lsquo;hello&rsquo; will be printed in every page.</p>
 
 <h2>What will happen when I changed head content?</h2>
 
@@ -773,7 +780,7 @@ The script tag will be ignored.</p>
 &lt;script type="text/javascript" src='hello.js'&gt; &lt;/script&gt;
 </code></pre>
 
-<p>You add a <code>data-turbolinks-track</code> tag to make it work. But it has drawbacks.</p>
+<p>You can add a <code>data-turbolinks-track</code> tag to make it work. But it has drawbacks.</p>
 
 <pre><code>&lt;script type="text/javascript" src="http://lingceng.github.io/hello.js" data-turbolinks-track&gt;&lt;/script&gt;
 </code></pre>
