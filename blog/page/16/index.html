@@ -5,11 +5,12 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Union select statements in Rails - Lingceng's Blog</title>
+  <title>Lingceng's Blog</title>
   <meta name="author" content="Lingceng">
 
   
-  <meta name="description" content="Here we have a table named user_statuses like following name | status --------+------- 'jack' | 1 'jack' | 2 'sam' | 6 'lucy' | 1 'toy' | 2 'toy' | 7 &hellip;">
+  <meta name="description" content="Hello everyone! Here&rsquo;s my first post on my blog!
+">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +19,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://lingceng.github.io/blog/2015/10/10/union-select-statements-in-rails">
+  <link rel="canonical" href="http://lingceng.github.io/blog/page/16">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/atom.xml" rel="alternate" title="Lingceng's Blog" type="application/atom+xml">
@@ -74,12 +75,15 @@
 </nav>
   <div id="main">
     <div id="content">
-      <div>
-<article class="hentry" role="article">
+      <div class="blog-index">
   
+  
+  
+    <article>
+      
   <header>
     
-      <h1 class="entry-title">Union Select Statements in Rails</h1>
+      <h1 class="entry-title"><a href="/blog/2013/10/08/hello-world/">Hello World</a></h1>
     
     
       <p class="meta">
@@ -95,123 +99,29 @@
   
 
 
-<time datetime="2015-10-10T11:42:00+08:00" pubdate data-updated="true">Oct 10<span>th</span>, 2015</time>
+<time datetime="2013-10-08T13:41:00+08:00" pubdate data-updated="true">Oct 8<span>th</span>, 2013</time>
         
       </p>
     
   </header>
 
 
-<div class="entry-content"><p>Here we have a table named <code>user_statuses</code> like following</p>
-
-<pre><code> name    | status
- --------+-------
-  'jack' |   1
-  'jack' |   2
-  'sam'  |   6
-  'lucy' |   1
-  'toy'  |   2
-  'toy'  |   7
-  'jack' |   7
-</code></pre>
-
-<p>I want to collect the status with follwing rule:</p>
-
-<ul>
-<li>Keep all [1-2] statuses</li>
-<li>Ignore other status above 2 if one has any [1-2] status</li>
-<li>keep only one ohter status above 2 if one do not has any [1-2] status</li>
-</ul>
-
-
-<p>So the result should like following:</p>
-
-<pre><code> name    | status
- --------+-------
-  'jack' |   1
-  'jack' |   2
-  'sam'  |   6
-  'lucy' |   1
-  'toy'  |   2
-</code></pre>
-
-<p>The real life case is more complicated. I want to achieve this rule in SQL.
-As a result I can do some group or something else later.</p>
-
-<p>After some searches, I found out <code>union all</code> can do the job.
-But call <code>union</code> on ActiveRelation returns a Arel::Nodes::Union but ActiveRelation.
-Gem <a href="https://github.com/brianhempel/active_record_union">active record union</a> get a
-good solution.</p>
-
-<p>Here&rsquo;s my demo sulution:</p>
-
-<pre><code>  statuses = [1, 2]
-  left = UserStatus.where(status: statuses).select(:name, :status)
-  right = UserStatus.select(:name, 'MIN(status) as status').
-    group(:name).
-    having('MIN(status) &gt; 2')
-  query = left.union_all(right)
-</code></pre>
+  <div class="entry-content"><p>Hello everyone! Here&rsquo;s my first post on my blog!</p>
 </div>
-
-
-  <footer>
-    <p class="meta">
-      
   
-
-<span class="byline author vcard">Posted by <span class="fn">Lingceng</span></span>
-
-      
-
-
-
-
-
-
-
-
   
 
 
-<time datetime="2015-10-10T11:42:00+08:00" pubdate data-updated="true">Oct 10<span>th</span>, 2015</time>
-      
-
-<span class="categories">
+    </article>
   
-    <a class='category' href='/blog/categories/rails/'>Rails</a>, <a class='category' href='/blog/categories/sql/'>SQL</a>
-  
-</span>
-
-
-    </p>
+  <div class="pagination">
     
-      <div class="sharing">
-  
-  
-  
-</div>
-
+    <a href="/blog/archives">Blog Archives</a>
     
-    <p class="meta">
-      
-        <a class="basic-alignment left" href="/blog/2014/11/26/when-rails-invalidauthenticitytoken-happens/" title="Previous Post: When Rails InvalidAuthenticityToken Happens">&laquo; When Rails InvalidAuthenticityToken Happens</a>
-      
-      
-        <a class="basic-alignment right" href="/blog/2015/12/15/put-javascript-library-files-together-in-rails/" title="Next Post: Put javascript library files together in Rails">Put javascript library files together in Rails &raquo;</a>
-      
-    </p>
-  </footer>
-</article>
-
-  <section>
-    <h1>Comments</h1>
-    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    <a class="next" href="/blog/page/15/">Newer &rarr;</a>
+    
+  </div>
 </div>
-  </section>
-
-</div>
-
 <aside class="sidebar">
   
     <section>
@@ -241,13 +151,8 @@ good solution.</p>
   </ul>
 </section>
 
-
-
-
-
   
 </aside>
-
 
     </div>
   </div>
@@ -263,10 +168,7 @@ good solution.</p>
       var disqus_shortname = 'lingceng';
       
         
-        // var disqus_developer = 1;
-        var disqus_identifier = 'http://lingceng.github.io/blog/2015/10/10/union-select-statements-in-rails/';
-        var disqus_url = 'http://lingceng.github.io/blog/2015/10/10/union-select-statements-in-rails/';
-        var disqus_script = 'embed.js';
+        var disqus_script = 'count.js';
       
     (function () {
       var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;

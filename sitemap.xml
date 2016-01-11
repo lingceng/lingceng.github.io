@@ -67,16 +67,22 @@
         <lastmod>2016-01-06T11:05:21+08:00</lastmod>
     </url>
     <url>
+        <loc>
+            http://lingceng.github.io/blog/2016/01/11/diffs-between-formhelper-and-formtaghelper-in-rails/
+        </loc>
+        <lastmod>2016-01-11T13:56:28+08:00</lastmod>
+    </url>
+    <url>
         <loc>http://lingceng.github.io/blog/about/</loc>
-        <lastmod>2016-01-06T17:16:09+08:00</lastmod>
+        <lastmod>2016-01-11T13:56:28+08:00</lastmod>
     </url>
     <url>
         <loc>http://lingceng.github.io/blog/archives/</loc>
-        <lastmod>2016-01-06T17:16:09+08:00</lastmod>
+        <lastmod>2016-01-11T13:56:28+08:00</lastmod>
     </url>
     <url>
         <loc>http://lingceng.github.io/</loc>
-        <lastmod>2016-01-06T17:16:09+08:00</lastmod>
+        <lastmod>2016-01-11T13:56:28+08:00</lastmod>
     </url>
     <url>
         <loc>http://lingceng.github.io/robots.txt</loc>

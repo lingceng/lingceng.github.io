@@ -4,7 +4,7 @@
   <title><![CDATA[Lingceng's Blog]]></title>
   <link href="http://lingceng.github.io/atom.xml" rel="self"/>
   <link href="http://lingceng.github.io/"/>
-  <updated>2016-01-06T17:52:05+08:00</updated>
+  <updated>2016-01-11T13:57:57+08:00</updated>
   <id>http://lingceng.github.io/</id>
   <author>
     <name><![CDATA[Lingceng]]></name>
@@ -12,6 +12,127 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Diffs Between FormHelper and FormTagHelper in Rails]]></title>
+    <link href="http://lingceng.github.io/blog/2016/01/11/diffs-between-formhelper-and-formtaghelper-in-rails/"/>
+    <updated>2016-01-11T13:10:00+08:00</updated>
+    <id>http://lingceng.github.io/blog/2016/01/11/diffs-between-formhelper-and-formtaghelper-in-rails</id>
+    <content type="html"><![CDATA[<p>We can use <strong>form_for</strong> or <strong>form_tag</strong> to build forms in Rails.
+But their parameters act differently, which always bites me.</p>
+
+<p>For example, I have to wrap html options into a <code>html</code> key when I change from
+form_tag to form_for.</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="o">=</span> <span class="n">form_tag</span> <span class="s1">&#39;/techloglogies/board&#39;</span><span class="p">,</span> <span class="nb">method</span><span class="p">:</span> <span class="ss">:get</span><span class="p">,</span> <span class="ss">class</span><span class="p">:</span> <span class="s1">&#39;form-inline&#39;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">=</span> <span class="n">form_for</span> <span class="vi">@search</span><span class="p">,</span> <span class="ss">url</span><span class="p">:</span> <span class="s1">&#39;/techloglogies/board&#39;</span><span class="p">,</span> <span class="nb">method</span><span class="p">:</span> <span class="ss">:get</span><span class="p">,</span> <span class="ss">html</span><span class="p">:</span> <span class="p">{</span> <span class="ss">class</span><span class="p">:</span> <span class="s1">&#39;form-inline&#39;</span> <span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>And as the 3rd parameter of <code>f.select</code>  is <em>options</em> than <em>html_options</em>.
+So I have to add an empty hash <code>{}</code> there to skip it.</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="o">=</span> <span class="n">select_tag</span> <span class="s1">&#39;step&#39;</span><span class="p">,</span>
+</span><span class='line'>  <span class="n">options_for_select</span><span class="p">(</span><span class="ss">Order</span><span class="p">:</span><span class="ss">:PURE_STEPS</span><span class="o">.</span><span class="n">invert</span><span class="p">,</span> <span class="n">params</span><span class="o">[</span><span class="ss">:step</span><span class="o">]</span><span class="p">),</span>
+</span><span class='line'>  <span class="ss">class</span><span class="p">:</span> <span class="s1">&#39;form-control input-sm&#39;</span><span class="p">,</span> <span class="ss">style</span><span class="p">:</span> <span class="s1">&#39;width: 100px&#39;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">select</span> <span class="ss">:step</span><span class="p">,</span> <span class="ss">Order</span><span class="p">:</span><span class="ss">:PURE_STEPS</span><span class="o">.</span><span class="n">invert</span><span class="p">,</span> <span class="p">{},</span>
+</span><span class='line'>  <span class="ss">class</span><span class="p">:</span> <span class="s1">&#39;form-control input-sm&#39;</span><span class="p">,</span> <span class="ss">style</span><span class="p">:</span> <span class="s1">&#39;width: 100px&#39;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>Why they acts differently? Isn&rsquo;t f.select built on select_tag?</h2>
+
+<p><strong>The short answer is NO.</strong> f.select is not built on select_tag.
+Let&rsquo;s dig into the source.</p>
+
+<h3>Here&rsquo;s where form_for defined.</h3>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">module</span> <span class="nn">ActionView::Helper::FormHelper</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">text_field</span><span class="p">(</span><span class="n">object_name</span><span class="p">,</span> <span class="nb">method</span><span class="p">,</span> <span class="n">options</span> <span class="o">=</span> <span class="p">{})</span>
+</span><span class='line'>    <span class="ss">Tags</span><span class="p">:</span><span class="ss">:TextField</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">object_name</span><span class="p">,</span> <span class="nb">method</span><span class="p">,</span> <span class="nb">self</span><span class="p">,</span> <span class="n">options</span><span class="p">)</span><span class="o">.</span><span class="n">render</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">form_for</span><span class="p">(</span><span class="o">.</span><span class="n">.</span><span class="o">.</span><span class="p">)</span>
+</span><span class='line'>    <span class="o">.</span><span class="n">.</span><span class="o">.</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>In FormHelper above also defined a class named ActionView::Helpers::FormBuilder.
+The form_for uses the FormBuilder.</p>
+
+<p>Most methods in FormHelper are be delegated by FormBuilder.</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="c1"># in FormBuilder</span>
+</span><span class='line'><span class="k">def</span> <span class="c1">#{selector}(method, options = {})  # def text_field(method, options = {})</span>
+</span><span class='line'>  <span class="vi">@template</span><span class="o">.</span><span class="n">send</span><span class="p">(</span>                      <span class="c1">#   @template.send(</span>
+</span><span class='line'>    <span class="c1">#{selector.inspect},               #     &quot;text_field&quot;,</span>
+</span><span class='line'>    <span class="vi">@object_name</span><span class="p">,</span>                      <span class="c1">#     @object_name,</span>
+</span><span class='line'>    <span class="nb">method</span><span class="p">,</span>                            <span class="c1">#     method,</span>
+</span><span class='line'>    <span class="n">objectify_options</span><span class="p">(</span><span class="n">options</span><span class="p">))</span>        <span class="c1">#     objectify_options(options))</span>
+</span><span class='line'><span class="k">end</span>                                    <span class="c1"># end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Unlike text_field, select helper defined in ActionView::Helpers::FormOptionsHelper.
+And a select method in FormBuilder delegates the FormOptionsHelper#select.</p>
+
+<p>text_field or select finnally use classes under module ActionView::Helpers::Tags</p>
+
+<h3>FormTag and SelectTag are defined in ActionView::Helper::FormTagHelper</h3>
+
+<p><strong>ActionView::Helper::FormTagHelper seems totally another implement.</strong>
+Most tags helper are component directly in the methods. eg.</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">def</span> <span class="nf">text_field_tag</span><span class="p">(</span><span class="nb">name</span><span class="p">,</span> <span class="n">value</span> <span class="o">=</span> <span class="kp">nil</span><span class="p">,</span> <span class="n">options</span> <span class="o">=</span> <span class="p">{})</span>
+</span><span class='line'>  <span class="n">tag</span> <span class="ss">:input</span><span class="p">,</span> <span class="p">{</span> <span class="s2">&quot;type&quot;</span> <span class="o">=&gt;</span> <span class="s2">&quot;text&quot;</span><span class="p">,</span> <span class="s2">&quot;name&quot;</span> <span class="o">=&gt;</span> <span class="nb">name</span><span class="p">,</span> <span class="s2">&quot;id&quot;</span> <span class="o">=&gt;</span> <span class="n">sanitize_to_id</span><span class="p">(</span><span class="nb">name</span><span class="p">),</span> <span class="s2">&quot;value&quot;</span> <span class="o">=&gt;</span> <span class="n">value</span> <span class="p">}</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">options</span><span class="o">.</span><span class="n">stringify_keys</span><span class="p">)</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>select_tag and FormBuilder#select do dot shere the implement.
+They implement the include_blank and other options separately.
+Is it a historical reason?</p>
+
+<h2>How to avoid converts?</h2>
+
+<p><a href="https://www.reinteractive.net/posts/158-form-objects-in-rails">Use form object</a> to always use form_for style.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Query Date Range with Ransack]]></title>

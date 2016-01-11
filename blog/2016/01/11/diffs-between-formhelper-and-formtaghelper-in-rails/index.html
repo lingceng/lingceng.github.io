@@ -5,7 +5,7 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Lingceng's Blog</title>
+  <title>Diffs Between FormHelper and FormTagHelper in Rails - Lingceng's Blog</title>
   <meta name="author" content="Lingceng">
 
   
@@ -19,7 +19,7 @@ But their parameters act differently, which always bites me. For example, I have
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://lingceng.github.io">
+  <link rel="canonical" href="http://lingceng.github.io/blog/2016/01/11/diffs-between-formhelper-and-formtaghelper-in-rails">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/atom.xml" rel="alternate" title="Lingceng's Blog" type="application/atom+xml">
@@ -75,15 +75,12 @@ But their parameters act differently, which always bites me. For example, I have
 </nav>
   <div id="main">
     <div id="content">
-      <div class="blog-index">
+      <div>
+<article class="hentry" role="article">
   
-  
-  
-    <article>
-      
   <header>
     
-      <h1 class="entry-title"><a href="/blog/2016/01/11/diffs-between-formhelper-and-formtaghelper-in-rails/">Diffs Between FormHelper and FormTagHelper in Rails</a></h1>
+      <h1 class="entry-title">Diffs Between FormHelper and FormTagHelper in Rails</h1>
     
     
       <p class="meta">
@@ -106,7 +103,7 @@ But their parameters act differently, which always bites me. For example, I have
   </header>
 
 
-  <div class="entry-content"><p>We can use <strong>form_for</strong> or <strong>form_tag</strong> to build forms in Rails.
+<div class="entry-content"><p>We can use <strong>form_for</strong> or <strong>form_tag</strong> to build forms in Rails.
 But their parameters act differently, which always bites me.</p>
 
 <p>For example, I have to wrap html options into a <code>html</code> key when I change from
@@ -220,20 +217,63 @@ Is it a historical reason?</p>
 
 <p><a href="https://www.reinteractive.net/posts/158-form-objects-in-rails">Use form object</a> to always use form_for style.</p>
 </div>
+
+
+  <footer>
+    <p class="meta">
+      
   
+
+<span class="byline author vcard">Posted by <span class="fn">Lingceng</span></span>
+
+      
+
+
+
+
+
+
+
+
   
 
 
-    </article>
+<time datetime="2016-01-11T13:10:00+08:00" pubdate data-updated="true">Jan 11<span>th</span>, 2016</time>
+      
+
+<span class="categories">
   
-  <div class="pagination">
+    <a class='category' href='/blog/categories/rails/'>Rails</a>
+  
+</span>
+
+
+    </p>
     
-      <a class="prev" href="/blog/page/2/">&larr; Older</a>
-    
-    <a href="/blog/archives">Blog Archives</a>
-    
-  </div>
+      <div class="sharing">
+  
+  
+  
 </div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2015/12/28/query-date-range-with-ransack/" title="Previous Post: Query Date Range with Ransack">&laquo; Query Date Range with Ransack</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
 <aside class="sidebar">
   
     <section>
@@ -263,8 +303,13 @@ Is it a historical reason?</p>
   </ul>
 </section>
 
+
+
+
+
   
 </aside>
+
 
     </div>
   </div>
@@ -280,7 +325,10 @@ Is it a historical reason?</p>
       var disqus_shortname = 'lingceng';
       
         
-        var disqus_script = 'count.js';
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://lingceng.github.io/blog/2016/01/11/diffs-between-formhelper-and-formtaghelper-in-rails/';
+        var disqus_url = 'http://lingceng.github.io/blog/2016/01/11/diffs-between-formhelper-and-formtaghelper-in-rails/';
+        var disqus_script = 'embed.js';
       
     (function () {
       var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
