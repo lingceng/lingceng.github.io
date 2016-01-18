@@ -4,7 +4,7 @@
   <title><![CDATA[Lingceng's Blog]]></title>
   <link href="http://lingceng.github.io/atom.xml" rel="self"/>
   <link href="http://lingceng.github.io/"/>
-  <updated>2016-01-11T13:57:57+08:00</updated>
+  <updated>2016-01-18T21:36:40+08:00</updated>
   <id>http://lingceng.github.io/</id>
   <author>
     <name><![CDATA[Lingceng]]></name>
@@ -12,6 +12,137 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Dive Into The Source Code: Find More Information Besides The Doc]]></title>
+    <link href="http://lingceng.github.io/blog/2016/01/18/dive-into-the-source-code-find-more-information-besides-the-doc/"/>
+    <updated>2016-01-18T21:27:00+08:00</updated>
+    <id>http://lingceng.github.io/blog/2016/01/18/dive-into-the-source-code-find-more-information-besides-the-doc</id>
+    <content type="html"><![CDATA[<p>We can use <strong>pry</strong> and  <strong>pry-byebug</strong> gem to help us dive into the source code.</p>
+
+<h3>Let&rsquo;s see an example about <code>to_json</code> vs <code>as_json</code></h3>
+
+<p>I found there&rsquo;s a <code>to_json</code> and <code>as_json</code> method for active record query result.
+<code>to_json</code> returns String of json.
+<code>as_json</code> returns a hash representing the model.</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="o">&gt;</span> <span class="no">Order</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="ss">number</span><span class="p">:</span> <span class="s2">&quot;201504211405490&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">to_json</span>
+</span><span class='line'><span class="c1"># =&gt; &quot;[{\&quot;production_status\&quot;:\&quot;idle\&quot;,\&quot;id\&quot;:11,\&quot;number\&quot;:\&quot;201504211405490\&quot;}]&quot;</span>
+</span><span class='line'><span class="o">&gt;</span> <span class="no">Order</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="ss">number</span><span class="p">:</span> <span class="s2">&quot;201504211405490&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">to_json</span><span class="o">.</span><span class="n">class</span>
+</span><span class='line'><span class="c1"># =&gt; String</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&gt;</span> <span class="no">Order</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="ss">number</span><span class="p">:</span> <span class="s2">&quot;201504211405490&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">as_json</span>
+</span><span class='line'><span class="c1"># =&gt; [{&quot;production_status&quot;=&gt;&quot;idle&quot;, &quot;id&quot;=&gt;11, &quot;number&quot;=&gt;&quot;201504211405490&quot;}]</span>
+</span><span class='line'><span class="o">&gt;</span> <span class="no">Order</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="ss">number</span><span class="p">:</span> <span class="s2">&quot;201504211405490&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">as_json</span><span class="o">.</span><span class="n">class</span>
+</span><span class='line'><span class="c1"># =&gt; Hash</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>I find that <code>as_json</code> can accepts some optons.</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="o">&gt;</span> <span class="no">Order</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="ss">number</span><span class="p">:</span> <span class="s2">&quot;201504211405490&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">as_json</span><span class="p">(</span><span class="ss">only</span><span class="p">:</span> <span class="ss">:number</span><span class="p">)</span>
+</span><span class='line'><span class="c1"># =&gt; [{&quot;number&quot;=&gt;&quot;201504211405490&quot;}]</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>But one day I found somebody used similar options with <code>to_json</code> method.
+I searched the doc. No doc says <code>to_json</code> can do things like following:</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="o">&gt;</span> <span class="no">Order</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="ss">number</span><span class="p">:</span> <span class="s2">&quot;201504211405490&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">to_json</span><span class="p">(</span><span class="ss">only</span><span class="p">:</span> <span class="ss">:number</span><span class="p">)</span>
+</span><span class='line'><span class="c1"># =&gt; &quot;[{\&quot;number\&quot;:\&quot;201504211405490\&quot;}]&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>But the code above actually works.
+Is <code>to_json</code> uses <code>as_json</code> under the hood?</p>
+
+<h3>Dive into the source</h3>
+
+<p>Now we can check the source code to find the answer.</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="o">&gt;</span> <span class="err">$</span> <span class="no">Order</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="ss">number</span><span class="p">:</span> <span class="s2">&quot;201504211405490&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">to_json</span>
+</span><span class='line'>
+</span><span class='line'><span class="ss">From</span><span class="p">:</span> <span class="sr">/Users/</span><span class="n">lingceng</span><span class="o">/.</span><span class="n">rvm</span><span class="o">/</span><span class="n">gems</span><span class="o">/</span><span class="n">ruby</span><span class="o">-</span><span class="mi">2</span><span class="o">.</span><span class="mi">2</span><span class="o">.</span><span class="mi">0</span><span class="vi">@baozheng</span><span class="o">/</span><span class="n">gems</span><span class="o">/</span><span class="n">activesupport</span><span class="o">-</span><span class="mi">4</span><span class="o">.</span><span class="mi">2</span><span class="o">.</span><span class="mi">0</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">active_support</span><span class="o">/</span><span class="n">core_ext</span><span class="o">/</span><span class="n">object</span><span class="o">/</span><span class="n">json</span><span class="o">.</span><span class="n">rb</span> <span class="err">@</span> <span class="n">line</span> <span class="mi">31</span><span class="p">:</span>
+</span><span class='line'><span class="ss">Owner</span><span class="p">:</span> <span class="no">Object</span>
+</span><span class='line'><span class="ss">Visibility</span><span class="p">:</span> <span class="kp">public</span>
+</span><span class='line'><span class="no">Number</span> <span class="n">of</span> <span class="ss">lines</span><span class="p">:</span> <span class="mi">9</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">def</span> <span class="nf">to_json_with_active_support_encoder</span><span class="p">(</span><span class="n">options</span> <span class="o">=</span> <span class="kp">nil</span><span class="p">)</span>
+</span><span class='line'>  <span class="k">if</span> <span class="n">options</span><span class="o">.</span><span class="n">is_a?</span><span class="p">(</span><span class="o">::</span><span class="ss">JSON</span><span class="p">:</span><span class="ss">:State</span><span class="p">)</span>
+</span><span class='line'>    <span class="c1"># Called from JSON.{generate,dump}, forward it to JSON gem&#39;s to_json</span>
+</span><span class='line'>    <span class="nb">self</span><span class="o">.</span><span class="n">to_json_without_active_support_encoder</span><span class="p">(</span><span class="n">options</span><span class="p">)</span>
+</span><span class='line'>  <span class="k">else</span>
+</span><span class='line'>    <span class="c1"># to_json is being invoked directly, use ActiveSupport&#39;s encoder</span>
+</span><span class='line'>    <span class="ss">ActiveSupport</span><span class="p">:</span><span class="ss">:JSON</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="nb">self</span><span class="p">,</span> <span class="n">options</span><span class="p">)</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Then we edit the method and add a <strong>binding.pry</strong> before the <code>if options.is_a?(::JSON::State)</code> line.
+<strong>Remember to recover the change after debug.</strong></p>
+
+<pre><code>&gt; edit Order.where(number: "201504211405490").to_json
+</code></pre>
+
+<p>Then run code again:</p>
+
+<pre><code>&gt; Order.where(number: "201504211405490").to_json
+</code></pre>
+
+<p>Now we&rsquo;ll get into <code>to_json_with_active_support_encoder</code> method and start to debug.
+After some <strong>next</strong> and <strong>step</strong> comand.
+We can find that <code>to_json</code> uses ActiveSupport::JSON.encode, which uses <code>as_json</code>.</p>
+
+<pre><code># /lib/active_support/json/encoding.rb#34
+# Encode the given object into a JSON string
+def encode(value)
+  stringify jsonify value.as_json(options.dup)
+end
+</code></pre>
+
+<p>Yes! <code>to_json</code> uses <code>as_json</code>. We find the answer. So we can use to_json(only: :number) with
+confidence.</p>
+
+<h3>Conclusion</h3>
+
+<p>Pry and pry-byebug provides many useful commands.
+Using these commands can help to find the definition of a method, track the call stacks, understand the source structure.</p>
+
+<p>This is beauty of open source.
+Do not limit yourself.
+Dive into the code and get your information.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Diffs Between FormHelper and FormTagHelper in Rails]]></title>

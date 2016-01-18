@@ -9,15 +9,9 @@
   <meta name="author" content="Lingceng">
 
   
-  <meta name="description" content="> crontab -e Run Cron Every 5 Hours 1
-2
-3
-4
-5
-6
-# set the shell
-SHELL=/bin/sh
-PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin # m h &hellip;">
+  <meta name="description" content="config git config --global user.name "John Doe"
+git config --global user.email "johndoe@example.com" how to get help git config --help
+git help &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -90,7 +84,7 @@ PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin # m h &hellip;
       
   <header>
     
-      <h1 class="entry-title"><a href="/blog/2013/11/30/run-cron-every-5-hours/">Run Cron Every 5 Hours</a></h1>
+      <h1 class="entry-title"><a href="/blog/2014/03/13/git-get-start/">Git Get Start</a></h1>
     
     
       <p class="meta">
@@ -106,58 +100,81 @@ PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin # m h &hellip;
   
 
 
-<time datetime="2013-11-30T16:56:00+08:00" pubdate data-updated="true">Nov 30<span>th</span>, 2013</time>
+<time datetime="2014-03-13T07:21:00+08:00" pubdate data-updated="true">Mar 13<span>th</span>, 2014</time>
         
       </p>
     
   </header>
 
 
-  <div class="entry-content"><p>> crontab -e</p>
+  <div class="entry-content"><p>config</p>
 
-<figure class='code'><figcaption><span>Run Cron Every 5 Hours </span></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class='sh'><span class='line'><span class="c"># set the shell</span>
-</span><span class='line'><span class="nv">SHELL</span><span class="o">=</span>/bin/sh
-</span><span class='line'><span class="nv">PATH</span><span class="o">=</span>/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
-</span><span class='line'>
-</span><span class='line'><span class="c"># m h dom mon dow usercommand</span>
-</span><span class='line'>0 */5 * * * /path/hello.sh &gt;&gt; /path/hello.log 2&gt;&amp;1
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h4>Setting the PATH is Always Necessary</h4>
-
-<p><em>Crontab ignores login configuration</em>, which leads to a command not found.
-I have tested <em>env</em> command with crontab on my Ubuntu12.04 and I got the following result:</p>
-
-<pre><code>HOME=/home/lingceng
-LOGNAME=lingceng
-PATH=/usr/bin:/bin
-LANG=en_US.UTF-8
-SHELL=/bin/sh
-PWD=/home/lingceng
+<pre><code>git config --global user.name "John Doe"
+git config --global user.email "johndoe@example.com"
 </code></pre>
 
-<h4>Not Really Every 5 Hours</h4>
+<p>how to get help</p>
 
-<p>The demo shell script <strong>just runs at 0, 5, 15, 20 o&#8217;clock</strong>, 20 to 0 is just 4 hours.</p>
-
-<h4>Check Cron log</h4>
-
-<p>Cron log default put <em>/var/log/syslog</em>, use following command to monitor it:</p>
-
-<pre><code>tail -f /var/log/syslog | grep CRON
+<pre><code>git config --help
+git help config
+man git-config
 </code></pre>
 
-<h4>Get More Help</h4>
+<p>start up</p>
 
-<p>> <a href="http://unixhelp.ed.ac.uk/CGI/man-cgi?crontab+5">man 5 crontab</a></p>
+<pre><code>git init
+git add .
+git commit -m "Depot Scaffold"
+
+add and commit
+git commit -a -m "Depot Scaffold"
+</code></pre>
+
+<p>compare with version before last commit and last commit</p>
+
+<pre><code>git diff HEAD^ HEAD
+
+# show diff stat
+git diff --stat
+
+# show the tree-like view
+git log --graph --oneline --all
+</code></pre>
+
+<p>specify the file path</p>
+
+<pre><code>git diff HEAD^ HEAD app/models/product.rb
+</code></pre>
+
+<p>git ammend the last commit</p>
+
+<pre><code>git commit -amend
+</code></pre>
+
+<p>powerful edit commit command</p>
+
+<pre><code>git rebase --interactive HEAD^5
+</code></pre>
+
+<p>git include delelted files</p>
+
+<pre><code>git add -A
+</code></pre>
+
+<p>Creates a remote named &ldquo;origin&rdquo; pointing at your GitHub repository</p>
+
+<pre><code>git remote add origin https://github.com/username/Hello-World.git
+</code></pre>
+
+<p>Sends your commits in the &ldquo;master&rdquo; branch to GitHub</p>
+
+<pre><code>git push origin master
+</code></pre>
+
+<p>pull down changes</p>
+
+<pre><code>git pull orgin master
+</code></pre>
 </div>
   
   
@@ -182,6 +199,10 @@ PWD=/home/lingceng
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2016/01/18/dive-into-the-source-code-find-more-information-besides-the-doc/">Dive Into the Source Code: Find More Information Besides the Doc</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2016/01/11/diffs-between-formhelper-and-formtaghelper-in-rails/">Diffs Between FormHelper and FormTagHelper in Rails</a>
       </li>
     
@@ -195,10 +216,6 @@ PWD=/home/lingceng
     
       <li class="post">
         <a href="/blog/2015/12/19/tips-about-using-aasm-gem/">Tips About Using AASM Gem</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2015/12/15/put-javascript-library-files-together-in-rails/">Put Javascript Library Files Together in Rails</a>
       </li>
     
   </ul>
