@@ -9,8 +9,8 @@
   <meta name="author" content="Lingceng">
 
   
-  <meta name="description" content="Recently, I&rsquo;m using aasm gem to do order production status control.
-Here I have some tips about using aasm gem. I&rsquo;m using aasm 4.5.0 and &hellip;">
+  <meta name="description" content="The Normal Way Ruby build-in supports CSV generation as CSV is so simple to compose.
+We can convert a 2-D array to a csv string like folllowing: &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -83,7 +83,7 @@ Here I have some tips about using aasm gem. I&rsquo;m using aasm 4.5.0 and &hell
       
   <header>
     
-      <h1 class="entry-title"><a href="/blog/2015/12/19/tips-about-using-aasm-gem/">Tips About Using AASM Gem</a></h1>
+      <h1 class="entry-title"><a href="/blog/2015/12/23/export-csv-or-excel-by-re-using-existing-html-view/">Export Csv or Excel by Re-using Existing HTML View</a></h1>
     
     
       <p class="meta">
@@ -99,19 +99,50 @@ Here I have some tips about using aasm gem. I&rsquo;m using aasm 4.5.0 and &hell
   
 
 
-<time datetime="2015-12-19T12:26:00+08:00" pubdate data-updated="true">Dec 19<span>th</span>, 2015</time>
+<time datetime="2015-12-23T19:34:00+08:00" pubdate data-updated="true">Dec 23<span>rd</span>, 2015</time>
         
       </p>
     
   </header>
 
 
-  <div class="entry-content"><p>Recently, I&rsquo;m using <a href="https://github.com/aasm/aasm">aasm gem</a> to do order production status control.
-Here I have some tips about using aasm gem.</p>
+  <div class="entry-content"><h2>The Normal Way</h2>
 
-<p>I&rsquo;m using aasm 4.5.0 and rails 4.2.0. First, I post a snippet here for better explanation.</p>
+<p>Ruby build-in supports CSV generation as CSV is so simple to compose.
+We can convert a 2-D array to a csv string like folllowing:</p>
 
-<figure class='code'><figcaption><span>order.rb </span></figcaption>
+<pre><code>require 'csv'
+arr = [['a', 'b', 'c'], ['1', '2', '3']]
+arr.map(&amp;:to_csv).join
+</code></pre>
+
+<p>And exporting CSV is easy in rails. Let&rsquo;s see the following snippet:</p>
+
+<pre><code>def index
+  @products = Product.order(:name)
+  respond_to do |format|
+    format.html
+    format.csv { send_data @products.to_csv }
+  end
+end
+</code></pre>
+
+<p>See more about export csv in rails <a href="http://railscasts.com/episodes/362-exporting-csv-and-excel?view=asciicast">here</a></p>
+
+<h2>I&rsquo;m lazy</h2>
+
+<p>However, I&rsquo;m a lazy man. I even don&rsquo;t want to prepare 2-D array.</p>
+
+<p>In most cases, we have rendered the table in the view already.
+We have done some translations or formats in the view.
+And I don&rsquo;t want to move the view code to the controller just for exporting.</p>
+
+<h2>Re-use the view</h2>
+
+<p>So, how about re-use the table in the view?
+I find out that <a href="http://devdocs.io/rails/abstractcontroller/rendering#method-i-render_to_string">render_to_string</a> can help me do the job.</p>
+
+<figure class='code'><figcaption><span>plain_controller.rb </span></figcaption>
  <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
@@ -129,122 +160,33 @@ Here I have some tips about using aasm gem.</p>
 <span class='line-number'>15</span>
 <span class='line-number'>16</span>
 <span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">Order</span>
-</span><span class='line'>  <span class="kp">include</span> <span class="no">AASM</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">def</span> <span class="nf">generate_csv_data</span><span class="p">(</span><span class="n">template</span> <span class="o">=</span> <span class="kp">nil</span><span class="p">)</span>
+</span><span class='line'>  <span class="n">template</span> <span class="o">||=</span> <span class="s2">&quot;</span><span class="si">#{</span><span class="n">controller_name</span><span class="si">}</span><span class="s2">/</span><span class="si">#{</span><span class="n">action_name</span><span class="si">}</span><span class="s2">.html.slim&quot;</span>
+</span><span class='line'>  <span class="n">content</span> <span class="o">=</span> <span class="n">render_to_string</span><span class="p">(</span><span class="n">template</span><span class="p">)</span>
+</span><span class='line'>  <span class="n">doc</span> <span class="o">=</span>  <span class="ss">Nokogiri</span><span class="p">:</span><span class="ss">:HTML</span><span class="p">(</span><span class="n">content</span><span class="p">)</span>
 </span><span class='line'>
-</span><span class='line'>  <span class="n">aasm</span> <span class="ss">column</span><span class="p">:</span> <span class="ss">:production_status</span> <span class="k">do</span>
-</span><span class='line'>    <span class="n">state</span> <span class="ss">:idle</span><span class="p">,</span> <span class="ss">initial</span><span class="p">:</span> <span class="kp">true</span>
-</span><span class='line'>    <span class="n">state</span> <span class="ss">:at_center</span>
-</span><span class='line'>    <span class="n">state</span> <span class="ss">:ready</span>
+</span><span class='line'>  <span class="n">table</span> <span class="o">=</span>  <span class="n">doc</span><span class="o">.</span><span class="n">at_css</span><span class="p">(</span><span class="s1">&#39;table&#39;</span><span class="p">)</span>
+</span><span class='line'>  <span class="n">data</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">css</span><span class="p">(</span><span class="s1">&#39;tr&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">map</span> <span class="k">do</span> <span class="o">|</span><span class="n">r</span><span class="o">|</span>
+</span><span class='line'>    <span class="n">r</span><span class="o">.</span><span class="n">css</span><span class="p">(</span><span class="s1">&#39;td,th&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="o">&amp;</span><span class="ss">:text</span><span class="p">)</span><span class="o">.</span><span class="n">to_csv</span>
+</span><span class='line'>  <span class="k">end</span><span class="o">.</span><span class="n">join</span>
 </span><span class='line'>
-</span><span class='line'>    <span class="n">after_all_transitions</span> <span class="ss">:_save_production_status_change</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="n">event</span> <span class="ss">:check_in</span><span class="p">,</span> <span class="ss">before</span><span class="p">:</span> <span class="ss">:set_current_step_to_center</span><span class="p">,</span> <span class="ss">guard</span><span class="p">:</span> <span class="ss">:_status_fit</span> <span class="k">do</span>
-</span><span class='line'>      <span class="n">transitions</span> <span class="ss">from</span><span class="p">:</span> <span class="o">[</span><span class="ss">:idle</span><span class="o">]</span><span class="p">,</span> <span class="ss">to</span><span class="p">:</span> <span class="ss">:at_center</span><span class="p">,</span> <span class="ss">after</span><span class="p">:</span> <span class="ss">:_change_status_to_repairing</span>
-</span><span class='line'>    <span class="k">end</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="n">event</span> <span class="ss">:to_ready</span><span class="p">,</span> <span class="ss">before</span><span class="p">:</span> <span class="ss">:set_current_step</span><span class="p">,</span> <span class="ss">guard</span><span class="p">:</span> <span class="ss">:_status_fit</span> <span class="k">do</span>
-</span><span class='line'>      <span class="n">transitions</span> <span class="ss">from</span><span class="p">:</span> <span class="o">[</span><span class="ss">:at_center</span><span class="p">,</span> <span class="ss">:idle</span><span class="o">]</span><span class="p">,</span> <span class="ss">to</span><span class="p">:</span> <span class="ss">:ready</span><span class="p">,</span> <span class="ss">after</span><span class="p">:</span> <span class="ss">:_change_status_to_repairing</span>
-</span><span class='line'>    <span class="k">end</span>
-</span><span class='line'>    <span class="o">.</span><span class="n">.</span><span class="o">.</span>
-</span><span class='line'>  <span class="k">end</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="o">.</span><span class="n">.</span><span class="o">.</span>
+</span><span class='line'>  <span class="c1"># Convert from utf8 to gbk to make it compatible with Windows Office Excel</span>
+</span><span class='line'>  <span class="c1"># And Mac number can work with GBK too</span>
+</span><span class='line'>  <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;GBK&#39;</span><span class="p">,</span> <span class="k">undef</span><span class="p">:</span> <span class="ss">:replace</span><span class="p">,</span> <span class="ss">replace</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
 </span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1"># Respond csv file when csv format requested</span>
+</span><span class='line'><span class="nb">format</span><span class="o">.</span><span class="n">csv</span> <span class="p">{</span> <span class="n">send_data</span> <span class="n">generate_csv_data</span> <span class="p">}</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
-<h2>How to keep actions in transaction?</h2>
+<p>Here I get the view page as a string. And extract the table in the string with <a href="http://www.nokogiri.org/">nokogiri</a>.
+We can also convert it into an excel easily.
+See full codes <a href="https://gist.github.com/lingceng/840f97f17128d8a9fd3b">here</a></p>
 
-<p>Of course, you can acheive it by wrapping actions in a transaction. eg.</p>
-
-<pre><code>Order.transaction do
-  order.check_in
-  order.save
-end
-</code></pre>
-
-<p>However, aasm also provide a bang method to acheive it. eg.</p>
-
-<pre><code>order.check_in!
-</code></pre>
-
-<p>But the two forms is not the same.</p>
-
-<p>Please take care the save point if you choose to use <code>order.check_in!</code>.
-<code>order.check_in!</code> internally calls save after <code>new_state enter</code> callback.
-So, changes in callbacks after <code>new_state enter</code>  will not auto-save.</p>
-
-<p>See the list of callbacks.</p>
-
-<pre><code>begin
-  event           before
-  event           guards
-  transition      guards
-  old_state       before_exit
-  old_state       exit
-                  after_all_transitions
-  transition      after
-  new_state       before_enter
-  new_state       enter
-  ...update state...               # here is the save point
-  event         success            # if persist successful
-  old_state       after_exit
-  new_state       after_enter
-  event           after
-rescue
-  event           error
-end
-</code></pre>
-
-<p>Let&rsquo;s see a example. If I wrote the <code>check_in</code> event like following:</p>
-
-<pre><code>event :check_in, before: :set_current_step_to_center, guard: :_status_fit,
-  after: :_change_status_to_repairing do
-  transitions from: [:idle], to: :at_center
-end
-
-def _change_status_to_repairing
-  status = 'repairing'
-end
-</code></pre>
-
-<p>The <code>_change_status_to_repairing</code> is at <code>event after</code> callback.
-So, when I run <code>order.check_in!</code>, <code>order.status</code> will not persist.</p>
-
-<pre><code>order.check_in!
-order.reload.status == 'repairing'
-# =&gt; false
-</code></pre>
-
-<p>Of cause, you can call save in <code>_change_status_to_repairing</code>
-But the order will be persisted even when you run non-bang method
-<code>order.check_in</code>.</p>
-
-<pre><code>def _change_status_to_repairing
-  status = 'repairing'
-  save
-end
-</code></pre>
-
-<p>Oh. Maybe you should choose to use the first form.</p>
-
-<h2>Avoid using Proc.new with optional argument in guards and callbacks</h2>
-
-<p>See <a href="https://github.com/aasm/aasm/issues/293">https://github.com/aasm/aasm/issues/293</a></p>
-
-<h2>Take care of before event filter</h2>
-
-<p>See <a href="https://github.com/aasm/aasm/issues/294">https://github.com/aasm/aasm/issues/294</a></p>
-
-<h2>duplicate global callbacks caused by after_all_transitions</h2>
-
-<p>See <a href="https://github.com/aasm/aasm/issues/297">https://github.com/aasm/aasm/issues/297</a></p>
+<p>Inspired by <a href="https://github.com/livingsocial/excelinator">excelinator</a>. But
+sadly, the excel exported by excelinator can not be opened with Number on my Mac.
+So I write a version to export csv.</p>
 </div>
   
   
@@ -269,6 +211,10 @@ end
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2016/01/19/save-your-time-install-ruby2-dot-3-0-with-rvm/">Save Your Time: Install ruby2.3.0 With RVM</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2016/01/18/dive-into-the-source-code-find-more-information-besides-the-doc/">Dive Into the Source Code: Find More Information Besides the Doc</a>
       </li>
     
@@ -282,10 +228,6 @@ end
     
       <li class="post">
         <a href="/blog/2015/12/23/export-csv-or-excel-by-re-using-existing-html-view/">Export Csv or Excel by Re-using Existing HTML View</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2015/12/19/tips-about-using-aasm-gem/">Tips About Using AASM Gem</a>
       </li>
     
   </ul>

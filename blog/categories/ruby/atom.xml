@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Ruby | Lingceng's Blog]]></title>
   <link href="http://lingceng.github.io/blog/categories/ruby/atom.xml" rel="self"/>
   <link href="http://lingceng.github.io/"/>
-  <updated>2016-01-18T21:36:40+08:00</updated>
+  <updated>2016-01-19T12:33:57+08:00</updated>
   <id>http://lingceng.github.io/</id>
   <author>
     <name><![CDATA[Lingceng]]></name>
@@ -12,6 +12,46 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Save Your Time: Install ruby2.3.0 with RVM]]></title>
+    <link href="http://lingceng.github.io/blog/2016/01/19/save-your-time-install-ruby2-dot-3-0-with-rvm/"/>
+    <updated>2016-01-19T12:24:00+08:00</updated>
+    <id>http://lingceng.github.io/blog/2016/01/19/save-your-time-install-ruby2-dot-3-0-with-rvm</id>
+    <content type="html"><![CDATA[<p>Note that:  <strong>ruby-2.3.0</strong> is not present now when run <code>rvm list known</code> command in rvm 1.26.11.<br/>
+It may be available in next rvm verion.
+See <a href="https://github.com/rvm/rvm/blob/1.26.11/config/known#L11">here</a> for more details.</p>
+
+<p>But you can just run the following directly.</p>
+
+<pre><code>rvm install ruby-2.3.0
+</code></pre>
+
+<p>And set 2.3.0 as default ruby version</p>
+
+<pre><code>rvm --default use 2.3.0
+</code></pre>
+
+<p>Copy gems from older version</p>
+
+<pre><code>rvm gemset copy 2.1.5 2.3.0
+</code></pre>
+
+<p>Get the ruby version and celebrate!</p>
+
+<pre><code>ruby -v
+# ruby 2.3.0p0 (2015-12-25 revision 53290) [x86_64-darwin15]
+</code></pre>
+
+<p>Try new features in irb</p>
+
+<pre><code>puts 'hi'&amp;.upcase
+
+h = { a: 1, b: 2, c: 3, d: 4 }
+[ :a, :c, :d, :b ].map(&amp;h)
+</code></pre>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Rails Time Best Practice]]></title>
