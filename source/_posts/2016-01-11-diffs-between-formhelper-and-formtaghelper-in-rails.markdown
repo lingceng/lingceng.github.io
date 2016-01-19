@@ -52,7 +52,7 @@ end
 In FormHelper above also defined a class named ActionView::Helpers::FormBuilder.
 The form_for uses the FormBuilder.
 
-Most methods in FormHelper are be delegated by FormBuilder.
+Most methods in FormHelper are delegated by FormBuilder.
 
 {% codeblock lang:ruby %}
 # in FormBuilder
