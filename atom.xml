@@ -4,7 +4,7 @@
   <title><![CDATA[Lingceng's Blog]]></title>
   <link href="http://lingceng.github.io/atom.xml" rel="self"/>
   <link href="http://lingceng.github.io/"/>
-  <updated>2016-01-19T12:33:57+08:00</updated>
+  <updated>2016-01-19T13:08:49+08:00</updated>
   <id>http://lingceng.github.io/</id>
   <author>
     <name><![CDATA[Lingceng]]></name>
@@ -19,7 +19,7 @@
     <updated>2016-01-19T12:24:00+08:00</updated>
     <id>http://lingceng.github.io/blog/2016/01/19/save-your-time-install-ruby2-dot-3-0-with-rvm</id>
     <content type="html"><![CDATA[<p>Note that:  <strong>ruby-2.3.0</strong> is not present now when run <code>rvm list known</code> command in rvm 1.26.11.<br/>
-It may be available in next rvm verion.
+It may be available in next rvm version.
 See <a href="https://github.com/rvm/rvm/blob/1.26.11/config/known#L11">here</a> for more details.</p>
 
 <p>But you can just run the following directly.</p>
