@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Ruby | Lingceng's Blog]]></title>
   <link href="http://lingceng.github.io/blog/categories/ruby/atom.xml" rel="self"/>
   <link href="http://lingceng.github.io/"/>
-  <updated>2016-01-19T13:19:06+08:00</updated>
+  <updated>2016-01-22T09:37:42+08:00</updated>
   <id>http://lingceng.github.io/</id>
   <author>
     <name><![CDATA[Lingceng]]></name>
@@ -12,6 +12,59 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Keep Learning As a Ruby Programmer]]></title>
+    <link href="http://lingceng.github.io/blog/2016/01/22/keep-learning-as-a-ruby-programmer/"/>
+    <updated>2016-01-22T09:27:00+08:00</updated>
+    <id>http://lingceng.github.io/blog/2016/01/22/keep-learning-as-a-ruby-programmer</id>
+    <content type="html"><![CDATA[<p>I started learning Ruby and Rails about 3 years ago.<br/>
+I always didn&rsquo;t know how to keep up with the community.<br/>
+I find some clues nowadays. So I share the tips with you here.</p>
+
+<p>Learn to cross The Great Wall if you are in China.</p>
+
+<p><strong>First, use google well, collect everything useful.</strong><br/>
+Then we can do following things.</p>
+
+<h3>Keep up with news</h3>
+
+<ul>
+<li>rubyweekly</li>
+<li>rubyinside</li>
+<li>rubynews</li>
+<li>reddit/r/ruby</li>
+<li>reddit/r/rails</li>
+</ul>
+
+
+<h3>Know the persons</h3>
+
+<p>Persons in ruby community are kind.<br/>
+They do speeches, write blogs and publish books.<br/>
+Follow them on twitter to get news about them.</p>
+
+<ul>
+<li>Aaron Patterson</li>
+<li>DHH</li>
+<li>Dave Tomas <a href="https://en.wikipedia.org/wiki/Dave_Thomas_">https://en.wikipedia.org/wiki/Dave_Thomas_</a>(programmer)</li>
+<li><a href="http://blog.arkency.com/">http://blog.arkency.com/</a></li>
+<li><a href="https://github.com/orgs/rails/people">https://github.com/orgs/rails/people</a></li>
+<li>Github search with: language:Ruby followers:>300</li>
+</ul>
+
+
+<h3>Involve in</h3>
+
+<ul>
+<li>Read the source code of projects</li>
+<li>Report issues and fix bugs</li>
+<li>Maintain your open source project</li>
+<li>Share by blogs, speeches and books</li>
+</ul>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Save Your Time: Install ruby2.3.0 with RVM]]></title>
@@ -553,127 +606,6 @@ see <a href="https://github.com/seattlerb/minitest/blob/master/test/minitest/tes
 </span><span class='line'><span class="sr">&lt;p&gt;  @tc.assert_equal &amp;ldquo;bar&amp;rdquo;, val</span>
 </span><span class='line'><span class="sr">end</span>
 </span></code></pre></td></tr></table></div></figure></notextile></div></p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[basics about minitest]]></title>
-    <link href="http://lingceng.github.io/blog/2014/03/17/basics-about-minitest/"/>
-    <updated>2014-03-17T07:58:00+08:00</updated>
-    <id>http://lingceng.github.io/blog/2014/03/17/basics-about-minitest</id>
-    <content type="html"><![CDATA[<ul>
-<li>home :: <a href="https://github.com/seattlerb/minitest">https://github.com/seattlerb/minitest</a></li>
-<li>rdoc :: <a href="http://docs.seattlerb.org/minitest">http://docs.seattlerb.org/minitest</a></li>
-<li>vim  :: <a href="https://github.com/sunaku/vim-ruby-minitest">https://github.com/sunaku/vim-ruby-minitest</a></li>
-</ul>
-
-
-<p>With Ruby 1.9, MiniTest entered standard lib.
-MiniTest is pretty small and readable, here is all source file list:</p>
-
-<blockquote><p>lib:
-hoe  minitest</p>
-
-<p>lib/hoe:
-minitest.rb</p>
-
-<p>lib/minitest:
-autorun.rb  benchmark.rb  hell.rb  mock.rb  parallel_each.rb  pride.rb  spec.rb  unit.rb</p></blockquote>
-
-<h3>Assert Methods</h3>
-
-<p>See  Minitest::Assertions doc or unit.rb source</p>
-
-<pre><code>assert assert_equal assert_raises
-capture_io
-refute refute_empty
-...
-</code></pre>
-
-<h3>Specs Expections</h3>
-
-<p>See Minitest::Expectations doc or spec.rb source</p>
-
-<pre><code>must_be must_be_close_to
-wont_be_empty
-...
-</code></pre>
-
-<p>Most methods just redirect to assert methods internally.
-<strong>describe</strong> method is added to <strong>Kernel</strong> to start the DSL road;
-expectations method is added to <strong>Object</strong></p>
-
-<pre><code>class Object
-  include MiniTest::Expectations unless ENV["MT_NO_EXPECTATIONS"]
-end
-</code></pre>
-
-<h3>Simple Start</h3>
-
-<p>Given that you&rsquo;d like to test the following class:</p>
-
-<pre><code>class Meme
-  def i_can_has_cheezburger?
-    "OHAI!"
-  end
-
-  def will_it_blend?
-    "YES!"
-  end
-end
-</code></pre>
-
-<p>Unit tests</p>
-
-<pre><code>require 'minitest/autorun'
-
-class TestMeme &lt; MiniTest::Unit::TestCase
-  def setup
-    @meme = Meme.new
-  end
-
-  def test_that_kitty_can_eat
-    assert_equal "OHAI!", @meme.i_can_has_cheezburger?
-  end
-
-  def test_that_it_will_not_blend
-    refute_match /^no/i, @meme.will_it_blend?
-  end
-
-  def test_that_will_be_skipped
-    skip "test this later"
-  end
-end
-</code></pre>
-
-<p>Specs</p>
-
-<pre><code># the following have required in autorun
-# no need to repeat !
-# require 'minitest/unit'
-# require 'minitest/spec'
-# require 'minitest/mock'
-
-require 'minitest/autorun'
-
-describe Meme do
-  before do
-    @meme = Meme.new
-  end
-
-  describe "when asked about cheeseburgers" do
-    it "must respond positively" do
-      @meme.i_can_has_cheezburger?.must_equal "OHAI!"
-    end
-  end
-
-  describe "when asked about blending possibilities" do
-    it "won't say no" do
-      @meme.will_it_blend?.wont_match /^no/i
-    end
-  end
-end
-</code></pre>
 ]]></content>
   </entry>
   

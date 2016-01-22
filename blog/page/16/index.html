@@ -9,9 +9,9 @@
   <meta name="author" content="Lingceng">
 
   
-  <meta name="description" content="config git config --global user.name "John Doe"
-git config --global user.email "johndoe@example.com" how to get help git config --help
-git help &hellip;">
+  <meta name="description" content="HERE IS MY vimrc wonderful block insert in Visual block mode:
+|v_b_I| I insert the same text in front of all the selected lines
+|v_b_A| A append the &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -84,7 +84,7 @@ git help &hellip;">
       
   <header>
     
-      <h1 class="entry-title"><a href="/blog/2014/03/13/git-get-start/">Git Get Start</a></h1>
+      <h1 class="entry-title"><a href="/blog/2014/03/14/vim-tips/">Vim Tips</a></h1>
     
     
       <p class="meta">
@@ -100,83 +100,47 @@ git help &hellip;">
   
 
 
-<time datetime="2014-03-13T07:21:00+08:00" pubdate data-updated="true">Mar 13<span>th</span>, 2014</time>
+<time datetime="2014-03-14T22:39:00+08:00" pubdate data-updated="true">Mar 14<span>th</span>, 2014</time>
         
       </p>
     
   </header>
 
 
-  <div class="entry-content"><p>config</p>
+  <div class="entry-content"><p>HERE IS MY <a href="https://gist.github.com/lingceng/6097985">vimrc</a></p>
 
-<pre><code>git config --global user.name "John Doe"
-git config --global user.email "johndoe@example.com"
+<h3>wonderful block insert</h3>
+
+<pre><code>in Visual block mode:
+|v_b_I|    I    insert the same text in front of all the selected lines
+|v_b_A|    A    append the same text after all the selected lines
 </code></pre>
 
-<p>how to get help</p>
+<h3>search word under cursor</h3>
 
-<pre><code>git config --help
-git help config
-man git-config
+<pre><code>* to search current word, n to next, N to previous
 </code></pre>
 
-<p>start up</p>
+<h3>arround tag</h3>
 
-<pre><code>git init
-git add .
-git commit -m "Depot Scaffold"
-
-add and commit
-git commit -a -m "Depot Scaffold"
+<pre><code>:help v_a
+at  # arround tag
+it  # inner tag
 </code></pre>
 
-<p>compare with version before last commit and last commit</p>
+<h3>use mark</h3>
 
-<pre><code>git diff HEAD^ HEAD
-
-# show diff stat
-git diff --stat
-
-# show the tree-like view
-git log --graph --oneline --all
+<pre><code>ma # mark a
+`a # go to a
+`A # go to A between buffers
 </code></pre>
 
-<p>specify the file path</p>
-
-<pre><code>git diff HEAD^ HEAD app/models/product.rb
-</code></pre>
-
-<p>git ammend the last commit</p>
-
-<pre><code>git commit -amend
-</code></pre>
-
-<p>powerful edit commit command</p>
-
-<pre><code>git rebase --interactive HEAD^5
-</code></pre>
-
-<p>git include delelted files</p>
-
-<pre><code>git add -A
-</code></pre>
-
-<p>Creates a remote named &ldquo;origin&rdquo; pointing at your GitHub repository</p>
-
-<pre><code>git remote add origin https://github.com/username/Hello-World.git
-</code></pre>
-
-<p>Sends your commits in the &ldquo;master&rdquo; branch to GitHub</p>
-
-<pre><code>git push origin master
-</code></pre>
-
-<p>pull down changes</p>
-
-<pre><code>git pull orgin master
-</code></pre>
 </div>
   
+  
+    <footer>
+      <a rel="full-article" href="/blog/2014/03/14/vim-tips/">Read on &rarr;</a>
+    </footer>
   
 
 
@@ -199,6 +163,10 @@ git log --graph --oneline --all
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2016/01/22/keep-learning-as-a-ruby-programmer/">Keep Learning as a Ruby Programmer</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2016/01/19/save-your-time-install-ruby2-dot-3-0-with-rvm/">Save Your Time: Install ruby2.3.0 With RVM</a>
       </li>
     
@@ -212,10 +180,6 @@ git log --graph --oneline --all
     
       <li class="post">
         <a href="/blog/2015/12/28/query-date-range-with-ransack/">Query Date Range With Ransack</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2015/12/23/export-csv-or-excel-by-re-using-existing-html-view/">Export Csv or Excel by Re-using Existing HTML View</a>
       </li>
     
   </ul>

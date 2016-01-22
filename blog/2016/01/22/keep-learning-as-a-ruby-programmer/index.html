@@ -5,19 +5,13 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Run Cron Every 5 Hours - Lingceng's Blog</title>
+  <title>Keep Learning As a Ruby Programmer - Lingceng's Blog</title>
   <meta name="author" content="Lingceng">
 
   
-  <meta name="description" content="> crontab -e Run Cron Every 5 Hours 1
-2
-3
-4
-5
-6
-# set the shell
-SHELL=/bin/sh
-PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin # m h &hellip;">
+  <meta name="description" content="I started learning Ruby and Rails about 3 years ago.
+I always didn&rsquo;t know how to keep up with the community.
+I find some clues nowadays. So I &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -26,7 +20,7 @@ PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin # m h &hellip;
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://lingceng.github.io/blog/2013/11/30/run-cron-every-5-hours">
+  <link rel="canonical" href="http://lingceng.github.io/blog/2016/01/22/keep-learning-as-a-ruby-programmer">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/atom.xml" rel="alternate" title="Lingceng's Blog" type="application/atom+xml">
@@ -87,7 +81,7 @@ PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin # m h &hellip;
   
   <header>
     
-      <h1 class="entry-title">Run Cron Every 5 Hours</h1>
+      <h1 class="entry-title">Keep Learning as a Ruby Programmer</h1>
     
     
       <p class="meta">
@@ -103,58 +97,58 @@ PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin # m h &hellip;
   
 
 
-<time datetime="2013-11-30T16:56:00+08:00" pubdate data-updated="true">Nov 30<span>th</span>, 2013</time>
+<time datetime="2016-01-22T09:27:00+08:00" pubdate data-updated="true">Jan 22<span>nd</span>, 2016</time>
         
       </p>
     
   </header>
 
 
-<div class="entry-content"><p>> crontab -e</p>
+<div class="entry-content"><p>I started learning Ruby and Rails about 3 years ago.<br/>
+I always didn&rsquo;t know how to keep up with the community.<br/>
+I find some clues nowadays. So I share the tips with you here.</p>
 
-<figure class='code'><figcaption><span>Run Cron Every 5 Hours </span></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class='sh'><span class='line'><span class="c"># set the shell</span>
-</span><span class='line'><span class="nv">SHELL</span><span class="o">=</span>/bin/sh
-</span><span class='line'><span class="nv">PATH</span><span class="o">=</span>/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
-</span><span class='line'>
-</span><span class='line'><span class="c"># m h dom mon dow usercommand</span>
-</span><span class='line'>0 */5 * * * /path/hello.sh &gt;&gt; /path/hello.log 2&gt;&amp;1
-</span></code></pre></td></tr></table></div></figure>
+<p>Learn to cross The Great Wall if you are in China.</p>
+
+<p><strong>First, use google well, collect everything useful.</strong><br/>
+Then we can do following things.</p>
+
+<h3>Keep up with news</h3>
+
+<ul>
+<li>rubyweekly</li>
+<li>rubyinside</li>
+<li>rubynews</li>
+<li>reddit/r/ruby</li>
+<li>reddit/r/rails</li>
+</ul>
 
 
-<h4>Setting the PATH is Always Necessary</h4>
+<h3>Know the persons</h3>
 
-<p><em>Crontab ignores login configuration</em>, which leads to a command not found.
-I have tested <em>env</em> command with crontab on my Ubuntu12.04 and I got the following result:</p>
+<p>Persons in ruby community are kind.<br/>
+They do speeches, write blogs and publish books.<br/>
+Follow them on twitter to get news about them.</p>
 
-<pre><code>HOME=/home/lingceng
-LOGNAME=lingceng
-PATH=/usr/bin:/bin
-LANG=en_US.UTF-8
-SHELL=/bin/sh
-PWD=/home/lingceng
-</code></pre>
+<ul>
+<li>Aaron Patterson</li>
+<li>DHH</li>
+<li>Dave Tomas <a href="https://en.wikipedia.org/wiki/Dave_Thomas_">https://en.wikipedia.org/wiki/Dave_Thomas_</a>(programmer)</li>
+<li><a href="http://blog.arkency.com/">http://blog.arkency.com/</a></li>
+<li><a href="https://github.com/orgs/rails/people">https://github.com/orgs/rails/people</a></li>
+<li>Github search with: language:Ruby followers:>300</li>
+</ul>
 
-<h4>Not Really Every 5 Hours</h4>
 
-<p>The demo shell script <strong>just runs at 0, 5, 15, 20 o&#8217;clock</strong>, 20 to 0 is just 4 hours.</p>
+<h3>Involve in</h3>
 
-<h4>Check Cron log</h4>
+<ul>
+<li>Read the source code of projects</li>
+<li>Report issues and fix bugs</li>
+<li>Maintain your open source project</li>
+<li>Share by blogs, speeches and books</li>
+</ul>
 
-<p>Cron log default put <em>/var/log/syslog</em>, use following command to monitor it:</p>
-
-<pre><code>tail -f /var/log/syslog | grep CRON
-</code></pre>
-
-<h4>Get More Help</h4>
-
-<p>> <a href="http://unixhelp.ed.ac.uk/CGI/man-cgi?crontab+5">man 5 crontab</a></p>
 </div>
 
 
@@ -177,12 +171,12 @@ PWD=/home/lingceng
   
 
 
-<time datetime="2013-11-30T16:56:00+08:00" pubdate data-updated="true">Nov 30<span>th</span>, 2013</time>
+<time datetime="2016-01-22T09:27:00+08:00" pubdate data-updated="true">Jan 22<span>nd</span>, 2016</time>
       
 
 <span class="categories">
   
-    <a class='category' href='/blog/categories/linux/'>Linux</a>
+    <a class='category' href='/blog/categories/learning/'>Learning</a>, <a class='category' href='/blog/categories/ruby/'>Ruby</a>
   
 </span>
 
@@ -198,10 +192,8 @@ PWD=/home/lingceng
     
     <p class="meta">
       
-        <a class="basic-alignment left" href="/blog/2013/10/08/hello-world/" title="Previous Post: Hello World">&laquo; Hello World</a>
+        <a class="basic-alignment left" href="/blog/2016/01/19/save-your-time-install-ruby2-dot-3-0-with-rvm/" title="Previous Post: Save Your Time: Install ruby2.3.0 with RVM">&laquo; Save Your Time: Install ruby2.3.0 with RVM</a>
       
-      
-        <a class="basic-alignment right" href="/blog/2014/03/13/git-get-start/" title="Next Post: git get start">git get start &raquo;</a>
       
     </p>
   </footer>
@@ -267,8 +259,8 @@ PWD=/home/lingceng
       
         
         // var disqus_developer = 1;
-        var disqus_identifier = 'http://lingceng.github.io/blog/2013/11/30/run-cron-every-5-hours/';
-        var disqus_url = 'http://lingceng.github.io/blog/2013/11/30/run-cron-every-5-hours/';
+        var disqus_identifier = 'http://lingceng.github.io/blog/2016/01/22/keep-learning-as-a-ruby-programmer/';
+        var disqus_url = 'http://lingceng.github.io/blog/2016/01/22/keep-learning-as-a-ruby-programmer/';
         var disqus_script = 'embed.js';
       
     (function () {

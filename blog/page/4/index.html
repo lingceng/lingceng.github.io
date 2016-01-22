@@ -9,8 +9,8 @@
   <meta name="author" content="Lingceng">
 
   
-  <meta name="description" content="The Traditional Way Here I have a table of change records in my rails app.
-And I have added a query for created_at with ransack. app/controllers/ &hellip;">
+  <meta name="description" content="We can use form_for or form_tag to build forms in Rails.
+But their parameters act differently, which always bites me. For example, I have to wrap &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -83,7 +83,7 @@ And I have added a query for created_at with ransack. app/controllers/ &hellip;"
       
   <header>
     
-      <h1 class="entry-title"><a href="/blog/2015/12/28/query-date-range-with-ransack/">Query Date Range With Ransack</a></h1>
+      <h1 class="entry-title"><a href="/blog/2016/01/11/diffs-between-formhelper-and-formtaghelper-in-rails/">Diffs Between FormHelper and FormTagHelper in Rails</a></h1>
     
     
       <p class="meta">
@@ -99,65 +99,54 @@ And I have added a query for created_at with ransack. app/controllers/ &hellip;"
   
 
 
-<time datetime="2015-12-28T19:42:00+08:00" pubdate data-updated="true">Dec 28<span>th</span>, 2015</time>
+<time datetime="2016-01-11T13:10:00+08:00" pubdate data-updated="true">Jan 11<span>th</span>, 2016</time>
         
       </p>
     
   </header>
 
 
-  <div class="entry-content"><h3>The Traditional Way</h3>
+  <div class="entry-content"><p>We can use <strong>form_for</strong> or <strong>form_tag</strong> to build forms in Rails.
+But their parameters act differently, which always bites me.</p>
 
-<p>Here I have a table of change records in my rails app.
-And I have added a query for <em>created_at</em> with <a href="https://github.com/activerecord-hackery/ransack">ransack</a>.</p>
+<p>For example, I have to wrap html options into a <code>html</code> key when I change from
+form_tag to form_for.</p>
 
-<figure class='code'><figcaption><span>app/controllers/production_status_changes_controller.rb </span></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="o">=</span> <span class="n">form_tag</span> <span class="s1">&#39;/techloglogies/board&#39;</span><span class="p">,</span> <span class="nb">method</span><span class="p">:</span> <span class="ss">:get</span><span class="p">,</span> <span class="ss">class</span><span class="p">:</span> <span class="s1">&#39;form-inline&#39;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">=</span> <span class="n">form_for</span> <span class="vi">@search</span><span class="p">,</span> <span class="ss">url</span><span class="p">:</span> <span class="s1">&#39;/techloglogies/board&#39;</span><span class="p">,</span> <span class="nb">method</span><span class="p">:</span> <span class="ss">:get</span><span class="p">,</span> <span class="ss">html</span><span class="p">:</span> <span class="p">{</span> <span class="ss">class</span><span class="p">:</span> <span class="s1">&#39;form-inline&#39;</span> <span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>And as the 3rd parameter of <code>f.select</code>  is <em>options</em> than <em>html_options</em>.
+So I have to add an empty hash <code>{}</code> there to skip it.</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
 <span class='line-number'>5</span>
 <span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">ProductionStatusChangesController</span> <span class="o">&lt;</span> <span class="no">PlainController</span>
-</span><span class='line'>  <span class="k">def</span> <span class="nf">index</span>
-</span><span class='line'>    <span class="vi">@q</span> <span class="o">=</span> <span class="no">ProductionStatusChange</span><span class="o">.</span><span class="n">ransack</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:q</span><span class="o">]</span><span class="p">)</span>
-</span><span class='line'>    <span class="vi">@orders</span> <span class="o">=</span> <span class="vi">@q</span><span class="o">.</span><span class="n">result</span><span class="o">.</span><span class="n">includes</span><span class="p">(</span><span class="ss">:order</span><span class="p">)</span><span class="o">.</span><span class="n">page</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:page</span><span class="o">]</span><span class="p">)</span><span class="o">.</span><span class="n">per</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:per</span><span class="o">]</span><span class="p">)</span>
-</span><span class='line'>  <span class="k">end</span>
-</span><span class='line'><span class="k">end</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="o">=</span> <span class="n">select_tag</span> <span class="s1">&#39;step&#39;</span><span class="p">,</span>
+</span><span class='line'>  <span class="n">options_for_select</span><span class="p">(</span><span class="ss">Order</span><span class="p">:</span><span class="ss">:PURE_STEPS</span><span class="o">.</span><span class="n">invert</span><span class="p">,</span> <span class="n">params</span><span class="o">[</span><span class="ss">:step</span><span class="o">]</span><span class="p">),</span>
+</span><span class='line'>  <span class="ss">class</span><span class="p">:</span> <span class="s1">&#39;form-control input-sm&#39;</span><span class="p">,</span> <span class="ss">style</span><span class="p">:</span> <span class="s1">&#39;width: 100px&#39;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">select</span> <span class="ss">:step</span><span class="p">,</span> <span class="ss">Order</span><span class="p">:</span><span class="ss">:PURE_STEPS</span><span class="o">.</span><span class="n">invert</span><span class="p">,</span> <span class="p">{},</span>
+</span><span class='line'>  <span class="ss">class</span><span class="p">:</span> <span class="s1">&#39;form-control input-sm&#39;</span><span class="p">,</span> <span class="ss">style</span><span class="p">:</span> <span class="s1">&#39;width: 100px&#39;</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
+<h2>Why they acts differently? Isn&rsquo;t f.select built on select_tag?</h2>
 
+<p><strong>The short answer is NO.</strong> f.select is not built on select_tag.
+Let&rsquo;s dig into the source.</p>
 
-<figure class='code'><figcaption><span>app/views/production_status_changes/index.html.erb </span></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class='erb'><span class='line'><span class="cp">&lt;%=</span> <span class="n">search_form_for</span> <span class="vi">@q</span><span class="p">,</span> <span class="ss">url</span><span class="p">:</span> <span class="n">production_status_changes_path</span><span class="p">,</span> <span class="ss">class</span><span class="p">:</span> <span class="s1">&#39;form-inline&#39;</span> <span class="k">do</span> <span class="o">|</span><span class="n">f</span><span class="o">|</span> <span class="cp">%&gt;</span><span class="x"></span>
-</span><span class='line'><span class="x">  </span><span class="cp">&lt;%=</span>  <span class="n">f</span><span class="o">.</span><span class="n">label</span> <span class="s1">&#39;Create At&#39;</span> <span class="cp">%&gt;</span><span class="x"></span>
-</span><span class='line'><span class="x">  </span><span class="cp">&lt;%=</span> <span class="n">f</span><span class="o">.</span><span class="n">search_field</span> <span class="ss">:created_at_gteq</span><span class="p">,</span> <span class="ss">class</span><span class="p">:</span> <span class="s1">&#39;form-control input-sm&#39;</span><span class="p">,</span> <span class="s1">&#39;datepicker&#39;</span> <span class="o">=&gt;</span> <span class="kp">true</span> <span class="cp">%&gt;</span><span class="x"></span>
-</span><span class='line'><span class="x">  </span><span class="cp">&lt;%=</span> <span class="n">f</span><span class="o">.</span><span class="n">search_field</span> <span class="ss">:created_at_lt</span><span class="p">,</span> <span class="ss">class</span><span class="p">:</span> <span class="s1">&#39;form-control input-sm&#39;</span><span class="p">,</span> <span class="s1">&#39;datepicker&#39;</span> <span class="o">=&gt;</span> <span class="kp">true</span> <span class="cp">%&gt;</span><span class="x"></span>
-</span><span class='line'><span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">%&gt;</span><span class="x"></span>
-</span></code></pre></td></tr></table></div></figure>
+<h3>Here&rsquo;s where form_for defined.</h3>
 
-
-<h3>The Problem</h3>
-
-<p>Everything works fine until users start to use it.
-They are surpised that, when query with &ldquo;2015-01-01&rdquo; and &ldquo;2015-01-01&rdquo;, nothing comes out.</p>
-
-<p>I of couse know that nothing exists between &lsquo;2015-01-01 00:00&rsquo; and &lsquo;2015-01-01 00:00&rsquo;.
-But our users don&rsquo;t think so. They shout that there is a whole day form 2015-01-01 to 2015-01-01!</p>
-
-<h3>Direct solution</h3>
-
-<p>Ok, users are gods.
-So I add some codes in my controller:</p>
-
-<figure class='code'><figcaption><span>app/controllers/production_status_changes_controller.rb </span></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -165,32 +154,71 @@ So I add some codes in my controller:</p>
 <span class='line-number'>6</span>
 <span class='line-number'>7</span>
 <span class='line-number'>8</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">def</span> <span class="nf">index</span>
-</span><span class='line'>  <span class="n">params</span><span class="o">[</span><span class="ss">:q</span><span class="o">]</span> <span class="o">||=</span> <span class="p">{}</span>
-</span><span class='line'>  <span class="k">if</span> <span class="n">params</span><span class="o">[</span><span class="ss">:q</span><span class="o">][</span><span class="ss">:created_at_lt</span><span class="o">].</span><span class="n">present?</span>
-</span><span class='line'>    <span class="n">params</span><span class="o">[</span><span class="ss">:q</span><span class="o">][</span><span class="ss">:created_at_lt</span><span class="o">]</span> <span class="o">=</span> <span class="n">params</span><span class="o">[</span><span class="ss">:q</span><span class="o">][</span><span class="ss">:created_at_lt</span><span class="o">].</span><span class="n">to_date</span><span class="o">.</span><span class="n">end_of_day</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">module</span> <span class="nn">ActionView::Helper::FormHelper</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">text_field</span><span class="p">(</span><span class="n">object_name</span><span class="p">,</span> <span class="nb">method</span><span class="p">,</span> <span class="n">options</span> <span class="o">=</span> <span class="p">{})</span>
+</span><span class='line'>    <span class="ss">Tags</span><span class="p">:</span><span class="ss">:TextField</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">object_name</span><span class="p">,</span> <span class="nb">method</span><span class="p">,</span> <span class="nb">self</span><span class="p">,</span> <span class="n">options</span><span class="p">)</span><span class="o">.</span><span class="n">render</span>
 </span><span class='line'>  <span class="k">end</span>
-</span><span class='line'>  <span class="vi">@q</span> <span class="o">=</span> <span class="no">ProductionStatusChange</span><span class="o">.</span><span class="n">ransack</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:q</span><span class="o">]</span><span class="p">)</span>
-</span><span class='line'>  <span class="vi">@orders</span> <span class="o">=</span> <span class="vi">@q</span><span class="o">.</span><span class="n">result</span><span class="o">.</span><span class="n">includes</span><span class="p">(</span><span class="ss">:order</span><span class="p">)</span><span class="o">.</span><span class="n">page</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:page</span><span class="o">]</span><span class="p">)</span><span class="o">.</span><span class="n">per</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:per</span><span class="o">]</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">form_for</span><span class="p">(</span><span class="o">.</span><span class="n">.</span><span class="o">.</span><span class="p">)</span>
+</span><span class='line'>    <span class="o">.</span><span class="n">.</span><span class="o">.</span>
+</span><span class='line'>  <span class="k">end</span>
 </span><span class='line'><span class="k">end</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>The <em>created_at_lt</em> will convert to &lsquo;2015-01-01 23:59&rsquo;.</p>
+<p>In FormHelper above also defined a class named ActionView::Helpers::FormBuilder.
+The form_for uses the FormBuilder.</p>
 
-<h3>DRY</h3>
+<p>Most methods in FormHelper are delegated by FormBuilder.</p>
 
-<p>I customed the ransack predicates to avoid duplication.
-So I can just write the view like following:</p>
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="c1"># in FormBuilder</span>
+</span><span class='line'><span class="k">def</span> <span class="c1">#{selector}(method, options = {})  # def text_field(method, options = {})</span>
+</span><span class='line'>  <span class="vi">@template</span><span class="o">.</span><span class="n">send</span><span class="p">(</span>                      <span class="c1">#   @template.send(</span>
+</span><span class='line'>    <span class="c1">#{selector.inspect},               #     &quot;text_field&quot;,</span>
+</span><span class='line'>    <span class="vi">@object_name</span><span class="p">,</span>                      <span class="c1">#     @object_name,</span>
+</span><span class='line'>    <span class="nb">method</span><span class="p">,</span>                            <span class="c1">#     method,</span>
+</span><span class='line'>    <span class="n">objectify_options</span><span class="p">(</span><span class="n">options</span><span class="p">))</span>        <span class="c1">#     objectify_options(options))</span>
+</span><span class='line'><span class="k">end</span>                                    <span class="c1"># end</span>
+</span></code></pre></td></tr></table></div></figure>
 
-<script src="https://gist.github.com/lingceng/65c58512d9bbb50799c7.js"></script>
+
+<p>Unlike text_field, select helper defined in ActionView::Helpers::FormOptionsHelper.
+And a select method in FormBuilder delegates the FormOptionsHelper#select.</p>
+
+<p>text_field or select finnally use classes under module ActionView::Helpers::Tags</p>
+
+<h3>FormTag and SelectTag are defined in ActionView::Helper::FormTagHelper</h3>
+
+<p><strong>ActionView::Helper::FormTagHelper seems totally another implement.</strong>
+Most tags helper are component directly in the methods. eg.</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">def</span> <span class="nf">text_field_tag</span><span class="p">(</span><span class="nb">name</span><span class="p">,</span> <span class="n">value</span> <span class="o">=</span> <span class="kp">nil</span><span class="p">,</span> <span class="n">options</span> <span class="o">=</span> <span class="p">{})</span>
+</span><span class='line'>  <span class="n">tag</span> <span class="ss">:input</span><span class="p">,</span> <span class="p">{</span> <span class="s2">&quot;type&quot;</span> <span class="o">=&gt;</span> <span class="s2">&quot;text&quot;</span><span class="p">,</span> <span class="s2">&quot;name&quot;</span> <span class="o">=&gt;</span> <span class="nb">name</span><span class="p">,</span> <span class="s2">&quot;id&quot;</span> <span class="o">=&gt;</span> <span class="n">sanitize_to_id</span><span class="p">(</span><span class="nb">name</span><span class="p">),</span> <span class="s2">&quot;value&quot;</span> <span class="o">=&gt;</span> <span class="n">value</span> <span class="p">}</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">options</span><span class="o">.</span><span class="n">stringify_keys</span><span class="p">)</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
 
 
-<h3>Maybe Another Way</h3>
+<p>select_tag and FormBuilder#select do dot shere the implement.
+They implement the include_blank and other options separately.
+Is it a historical reason?</p>
 
-<p>Maybe we can change the js datepicker to set time to 59:59 by default.
-I use <a href="http://eonasdan.github.io/bootstrap-datetimepicker/">bootstrap-datetimepicker</a>.
-Maybe I will find it out later or someone else can help me?</p>
+<h2>How to avoid converts?</h2>
+
+<p><a href="https://www.reinteractive.net/posts/158-form-objects-in-rails">Use form object</a> to always use form_for style.</p>
 </div>
   
   
@@ -215,6 +243,10 @@ Maybe I will find it out later or someone else can help me?</p>
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2016/01/22/keep-learning-as-a-ruby-programmer/">Keep Learning as a Ruby Programmer</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2016/01/19/save-your-time-install-ruby2-dot-3-0-with-rvm/">Save Your Time: Install ruby2.3.0 With RVM</a>
       </li>
     
@@ -228,10 +260,6 @@ Maybe I will find it out later or someone else can help me?</p>
     
       <li class="post">
         <a href="/blog/2015/12/28/query-date-range-with-ransack/">Query Date Range With Ransack</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2015/12/23/export-csv-or-excel-by-re-using-existing-html-view/">Export Csv or Excel by Re-using Existing HTML View</a>
       </li>
     
   </ul>
