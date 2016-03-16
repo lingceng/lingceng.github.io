@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Ruby | Lingceng's Blog]]></title>
   <link href="http://lingceng.github.io/blog/categories/ruby/atom.xml" rel="self"/>
   <link href="http://lingceng.github.io/"/>
-  <updated>2016-01-22T09:40:02+08:00</updated>
+  <updated>2016-03-16T12:02:31+08:00</updated>
   <id>http://lingceng.github.io/</id>
   <author>
     <name><![CDATA[Lingceng]]></name>
@@ -156,7 +156,7 @@ l.created_at
 #=&gt; ActiveSupport::TimeWithZone
 </code></pre>
 
-<p>Rails use ActiveSupport::TimeWithZone for datetime field.</p>
+<p>Rails use <a href="http://api.rubyonrails.org/classes/ActiveSupport/TimeWithZone.html#method-i-to_s">ActiveSupport::TimeWithZone</a> for datetime field.</p>
 
 <pre><code>l.created_at.strftime("%Y-%m-%d %H:%M%S")
 #=&gt; "2014-11-22 11:00:32"
