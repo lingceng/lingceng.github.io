@@ -46,7 +46,7 @@ The timezone offset is **+08:00** because I set `config.time_zone = 'Beijing'`
     l.created_at.class
     #=> ActiveSupport::TimeWithZone
 
-Rails use ActiveSupport::TimeWithZone for datetime field.
+Rails use [ActiveSupport::TimeWithZone](http://api.rubyonrails.org/classes/ActiveSupport/TimeWithZone.html#method-i-to_s) for datetime field.
 
     l.created_at.strftime("%Y-%m-%d %H:%M%S")
     #=> "2014-11-22 11:00:32"
