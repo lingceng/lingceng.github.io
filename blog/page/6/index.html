@@ -9,8 +9,8 @@
   <meta name="author" content="Lingceng">
 
   
-  <meta name="description" content="The Normal Way Ruby build-in supports CSV generation as CSV is so simple to compose.
-We can convert a 2-D array to a csv string like folllowing: &hellip;">
+  <meta name="description" content="The Traditional Way Here I have a table of change records in my rails app.
+And I have added a query for created_at with ransack. app/controllers/ &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -83,7 +83,7 @@ We can convert a 2-D array to a csv string like folllowing: &hellip;">
       
   <header>
     
-      <h1 class="entry-title"><a href="/blog/2015/12/23/export-csv-or-excel-by-re-using-existing-html-view/">Export Csv or Excel by Re-using Existing HTML View</a></h1>
+      <h1 class="entry-title"><a href="/blog/2015/12/28/query-date-range-with-ransack/">Query Date Range With Ransack</a></h1>
     
     
       <p class="meta">
@@ -99,50 +99,64 @@ We can convert a 2-D array to a csv string like folllowing: &hellip;">
   
 
 
-<time datetime="2015-12-23T19:34:00+08:00" pubdate data-updated="true">Dec 23<span>rd</span>, 2015</time>
+<time datetime="2015-12-28T19:42:00+08:00" pubdate data-updated="true">Dec 28<span>th</span>, 2015</time>
         
       </p>
     
   </header>
 
 
-  <div class="entry-content"><h2>The Normal Way</h2>
+  <div class="entry-content"><h3>The Traditional Way</h3>
 
-<p>Ruby build-in supports CSV generation as CSV is so simple to compose.
-We can convert a 2-D array to a csv string like folllowing:</p>
+<p>Here I have a table of change records in my rails app.
+And I have added a query for <em>created_at</em> with <a href="https://github.com/activerecord-hackery/ransack">ransack</a>.</p>
 
-<pre><code>require 'csv'
-arr = [['a', 'b', 'c'], ['1', '2', '3']]
-arr.map(&amp;:to_csv).join
-</code></pre>
+<figure class='code'><figcaption><span>app/controllers/production_status_changes_controller.rb </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">ProductionStatusChangesController</span> <span class="o">&lt;</span> <span class="no">PlainController</span>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">index</span>
+</span><span class='line'>    <span class="vi">@q</span> <span class="o">=</span> <span class="no">ProductionStatusChange</span><span class="o">.</span><span class="n">ransack</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:q</span><span class="o">]</span><span class="p">)</span>
+</span><span class='line'>    <span class="vi">@orders</span> <span class="o">=</span> <span class="vi">@q</span><span class="o">.</span><span class="n">result</span><span class="o">.</span><span class="n">includes</span><span class="p">(</span><span class="ss">:order</span><span class="p">)</span><span class="o">.</span><span class="n">page</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:page</span><span class="o">]</span><span class="p">)</span><span class="o">.</span><span class="n">per</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:per</span><span class="o">]</span><span class="p">)</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
 
-<p>And exporting CSV is easy in rails. Let&rsquo;s see the following snippet:</p>
 
-<pre><code>def index
-  @products = Product.order(:name)
-  respond_to do |format|
-    format.html
-    format.csv { send_data @products.to_csv }
-  end
-end
-</code></pre>
 
-<p>See more about export csv in rails <a href="http://railscasts.com/episodes/362-exporting-csv-and-excel?view=asciicast">here</a></p>
 
-<h2>I&rsquo;m lazy</h2>
+<figure class='code'><figcaption><span>app/views/production_status_changes/index.html.erb </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='erb'><span class='line'><span class="cp">&lt;%=</span> <span class="n">search_form_for</span> <span class="vi">@q</span><span class="p">,</span> <span class="ss">url</span><span class="p">:</span> <span class="n">production_status_changes_path</span><span class="p">,</span> <span class="ss">class</span><span class="p">:</span> <span class="s1">&#39;form-inline&#39;</span> <span class="k">do</span> <span class="o">|</span><span class="n">f</span><span class="o">|</span> <span class="cp">%&gt;</span><span class="x"></span>
+</span><span class='line'><span class="x">  </span><span class="cp">&lt;%=</span>  <span class="n">f</span><span class="o">.</span><span class="n">label</span> <span class="s1">&#39;Create At&#39;</span> <span class="cp">%&gt;</span><span class="x"></span>
+</span><span class='line'><span class="x">  </span><span class="cp">&lt;%=</span> <span class="n">f</span><span class="o">.</span><span class="n">search_field</span> <span class="ss">:created_at_gteq</span><span class="p">,</span> <span class="ss">class</span><span class="p">:</span> <span class="s1">&#39;form-control input-sm&#39;</span><span class="p">,</span> <span class="s1">&#39;datepicker&#39;</span> <span class="o">=&gt;</span> <span class="kp">true</span> <span class="cp">%&gt;</span><span class="x"></span>
+</span><span class='line'><span class="x">  </span><span class="cp">&lt;%=</span> <span class="n">f</span><span class="o">.</span><span class="n">search_field</span> <span class="ss">:created_at_lt</span><span class="p">,</span> <span class="ss">class</span><span class="p">:</span> <span class="s1">&#39;form-control input-sm&#39;</span><span class="p">,</span> <span class="s1">&#39;datepicker&#39;</span> <span class="o">=&gt;</span> <span class="kp">true</span> <span class="cp">%&gt;</span><span class="x"></span>
+</span><span class='line'><span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">%&gt;</span><span class="x"></span>
+</span></code></pre></td></tr></table></div></figure>
 
-<p>However, I&rsquo;m a lazy man. I even don&rsquo;t want to prepare 2-D array.</p>
 
-<p>In most cases, we have rendered the table in the view already.
-We have done some translations or formats in the view.
-And I don&rsquo;t want to move the view code to the controller just for exporting.</p>
+<h3>The Problem</h3>
 
-<h2>Re-use the view</h2>
+<p>Everything works fine until users start to use it.
+They are surpised that, when query with &ldquo;2015-01-01&rdquo; and &ldquo;2015-01-01&rdquo;, nothing comes out.</p>
 
-<p>So, how about re-use the table in the view?
-I find out that <a href="http://devdocs.io/rails/abstractcontroller/rendering#method-i-render_to_string">render_to_string</a> can help me do the job.</p>
+<p>I of couse know that nothing exists between &lsquo;2015-01-01 00:00&rsquo; and &lsquo;2015-01-01 00:00&rsquo;.
+But our users don&rsquo;t think so. They shout that there is a whole day form 2015-01-01 to 2015-01-01!</p>
 
-<figure class='code'><figcaption><span>plain_controller.rb </span></figcaption>
+<h3>Direct solution</h3>
+
+<p>Ok, users are gods.
+So I add some codes in my controller:</p>
+
+<figure class='code'><figcaption><span>app/controllers/production_status_changes_controller.rb </span></figcaption>
  <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
@@ -151,42 +165,32 @@ I find out that <a href="http://devdocs.io/rails/abstractcontroller/rendering#me
 <span class='line-number'>6</span>
 <span class='line-number'>7</span>
 <span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">def</span> <span class="nf">generate_csv_data</span><span class="p">(</span><span class="n">template</span> <span class="o">=</span> <span class="kp">nil</span><span class="p">)</span>
-</span><span class='line'>  <span class="n">template</span> <span class="o">||=</span> <span class="s2">&quot;</span><span class="si">#{</span><span class="n">controller_name</span><span class="si">}</span><span class="s2">/</span><span class="si">#{</span><span class="n">action_name</span><span class="si">}</span><span class="s2">.html.slim&quot;</span>
-</span><span class='line'>  <span class="n">content</span> <span class="o">=</span> <span class="n">render_to_string</span><span class="p">(</span><span class="n">template</span><span class="p">)</span>
-</span><span class='line'>  <span class="n">doc</span> <span class="o">=</span>  <span class="ss">Nokogiri</span><span class="p">:</span><span class="ss">:HTML</span><span class="p">(</span><span class="n">content</span><span class="p">)</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="n">table</span> <span class="o">=</span>  <span class="n">doc</span><span class="o">.</span><span class="n">at_css</span><span class="p">(</span><span class="s1">&#39;table&#39;</span><span class="p">)</span>
-</span><span class='line'>  <span class="n">data</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">css</span><span class="p">(</span><span class="s1">&#39;tr&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">map</span> <span class="k">do</span> <span class="o">|</span><span class="n">r</span><span class="o">|</span>
-</span><span class='line'>    <span class="n">r</span><span class="o">.</span><span class="n">css</span><span class="p">(</span><span class="s1">&#39;td,th&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="o">&amp;</span><span class="ss">:text</span><span class="p">)</span><span class="o">.</span><span class="n">to_csv</span>
-</span><span class='line'>  <span class="k">end</span><span class="o">.</span><span class="n">join</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="c1"># Convert from utf8 to gbk to make it compatible with Windows Office Excel</span>
-</span><span class='line'>  <span class="c1"># And Mac number can work with GBK too</span>
-</span><span class='line'>  <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;GBK&#39;</span><span class="p">,</span> <span class="k">undef</span><span class="p">:</span> <span class="ss">:replace</span><span class="p">,</span> <span class="ss">replace</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">def</span> <span class="nf">index</span>
+</span><span class='line'>  <span class="n">params</span><span class="o">[</span><span class="ss">:q</span><span class="o">]</span> <span class="o">||=</span> <span class="p">{}</span>
+</span><span class='line'>  <span class="k">if</span> <span class="n">params</span><span class="o">[</span><span class="ss">:q</span><span class="o">][</span><span class="ss">:created_at_lt</span><span class="o">].</span><span class="n">present?</span>
+</span><span class='line'>    <span class="n">params</span><span class="o">[</span><span class="ss">:q</span><span class="o">][</span><span class="ss">:created_at_lt</span><span class="o">]</span> <span class="o">=</span> <span class="n">params</span><span class="o">[</span><span class="ss">:q</span><span class="o">][</span><span class="ss">:created_at_lt</span><span class="o">].</span><span class="n">to_date</span><span class="o">.</span><span class="n">end_of_day</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>  <span class="vi">@q</span> <span class="o">=</span> <span class="no">ProductionStatusChange</span><span class="o">.</span><span class="n">ransack</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:q</span><span class="o">]</span><span class="p">)</span>
+</span><span class='line'>  <span class="vi">@orders</span> <span class="o">=</span> <span class="vi">@q</span><span class="o">.</span><span class="n">result</span><span class="o">.</span><span class="n">includes</span><span class="p">(</span><span class="ss">:order</span><span class="p">)</span><span class="o">.</span><span class="n">page</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:page</span><span class="o">]</span><span class="p">)</span><span class="o">.</span><span class="n">per</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:per</span><span class="o">]</span><span class="p">)</span>
 </span><span class='line'><span class="k">end</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1"># Respond csv file when csv format requested</span>
-</span><span class='line'><span class="nb">format</span><span class="o">.</span><span class="n">csv</span> <span class="p">{</span> <span class="n">send_data</span> <span class="n">generate_csv_data</span> <span class="p">}</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>Here I get the view page as a string. And extract the table in the string with <a href="http://www.nokogiri.org/">nokogiri</a>.
-We can also convert it into an excel easily.
-See full codes <a href="https://gist.github.com/lingceng/840f97f17128d8a9fd3b">here</a></p>
+<p>The <em>created_at_lt</em> will convert to &lsquo;2015-01-01 23:59&rsquo;.</p>
 
-<p>Inspired by <a href="https://github.com/livingsocial/excelinator">excelinator</a>. But
-sadly, the excel exported by excelinator can not be opened with Number on my Mac.
-So I write a version to export csv.</p>
+<h3>DRY</h3>
+
+<p>I customed the ransack predicates to avoid duplication.
+So I can just write the view like following:</p>
+
+<script src="https://gist.github.com/lingceng/65c58512d9bbb50799c7.js"></script>
+
+
+<h3>Maybe Another Way</h3>
+
+<p>Maybe we can change the js datepicker to set time to 59:59 by default.
+I use <a href="http://eonasdan.github.io/bootstrap-datetimepicker/">bootstrap-datetimepicker</a>.
+Maybe I will find it out later or someone else can help me?</p>
 </div>
   
   
@@ -211,6 +215,10 @@ So I write a version to export csv.</p>
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2016/03/18/migrate-legacy-data-to-anthother-rails-project-practical-tips-about-using-activerecord/">Migrate Legacy Data to Anthother Rails Project: Practical Tips About Using ActiveRecord</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2016/01/22/keep-learning-as-a-ruby-programmer/">Keep Learning as a Ruby Programmer</a>
       </li>
     
@@ -224,10 +232,6 @@ So I write a version to export csv.</p>
     
       <li class="post">
         <a href="/blog/2016/01/11/diffs-between-formhelper-and-formtaghelper-in-rails/">Diffs Between FormHelper and FormTagHelper in Rails</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2015/12/28/query-date-range-with-ransack/">Query Date Range With Ransack</a>
       </li>
     
   </ul>

@@ -9,8 +9,15 @@
   <meta name="author" content="Lingceng">
 
   
-  <meta name="description" content="Hello everyone! Here&rsquo;s my first post on my blog!
-">
+  <meta name="description" content="> crontab -e Run Cron Every 5 Hours 1
+2
+3
+4
+5
+6
+# set the shell
+SHELL=/bin/sh
+PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin # m h &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -83,7 +90,7 @@
       
   <header>
     
-      <h1 class="entry-title"><a href="/blog/2013/10/08/hello-world/">Hello World</a></h1>
+      <h1 class="entry-title"><a href="/blog/2013/11/30/run-cron-every-5-hours/">Run Cron Every 5 Hours</a></h1>
     
     
       <p class="meta">
@@ -99,14 +106,58 @@
   
 
 
-<time datetime="2013-10-08T13:41:00+08:00" pubdate data-updated="true">Oct 8<span>th</span>, 2013</time>
+<time datetime="2013-11-30T16:56:00+08:00" pubdate data-updated="true">Nov 30<span>th</span>, 2013</time>
         
       </p>
     
   </header>
 
 
-  <div class="entry-content"><p>Hello everyone! Here&rsquo;s my first post on my blog!</p>
+  <div class="entry-content"><p>> crontab -e</p>
+
+<figure class='code'><figcaption><span>Run Cron Every 5 Hours </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'><span class="c"># set the shell</span>
+</span><span class='line'><span class="nv">SHELL</span><span class="o">=</span>/bin/sh
+</span><span class='line'><span class="nv">PATH</span><span class="o">=</span>/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+</span><span class='line'>
+</span><span class='line'><span class="c"># m h dom mon dow usercommand</span>
+</span><span class='line'>0 */5 * * * /path/hello.sh &gt;&gt; /path/hello.log 2&gt;&amp;1
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h4>Setting the PATH is Always Necessary</h4>
+
+<p><em>Crontab ignores login configuration</em>, which leads to a command not found.
+I have tested <em>env</em> command with crontab on my Ubuntu12.04 and I got the following result:</p>
+
+<pre><code>HOME=/home/lingceng
+LOGNAME=lingceng
+PATH=/usr/bin:/bin
+LANG=en_US.UTF-8
+SHELL=/bin/sh
+PWD=/home/lingceng
+</code></pre>
+
+<h4>Not Really Every 5 Hours</h4>
+
+<p>The demo shell script <strong>just runs at 0, 5, 15, 20 o&#8217;clock</strong>, 20 to 0 is just 4 hours.</p>
+
+<h4>Check Cron log</h4>
+
+<p>Cron log default put <em>/var/log/syslog</em>, use following command to monitor it:</p>
+
+<pre><code>tail -f /var/log/syslog | grep CRON
+</code></pre>
+
+<h4>Get More Help</h4>
+
+<p>> <a href="http://unixhelp.ed.ac.uk/CGI/man-cgi?crontab+5">man 5 crontab</a></p>
 </div>
   
   
@@ -115,6 +166,8 @@
     </article>
   
   <div class="pagination">
+    
+      <a class="prev" href="/blog/page/20/">&larr; Older</a>
     
     <a href="/blog/archives">Blog Archives</a>
     
@@ -127,6 +180,10 @@
     <section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2016/03/18/migrate-legacy-data-to-anthother-rails-project-practical-tips-about-using-activerecord/">Migrate Legacy Data to Anthother Rails Project: Practical Tips About Using ActiveRecord</a>
+      </li>
     
       <li class="post">
         <a href="/blog/2016/01/22/keep-learning-as-a-ruby-programmer/">Keep Learning as a Ruby Programmer</a>
@@ -142,10 +199,6 @@
     
       <li class="post">
         <a href="/blog/2016/01/11/diffs-between-formhelper-and-formtaghelper-in-rails/">Diffs Between FormHelper and FormTagHelper in Rails</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2015/12/28/query-date-range-with-ransack/">Query Date Range With Ransack</a>
       </li>
     
   </ul>

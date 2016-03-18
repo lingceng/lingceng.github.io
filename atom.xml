@@ -4,7 +4,7 @@
   <title><![CDATA[Lingceng's Blog]]></title>
   <link href="http://lingceng.github.io/atom.xml" rel="self"/>
   <link href="http://lingceng.github.io/"/>
-  <updated>2016-03-16T12:02:31+08:00</updated>
+  <updated>2016-03-18T22:00:24+08:00</updated>
   <id>http://lingceng.github.io/</id>
   <author>
     <name><![CDATA[Lingceng]]></name>
@@ -12,6 +12,134 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Migrate Legacy Data To Anthother Rails Project: Practical Tips About Using ActiveRecord]]></title>
+    <link href="http://lingceng.github.io/blog/2016/03/18/migrate-legacy-data-to-anthother-rails-project-practical-tips-about-using-activerecord/"/>
+    <updated>2016-03-18T20:38:00+08:00</updated>
+    <id>http://lingceng.github.io/blog/2016/03/18/migrate-legacy-data-to-anthother-rails-project-practical-tips-about-using-activerecord</id>
+    <content type="html"><![CDATA[<p>I migrated legacy data from one Rails project to its rebuid Rails project
+recently. I&rsquo;ll share some tips while I&rsquo;m doing this job.</p>
+
+<p>I fetched the legacy data directly from old DB and then save into new DB in a
+rake task. I used following code to connect the old DB:</p>
+
+<pre><code>class DB &lt; ActiveRecord::Base
+  self.abstract_class = true
+  if ENV['DEBUG']
+    self.logger = Logger.new(STDOUT)
+  end
+
+  establish_connection adapter: 'mysql2', encoding: 'utf8',
+    host: '127.0.0.1', port: '3306', database: 'databasename', 
+    username: 'username'
+end
+</code></pre>
+
+<p>Then select result with raw SQL by using <code>select_all</code> method</p>
+
+<pre><code>DB.connection.select_all("select * from users").each do |user|
+  record = OpenStruct.new(record)
+  new = UserInNewDB.find_or_initialize_by(id: record.id)
+  user.attributes = record.to_h.slice(*%i[ phone name created_at updated_at])
+  user.save! if user.changed?
+end
+</code></pre>
+
+<p>But it&rsquo;s hard while doing some complicated query with raw SQL. So I tried to
+copy models in old project to new one. To keep new project clean, I mainly
+reproduced the relations between models.</p>
+
+<pre><code>class User &lt; DB
+  has_many :orders
+end
+
+class Order &lt; DB
+  belongs_to :user
+end
+</code></pre>
+
+<p>Then life gets better. I can do queries with ActiveRecord model and get all the
+benefits.</p>
+
+<pre><code>User.find_each do |record|
+  # Do the migration
+end
+</code></pre>
+
+<h2>Tip0 Skip some callback</h2>
+
+<pre><code>Process.skip_callback(:save, :before, :log_changes)
+</code></pre>
+
+<h2>Tip1 Skip some validation</h2>
+
+<pre><code>if new.invalid? &amp;&amp; 1 == new.errors.size &amp;&amp; new.errors[:batch_id]
+  new.save!(validate: false)
+else
+  new.save!
+end
+</code></pre>
+
+<h2>Tip2 Cache basic table in a hash</h2>
+
+<pre><code>brands = Brand.all.index_by(&amp;:name)
+Order.find_each do |record|
+  new = NewOrder.find_or_initialize_by(id: record.id)
+  new.brand = brands[name]
+  new.save!
+end
+</code></pre>
+
+<h2>Tip3 Show current progress</h2>
+
+<pre><code>def show_process(name, total, index)
+  printf "%s %.2f %%, %d / %d\r", name, index * 100.0 / total, index, total
+end
+</code></pre>
+
+<h2>Tip4 Find out models without ossciation</h2>
+
+<pre><code>Settlement.joins("left join orders on orders.settlement_id = settlements.id").
+  where("orders.id is null")
+</code></pre>
+
+<h2>Tip5 Update column without triggering callbacks</h2>
+
+<pre><code>PayRecord.find(10059).update_column(:amount, 5986)
+</code></pre>
+
+<h2>Tip6 Do nested inner joins with ActiveRecord</h2>
+
+<pre><code>query = ProcessesChange.joins(process: [:technic, batch: :workgroup])
+</code></pre>
+
+<h2>Tip7 Use <strong>squeel</strong> to do outer join</h2>
+
+<pre><code>User.joins{recharges.outer}
+</code></pre>
+
+<h2>Tip8 Use <code>pluck</code> method to return array of data</h2>
+
+<pre><code>Order.joins(:item).group('items.brand').pluck("items.brand, count(orders.id) as order_count")
+</code></pre>
+
+<h2>Tip9 Use Mysql <code>GROUP_CONCAT</code> to return all items in a group</h2>
+
+<pre><code>sql =  Settlement.joins(:orders).group(:id).
+  having("sum(orders.final_price) != sum(settlements.amount)").
+  select("settlements.id, GROUP_CONCAT(orders.number),
+  GROUP_CONCAT(orders.final_price), MIN(settlements.amount)").to_sql
+
+Settlement.connection.select_all(sql)
+</code></pre>
+
+<h2>Tip10 Manage rake task dependencies with an empty task</h2>
+
+<pre><code>task :user_module =&gt; [:users, :sources, :customers, :operators]
+</code></pre>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Keep Learning As a Ruby Programmer]]></title>
