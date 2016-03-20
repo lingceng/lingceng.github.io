@@ -9,7 +9,7 @@
   <meta name="author" content="Lingceng">
 
   
-  <meta name="description" content="I migrated legacy data from one Rails project to its rebuid Rails project
+  <meta name="description" content="I migrated legacy data from one Rails project to its refactored Rails project
 recently. I&rsquo;ll share some tips while I&rsquo;m doing this job. I &hellip;">
   
 
@@ -106,7 +106,7 @@ recently. I&rsquo;ll share some tips while I&rsquo;m doing this job. I &hellip;"
   </header>
 
 
-  <div class="entry-content"><p>I migrated legacy data from one Rails project to its rebuid Rails project
+  <div class="entry-content"><p>I migrated legacy data from one Rails project to its refactored Rails project
 recently. I&rsquo;ll share some tips while I&rsquo;m doing this job.</p>
 
 <p>I fetched the legacy data directly from old DB and then save into new DB in a
@@ -186,7 +186,7 @@ end
 end
 </code></pre>
 
-<h2>Tip4 Find out models without ossciation</h2>
+<h2>Tip4 Find out records with no associated records</h2>
 
 <pre><code>Settlement.joins("left join orders on orders.settlement_id = settlements.id").
   where("orders.id is null")
