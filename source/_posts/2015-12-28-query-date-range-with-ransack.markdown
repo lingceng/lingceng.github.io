@@ -32,11 +32,11 @@ end
 Everything works fine until users start to use it.
 They are surpised that, when query with "2015-01-01" and "2015-01-01", nothing comes out.
 
-I of couse know that nothing exists between '2015-01-01 00:00' and '2015-01-01 00:00'.
-But our users don't think so. They shout that there is a whole day form 2015-01-01 to 2015-01-01!
+Certainly there's nothing between '2015-01-01 00:00' and '2015-01-01 00:00'.
+But our users don't think so. They shout that there is a whole day from 2015-01-01 to 2015-01-01!
 
 ### Direct solution
-Ok, users are gods.
+OK. Users are gods.
 So I add some codes in my controller:
 
 {% codeblock app/controllers/production_status_changes_controller.rb lang:ruby %}
@@ -61,6 +61,8 @@ So I can just write the view like following:
 ### Maybe Another Way
 Maybe we can change the js datepicker to set time to 59:59 by default.
 I use [bootstrap-datetimepicker](http://eonasdan.github.io/bootstrap-datetimepicker/).
-Maybe I will find it out later or someone else can help me?
+I find the javascript solution:
 
+    = hidden_field_tag 'q[created_at_lteq]', params[:q].try(:[], :created_at_lteq)
+    = date_field_tag '', params[:q].try(:[], :created_at_lteq).to_s.sub(/ .+/, ''), onchange: "$(this).prev().val($(this).val() != '' ? $(this).val() + ' 23:59:59' : '')"
 
