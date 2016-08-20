@@ -4,7 +4,7 @@
   <title><![CDATA[Lingceng's Blog]]></title>
   <link href="http://lingceng.github.io/atom.xml" rel="self"/>
   <link href="http://lingceng.github.io/"/>
-  <updated>2016-08-19T08:34:33+08:00</updated>
+  <updated>2016-08-20T11:55:56+08:00</updated>
   <id>http://lingceng.github.io/</id>
   <author>
     <name><![CDATA[Lingceng]]></name>
@@ -534,12 +534,12 @@ And I have added a query for <em>created_at</em> with <a href="https://github.co
 <p>Everything works fine until users start to use it.
 They are surpised that, when query with &ldquo;2015-01-01&rdquo; and &ldquo;2015-01-01&rdquo;, nothing comes out.</p>
 
-<p>I of couse know that nothing exists between &lsquo;2015-01-01 00:00&rsquo; and &lsquo;2015-01-01 00:00&rsquo;.
-But our users don&rsquo;t think so. They shout that there is a whole day form 2015-01-01 to 2015-01-01!</p>
+<p>Certainly there&rsquo;s nothing between &lsquo;2015-01-01 00:00&rsquo; and &lsquo;2015-01-01 00:00&rsquo;.
+But our users don&rsquo;t think so. They shout that there is a whole day from 2015-01-01 to 2015-01-01!</p>
 
 <h3>Direct solution</h3>
 
-<p>Ok, users are gods.
+<p>OK. Users are gods.
 So I add some codes in my controller:</p>
 
 <figure class='code'><figcaption><span>app/controllers/production_status_changes_controller.rb </span></figcaption>
@@ -576,7 +576,11 @@ So I can just write the view like following:</p>
 
 <p>Maybe we can change the js datepicker to set time to 59:59 by default.
 I use <a href="http://eonasdan.github.io/bootstrap-datetimepicker/">bootstrap-datetimepicker</a>.
-Maybe I will find it out later or someone else can help me?</p>
+I find the javascript solution:</p>
+
+<pre><code>= hidden_field_tag 'q[created_at_lteq]', params[:q].try(:[], :created_at_lteq)
+= date_field_tag '', params[:q].try(:[], :created_at_lteq).to_s.sub(/ .+/, ''), onchange: "$(this).prev().val($(this).val() != '' ? $(this).val() + ' 23:59:59' : '')"
+</code></pre>
 ]]></content>
   </entry>
   
