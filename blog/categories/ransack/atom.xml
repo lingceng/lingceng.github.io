@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Ransack | Lingceng's Blog]]></title>
   <link href="http://lingceng.github.io/blog/categories/ransack/atom.xml" rel="self"/>
   <link href="http://lingceng.github.io/"/>
-  <updated>2016-08-20T12:05:30+08:00</updated>
+  <updated>2017-01-15T11:17:57+08:00</updated>
   <id>http://lingceng.github.io/</id>
   <author>
     <name><![CDATA[Lingceng]]></name>
@@ -53,7 +53,7 @@ And I have added a query for <em>created_at</em> with <a href="https://github.co
 </pre></td><td class='code'><pre><code class='erb'><span class='line'><span class="x">&amp;lt;%= search_form_for @q, url: production_status_changes_path, class: &amp;lsquo;form-inline&amp;rsquo; do |f| </span><span class="err">%&gt;</span><span class="x"></span>
 </span><span class='line'><span class="x">  &amp;lt;%=  f.label &amp;lsquo;Create At&amp;rsquo; </span><span class="err">%&gt;</span><span class="x"></span>
 </span><span class='line'><span class="x">  &amp;lt;%= f.search_field :created_at_gteq, class: &amp;lsquo;form-control input-sm&amp;rsquo;, &amp;lsquo;datepicker&amp;rsquo; =&gt; true </span><span class="err">%&gt;</span><span class="x"></span>
-</span><span class='line'><span class="x">  &amp;lt;%= f.search_field :created_at_lt, class: &amp;lsquo;form-control input-sm&amp;rsquo;, &amp;lsquo;datepicker&amp;rsquo; =&gt; true </span><span class="err">%&gt;</span><span class="x"></span>
+</span><span class='line'><span class="x">  &amp;lt;%= f.search_field :created_at_lteq, class: &amp;lsquo;form-control input-sm&amp;rsquo;, &amp;lsquo;datepicker&amp;rsquo; =&gt; true </span><span class="err">%&gt;</span><span class="x"></span>
 </span><span class='line'><span class="x">&amp;lt;% end </span><span class="err">%&gt;</span><span class="x"></span>
 </span></code></pre></td></tr></table></div></figure></notextile></div></p>
 
@@ -63,12 +63,12 @@ And I have added a query for <em>created_at</em> with <a href="https://github.co
 They are surpised that, when query with &ldquo;2015-01-01&rdquo; and &ldquo;2015-01-01&rdquo;, nothing comes out.</p>
 
 <p>Certainly there&rsquo;s nothing between &lsquo;2015-01-01 00:00&rsquo; and &lsquo;2015-01-01 00:00&rsquo;.
-But our users don&rsquo;t think so. They shout that there is a whole day from 2015-01-01 to 2015-01-01!</p>
+But our users don&rsquo;t think so.
+They shout that there is a whole day from 2015-01-01 to 2015-01-01!</p>
 
 <h3>Direct solution</h3>
 
-<p>OK. Users are gods.
-So I add some codes in my controller:</p>
+<p>OK. Users are gods. So I add some codes in my controller:</p>
 
 <p><div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span>app/controllers/production_status_changes_controller.rb </span></figcaption>
  <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
@@ -84,9 +84,9 @@ So I add some codes in my controller:</p>
 <span class='line-number'>11</span>
 </pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">def</span> <span class="nf">index</span>
 </span><span class='line'>  <span class="n">params</span><span class="o">[</span><span class="ss">:q</span><span class="o">]</span> <span class="o">||=</span> <span class="p">{}</span>
-</span><span class='line'>  <span class="k">if</span> <span class="n">params</span><span class="o">[</span><span class="ss">:q</span><span class="o">][</span><span class="ss">:created_at_lt</span><span class="o">].</span><span class="n">present?</span><span class="o">&lt;</span><span class="sr">/p&gt;</span>
+</span><span class='line'>  <span class="k">if</span> <span class="n">params</span><span class="o">[</span><span class="ss">:q</span><span class="o">][</span><span class="ss">:created_at_lteq</span><span class="o">].</span><span class="n">present?</span><span class="o">&lt;</span><span class="sr">/p&gt;</span>
 </span><span class='line'>
-</span><span class='line'><span class="sr">&lt;pre&gt;&lt;code&gt;params[:q][:created_at_lt] = params[:q][:created_at_lt].to_date.end_of_day</span>
+</span><span class='line'><span class="sr">&lt;pre&gt;&lt;code&gt;params[:q][:created_at_lteq] = params[:q][:created_at_lteq].to_date.end_of_day</span>
 </span><span class='line'><span class="sr">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;</span><span class="sr">/pre&gt;</span>
 </span><span class='line'>
 </span><span class='line'><span class="sr">&lt;p&gt;  end</span>
@@ -95,7 +95,7 @@ So I add some codes in my controller:</p>
 </span><span class='line'><span class="sr">end</span>
 </span></code></pre></td></tr></table></div></figure></notextile></div></p>
 
-<p>The <em>created_at_lt</em> will convert to &lsquo;2015-01-01 23:59&rsquo;.</p>
+<p>The <em>created_at_lteq</em> will convert to &lsquo;2015-01-01 23:59&rsquo;.</p>
 
 <h3>DRY</h3>
 
@@ -114,6 +114,23 @@ I find the javascript solution:</p>
 <pre><code>= hidden_field_tag 'q[created_at_lteq]', params[:q].try(:[], :created_at_lteq)
 = date_field_tag '', params[:q].try(:[], :created_at_lteq).to_s.sub(/ .+/, ''), onchange: "$(this).prev().val($(this).val() != '' ? $(this).val() + ' 23:59:59' : '')"
 </code></pre>
+
+<h3>One Thing More</h3>
+
+<p>Following make query in one day more convenient.</p>
+
+<p>```ruby
+class ProductionStatusChange &lt; ActiveRecord::Base
+  ransacker :created_on do</p>
+
+<pre><code>Arel.sql("DATE(#{table_name}.created_at)")
+</code></pre>
+
+<p>  end
+end</p>
+
+<p>@q = ProductionStatusChange.ransack(created_on: &lsquo;2016-01-01&rsquo;)
+```</p>
 ]]></content>
   </entry>
   

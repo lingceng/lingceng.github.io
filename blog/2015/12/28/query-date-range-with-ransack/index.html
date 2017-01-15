@@ -26,10 +26,9 @@ And I have added a query for created_at with ransack. app/controllers/ &hellip;"
   <script src="/javascripts/modernizr-2.0.js"></script>
   <script src="/javascripts/libs/jquery.min.js"></script>
   <script src="/javascripts/octopress.js" type="text/javascript"></script>
-  <!--Fonts from Google"s Web font directory at http://google.com/webfonts
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
 <link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
 <link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
--->
 
   
   <script type="text/javascript">
@@ -135,7 +134,7 @@ And I have added a query for <em>created_at</em> with <a href="https://github.co
 </pre></td><td class='code'><pre><code class='erb'><span class='line'><span class="cp">&lt;%=</span> <span class="n">search_form_for</span> <span class="vi">@q</span><span class="p">,</span> <span class="ss">url</span><span class="p">:</span> <span class="n">production_status_changes_path</span><span class="p">,</span> <span class="ss">class</span><span class="p">:</span> <span class="s1">&#39;form-inline&#39;</span> <span class="k">do</span> <span class="o">|</span><span class="n">f</span><span class="o">|</span> <span class="cp">%&gt;</span><span class="x"></span>
 </span><span class='line'><span class="x">  </span><span class="cp">&lt;%=</span>  <span class="n">f</span><span class="o">.</span><span class="n">label</span> <span class="s1">&#39;Create At&#39;</span> <span class="cp">%&gt;</span><span class="x"></span>
 </span><span class='line'><span class="x">  </span><span class="cp">&lt;%=</span> <span class="n">f</span><span class="o">.</span><span class="n">search_field</span> <span class="ss">:created_at_gteq</span><span class="p">,</span> <span class="ss">class</span><span class="p">:</span> <span class="s1">&#39;form-control input-sm&#39;</span><span class="p">,</span> <span class="s1">&#39;datepicker&#39;</span> <span class="o">=&gt;</span> <span class="kp">true</span> <span class="cp">%&gt;</span><span class="x"></span>
-</span><span class='line'><span class="x">  </span><span class="cp">&lt;%=</span> <span class="n">f</span><span class="o">.</span><span class="n">search_field</span> <span class="ss">:created_at_lt</span><span class="p">,</span> <span class="ss">class</span><span class="p">:</span> <span class="s1">&#39;form-control input-sm&#39;</span><span class="p">,</span> <span class="s1">&#39;datepicker&#39;</span> <span class="o">=&gt;</span> <span class="kp">true</span> <span class="cp">%&gt;</span><span class="x"></span>
+</span><span class='line'><span class="x">  </span><span class="cp">&lt;%=</span> <span class="n">f</span><span class="o">.</span><span class="n">search_field</span> <span class="ss">:created_at_lteq</span><span class="p">,</span> <span class="ss">class</span><span class="p">:</span> <span class="s1">&#39;form-control input-sm&#39;</span><span class="p">,</span> <span class="s1">&#39;datepicker&#39;</span> <span class="o">=&gt;</span> <span class="kp">true</span> <span class="cp">%&gt;</span><span class="x"></span>
 </span><span class='line'><span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">%&gt;</span><span class="x"></span>
 </span></code></pre></td></tr></table></div></figure>
 
@@ -146,12 +145,12 @@ And I have added a query for <em>created_at</em> with <a href="https://github.co
 They are surpised that, when query with &ldquo;2015-01-01&rdquo; and &ldquo;2015-01-01&rdquo;, nothing comes out.</p>
 
 <p>Certainly there&rsquo;s nothing between &lsquo;2015-01-01 00:00&rsquo; and &lsquo;2015-01-01 00:00&rsquo;.
-But our users don&rsquo;t think so. They shout that there is a whole day from 2015-01-01 to 2015-01-01!</p>
+But our users don&rsquo;t think so.
+They shout that there is a whole day from 2015-01-01 to 2015-01-01!</p>
 
 <h3>Direct solution</h3>
 
-<p>OK. Users are gods.
-So I add some codes in my controller:</p>
+<p>OK. Users are gods. So I add some codes in my controller:</p>
 
 <figure class='code'><figcaption><span>app/controllers/production_status_changes_controller.rb </span></figcaption>
  <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
@@ -164,8 +163,8 @@ So I add some codes in my controller:</p>
 <span class='line-number'>8</span>
 </pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">def</span> <span class="nf">index</span>
 </span><span class='line'>  <span class="n">params</span><span class="o">[</span><span class="ss">:q</span><span class="o">]</span> <span class="o">||=</span> <span class="p">{}</span>
-</span><span class='line'>  <span class="k">if</span> <span class="n">params</span><span class="o">[</span><span class="ss">:q</span><span class="o">][</span><span class="ss">:created_at_lt</span><span class="o">].</span><span class="n">present?</span>
-</span><span class='line'>    <span class="n">params</span><span class="o">[</span><span class="ss">:q</span><span class="o">][</span><span class="ss">:created_at_lt</span><span class="o">]</span> <span class="o">=</span> <span class="n">params</span><span class="o">[</span><span class="ss">:q</span><span class="o">][</span><span class="ss">:created_at_lt</span><span class="o">].</span><span class="n">to_date</span><span class="o">.</span><span class="n">end_of_day</span>
+</span><span class='line'>  <span class="k">if</span> <span class="n">params</span><span class="o">[</span><span class="ss">:q</span><span class="o">][</span><span class="ss">:created_at_lteq</span><span class="o">].</span><span class="n">present?</span>
+</span><span class='line'>    <span class="n">params</span><span class="o">[</span><span class="ss">:q</span><span class="o">][</span><span class="ss">:created_at_lteq</span><span class="o">]</span> <span class="o">=</span> <span class="n">params</span><span class="o">[</span><span class="ss">:q</span><span class="o">][</span><span class="ss">:created_at_lteq</span><span class="o">].</span><span class="n">to_date</span><span class="o">.</span><span class="n">end_of_day</span>
 </span><span class='line'>  <span class="k">end</span>
 </span><span class='line'>  <span class="vi">@q</span> <span class="o">=</span> <span class="no">ProductionStatusChange</span><span class="o">.</span><span class="n">ransack</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:q</span><span class="o">]</span><span class="p">)</span>
 </span><span class='line'>  <span class="vi">@orders</span> <span class="o">=</span> <span class="vi">@q</span><span class="o">.</span><span class="n">result</span><span class="o">.</span><span class="n">includes</span><span class="p">(</span><span class="ss">:order</span><span class="p">)</span><span class="o">.</span><span class="n">page</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:page</span><span class="o">]</span><span class="p">)</span><span class="o">.</span><span class="n">per</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:per</span><span class="o">]</span><span class="p">)</span>
@@ -173,7 +172,7 @@ So I add some codes in my controller:</p>
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>The <em>created_at_lt</em> will convert to &lsquo;2015-01-01 23:59&rsquo;.</p>
+<p>The <em>created_at_lteq</em> will convert to &lsquo;2015-01-01 23:59&rsquo;.</p>
 
 <h3>DRY</h3>
 
@@ -192,6 +191,29 @@ I find the javascript solution:</p>
 <pre><code>= hidden_field_tag 'q[created_at_lteq]', params[:q].try(:[], :created_at_lteq)
 = date_field_tag '', params[:q].try(:[], :created_at_lteq).to_s.sub(/ .+/, ''), onchange: "$(this).prev().val($(this).val() != '' ? $(this).val() + ' 23:59:59' : '')"
 </code></pre>
+
+<h3>One Thing More</h3>
+
+<p>Following make query in one day more convenient.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">ProductionStatusChange</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
+</span><span class='line'>  <span class="n">ransacker</span> <span class="ss">:created_on</span> <span class="k">do</span>
+</span><span class='line'>    <span class="no">Arel</span><span class="o">.</span><span class="n">sql</span><span class="p">(</span><span class="s2">&quot;DATE(</span><span class="si">#{</span><span class="n">table_name</span><span class="si">}</span><span class="s2">.created_at)&quot;</span><span class="p">)</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="vi">@q</span> <span class="o">=</span> <span class="no">ProductionStatusChange</span><span class="o">.</span><span class="n">ransack</span><span class="p">(</span><span class="n">created_on</span><span class="p">:</span> <span class="s1">&#39;2016-01-01&#39;</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
 </div>
 
 
@@ -292,7 +314,7 @@ I find the javascript solution:</p>
     </div>
   </div>
   <footer role="contentinfo"><p>
-  Copyright &copy; 2016 - Lingceng -
+  Copyright &copy; 2017 - Lingceng -
   <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
 </p>
 
