@@ -3,7 +3,7 @@ layout: post
 title: "Migrate Legacy Data To Anthother Rails Project: Practical Tips About Using ActiveRecord"
 date: 2016-03-18 20:38
 comments: true
-categories: ["Rails", "SQL"]
+categories: ["rails", "sql"]
 ---
 
 I migrated legacy data from one Rails project to its refactored Rails project

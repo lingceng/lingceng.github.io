@@ -3,7 +3,7 @@ layout: post
 title: "Keep Learning As a Ruby Programmer"
 date: 2016-01-22 09:27
 comments: true
-categories: ["Ruby", "Learning"]
+categories: ["ruby", "learning"]
 ---
 
 I started learning Ruby and Rails about 3 years ago.  

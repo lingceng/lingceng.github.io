@@ -3,26 +3,41 @@ layout: post
 title: "Turbolink Best Practice"
 date: 2014-10-16 12:12
 comments: true
-categories: [Rails, Ruby]
+categories: [rails, ruby]
 ---
 
-## What does Turbolink do?
+TLDR: Take care of global variables, global events binding.
 
-[Turbolink](https://github.com/rails/turbolinks) makes browser only replace page's `<body>` and `<title>` to simulate page jumping.
+### What does Turbolink do?
 
-TLDR:
-Javascript context will be kept even after page jumpings.
-So you need to take care all cases of javascript global handles.
-eg. global events bindings, global varibles, global timmers.
+[Turbolink](https://github.com/rails/turbolinks) 
+makes browser only replace page's `<body>` and `<title>` to simulate page jumping.  
+So Javascript context will not change even when page jumps.
 
-## What's the best practice?
+### What's the best practice?
+Put all JavaScript and CSS in `<HEAD>` and keep them the same for every page.  
+Mark page to separate logic:
 
-Put all JavaScript and CSS in `<HEAD>` and keep `<HEAD>` the same in every page.
+    // In app/views/layouts/application.html.erb
+    <body data-controller-name="<%= controller_name %>">
 
-Use [jquery.turbolink](https://coderwall.com/p/ypzfdw/faster-page-loads-with-turbolinks) to hijack `jQuery.ready()`.
+    $(document).ready ->
+      if $('body').data('controller-name') in ['topics']
+        console.log "Only run in topics page"
 
-jquery.turbolink make sure all events binded with **jQuery.ready()** or **jQuery()** are triggered.
-No matter you are doing a fresh page load or turbolink jumps.
+### Another practice
+If you are maintaining a ERP like system.  
+The javascript may diffs from page to page, you can put javascript at the end of body.
+
+    <body>
+      <script type="text/javascript" src="/topics.js"></script>
+    <body>
+
+### Fix jQuery ready
+Use [jquery.turbolink](https://coderwall.com/p/ypzfdw/faster-page-loads-with-turbolinks)
+to hijack `jQuery.ready()`.  
+It guarantee all events binded with `jQuery.ready()` are triggered, 
+no matter how you do a page jump, a html page load or  a turbolink jump.
 
 You should load scripts in following order:
 
@@ -31,8 +46,7 @@ You should load scripts in following order:
     ...other scripts go here...
     Turbolinks
 
-[Here](https://coderwall.com/p/ypzfdw/faster-page-loads-with-turbolinks)
-explains why you should put tubolink at last:
+[Here](https://coderwall.com/p/ypzfdw/faster-page-loads-with-turbolinks) explains: 
 
 > The reason for jQuery.turbolinks being before all scripts is so to let
 > it hijack the `$(function() { ... })` call that your other scripts will use.
@@ -40,7 +54,7 @@ explains why you should put tubolink at last:
 > Turbolinks then needs to be at the end because it has to be the last
 > to install the click handler, so not to interfere with other scripts.
 
-## Take care of dangerous global handles
+### Take care of dangerous global handles
 Global delegated events will effect every page.
 eg. You add a script as following:
 
@@ -61,7 +75,7 @@ So you should distinguish pages in you codes. eg.
 
 See details about distinguishing pages below.
 
-Global `setInterval` or `setTimeout` need to be clear too! DEMO:
+Global `setInterval` or `setTimeout` need to be clear too! 
 
     $(document).one('page:before-change', function(event) {
       clearTheTimer();
@@ -69,46 +83,7 @@ Global `setInterval` or `setTimeout` need to be clear too! DEMO:
 
 See more [here](http://staal.io/blog/2013/01/18/dangers-of-turbolinks/)
 
-## How to control javascript init for every page?
-
-Mark `<body>` with tags then trigger it according to tag. eg.
-I want javascript only run in topics pages in my rails app:
-
-    // In app/views/layouts/application.html.erb
-    <body data-controller-name="<%= controller_name %>">
-
-    // In topics.coffee
-    window.Topics =
-      replies_per_page: 50
-      init : () ->
-        console.log "hello"
-
-    $(document).ready ->
-      if $('body').data('controller-name') in ['topics']
-        Topics.init()
-
-    // Add topics to appliction.js
-    //= require topics
-
-## You can put javascript at the end of body.
-But it's not recommended.
-You will loose benefit with HTTP cache when you put javascript at the and of the
-body.
-
-And if you add code with hijack jquery ready event like following:
-
-    $(document).ready ->
-      console.log 'hello'
-
-After jumps in and out with turbolink.
-The ready events will be bind twice.
-
-Problem can not be solved even add the `data-turbolinks-eval=false` tag.
-`data-turbolinks-eval=false` can avoid the events being muti-binded.
-But the `console.log 'hello'` has already registered in the ready event.
-So the 'hello' will be printed in every page.
-
-## What will happen when I changed head content?
+### What will happen when I changed head content?
 
 It depends on how you change it.
 

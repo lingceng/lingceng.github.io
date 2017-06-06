@@ -3,7 +3,7 @@ layout: post
 title: "Dive Into The Source Code: Find More Information Besides The Doc"
 date: 2016-01-18 21:27
 comments: true
-categories: ["Rails"]
+categories: ["rails"]
 ---
 
 We can use **pry** and  **pry-byebug** gem to help us dive into the source code.

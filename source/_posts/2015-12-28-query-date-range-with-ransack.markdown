@@ -3,7 +3,7 @@ layout: post
 title: "Query Date Range with Ransack"
 date: 2015-12-28 19:42
 comments: true
-categories: ["Rails", "Ransack"]
+categories: ["rails", "ransack"]
 ---
 
 ### The Traditional Way

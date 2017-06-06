@@ -1,29 +1,27 @@
 ---
 layout: post
-title: "basics about minitest"
+title: "Basics About Minitest"
 date: 2014-03-17 07:58
 comments: true
-categories: [Ruby, Test]
+categories: [ruby, test]
 ---
 
-+ home :: https://github.com/seattlerb/minitest
-+ rdoc :: http://docs.seattlerb.org/minitest
-+ vim  :: https://github.com/sunaku/vim-ruby-minitest
+With Ruby 1.9, MiniTest entered standard lib.  
+MiniTest is pretty small and readable, here are all source files:
 
-With Ruby 1.9, MiniTest entered standard lib.
-MiniTest is pretty small and readable, here is all source file list:
-> lib:
-> hoe  minitest
->
-> lib/hoe:
-> minitest.rb
->
-> lib/minitest:
-> autorun.rb  benchmark.rb  hell.rb  mock.rb  parallel_each.rb  pride.rb  spec.rb  unit.rb
+    lib:
+    hoe  minitest
+
+    lib/hoe:
+    minitest.rb
+
+    lib/minitest:
+    autorun.rb  benchmark.rb  hell.rb  mock.rb  parallel_each.rb  pride.rb  spec.rb  unit.rb
 
 
 ### Assert Methods
-See  Minitest::Assertions doc or unit.rb source
+See Minitest::Assertions doc or unit.rb source
+
     assert assert_equal assert_raises
     capture_io
     refute refute_empty
@@ -31,20 +29,16 @@ See  Minitest::Assertions doc or unit.rb source
 
 ### Specs Expections
 See Minitest::Expectations doc or spec.rb source
+
     must_be must_be_close_to
     wont_be_empty
     ...
 
 Most methods just redirect to assert methods internally.
-**describe** method is added to **Kernel** to start the DSL road;
-expectations method is added to **Object**
-    class Object
-      include MiniTest::Expectations unless ENV["MT_NO_EXPECTATIONS"]
-    end
 
 ### Simple Start
-
 Given that you'd like to test the following class:
+
     class Meme
       def i_can_has_cheezburger?
         "OHAI!"
@@ -56,6 +50,7 @@ Given that you'd like to test the following class:
     end
 
 Unit tests
+
     require 'minitest/autorun'
 
     class TestMeme < MiniTest::Unit::TestCase
@@ -77,8 +72,7 @@ Unit tests
     end
 
 Specs
-    # the following have required in autorun
-    # no need to repeat !
+
     # require 'minitest/unit'
     # require 'minitest/spec'
     # require 'minitest/mock'
@@ -103,5 +97,7 @@ Specs
       end
     end
 
-
++ home :: https://github.com/seattlerb/minitest
++ rdoc :: http://docs.seattlerb.org/minitest
++ vim  :: https://github.com/sunaku/vim-ruby-minitest
 

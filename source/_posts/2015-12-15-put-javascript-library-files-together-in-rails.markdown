@@ -3,7 +3,7 @@ layout: post
 title: "Put javascript library files together in Rails"
 date: 2015-12-15 17:06
 comments: true
-categories: [Rails, Javascript]
+categories: [rails, javascript]
 ---
 
 **TLDR: Put all javascript library files under `app/assets/libfolder`.

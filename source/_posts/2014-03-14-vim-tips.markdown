@@ -1,37 +1,41 @@
 ---
 layout: post
-title: "vim tips"
+title: "Vim Tips"
 date: 2014-03-14 22:39
 comments: true
-categories: [Vim]
+categories: [vim]
 ---
 
 HERE IS MY [vimrc](https://gist.github.com/lingceng/6097985)
 
-### wonderful block insert
-    in Visual block mode:
-    |v_b_I|    I	insert the same text in front of all the selected lines
-    |v_b_A|	   A	append the same text after all the selected lines
+### Wonderful block insert
 
-### search word under cursor
+    in Visual block mode:
+    |v_b_I|    I insert the same text in front of all the selected lines
+    |v_b_A|	   A append the same text after all the selected lines
+
+### Search word under cursor
+
     * to search current word, n to next, N to previous
 
-### arround tag
+### Srround tag
+
     :help v_a
     at  # arround tag
     it  # inner tag
 
-### use mark
+### Use mark
+
     ma # mark a
     `a # go to a
     `A # go to A between buffers
 
-<!--more-->
+### Autocomplete with filesystem
 
-### autocomplete with filesystem
     ctrl-x ctrl-f
 
-### jump between windows
+### Jump between windows
+
     :help window
 
     # make the only window
@@ -50,23 +54,24 @@ HERE IS MY [vimrc](https://gist.github.com/lingceng/6097985)
     # add 10 width
     CTRL-W 10>
 
-### show white space
+### Show whitespace characters
+
     :set list
 
     # close list
     :set nolist
 
-### buffer change
+### Buffer change
+
     CTRL-I
     CTRL-O
 
-### scroll page
+### Scroll page
+
     N  CTRL-D	window N lines Downwards (default: 1/2 window)
     N  CTRL-U	window N lines Upwards (default: 1/2 window)
 
-### set highlight when search
+### Set highlight when search
+
     set hlsearch
     set nohlsearch
-
-
-

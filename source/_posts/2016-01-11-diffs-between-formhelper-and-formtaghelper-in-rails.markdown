@@ -3,7 +3,7 @@ layout: post
 title: "Diffs Between FormHelper and FormTagHelper in Rails"
 date: 2016-01-11 13:10
 comments: true
-categories: ["Rails"]
+categories: ["rails"]
 ---
 
 We can use **form_for** or **form_tag** to build forms in Rails.

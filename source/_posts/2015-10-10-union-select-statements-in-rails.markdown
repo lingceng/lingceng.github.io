@@ -3,7 +3,7 @@ layout: post
 title: "Union select statements in Rails"
 date: 2015-10-10 11:42
 comments: true
-categories: [Rails, SQL]
+categories: [rails, sql]
 ---
 Here we have a table named `user_statuses` like following
 

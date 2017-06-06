@@ -3,7 +3,7 @@ layout: post
 title: "Export csv or excel by re-using existing HTML view"
 date: 2015-12-23 19:34
 comments: true
-categories: [Rails]
+categories: [rails]
 ---
 
 ## The Normal Way

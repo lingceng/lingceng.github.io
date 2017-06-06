@@ -1,21 +1,23 @@
 ---
 layout: post
-title: "git get start"
+title: "Git Get Started"
 date: 2014-03-13 07:21
 comments: true
-categories: [Tool, Git]
+categories: [tool, git]
 ---
-config
+Config name and email
+
     git config --global user.name "John Doe"
     git config --global user.email "johndoe@example.com"
 
-how to get help
+Get help
+
     git config --help
     git help config
     man git-config
 
+Start up
 
-start up
     git init
     git add .
     git commit -m "Depot Scaffold"
@@ -23,7 +25,8 @@ start up
     add and commit
     git commit -a -m "Depot Scaffold"
 
-compare with version before last commit and last commit
+Compare
+
     git diff HEAD^ HEAD
 
     # show diff stat
@@ -32,25 +35,30 @@ compare with version before last commit and last commit
     # show the tree-like view
     git log --graph --oneline --all
 
-specify the file path
+Specify the file path
+
     git diff HEAD^ HEAD app/models/product.rb
 
+Git ammend the last commit
 
-git ammend the last commit
     git commit -amend
 
-powerful edit commit command
+Powerful edit commit command
+
     git rebase --interactive HEAD^5
 
-git include delelted files
+Git include delelted files
+
     git add -A
 
-
 Creates a remote named "origin" pointing at your GitHub repository
+
     git remote add origin https://github.com/username/Hello-World.git
 
 Sends your commits in the "master" branch to GitHub
+
     git push origin master
 
-pull down changes
+Pull down changes
+
     git pull orgin master

@@ -3,7 +3,7 @@ layout: post
 title: "Save Your Time: Install ruby2.3.0 with RVM"
 date: 2016-01-19 12:24
 comments: true
-categories: ['Ruby']
+categories: ['ruby']
 ---
 
 Note that:  **ruby-2.3.0** is not present now when run `rvm list known` command in rvm 1.26.11.  
