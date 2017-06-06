@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Category: Tool | Lingceng's Blog]]></title>
+  <title><![CDATA[Category: tool | Lingceng's Blog]]></title>
   <link href="http://lingceng.github.io/blog/categories/tool/atom.xml" rel="self"/>
   <link href="http://lingceng.github.io/"/>
-  <updated>2017-01-15T11:17:57+08:00</updated>
+  <updated>2017-06-06T19:07:54+08:00</updated>
   <id>http://lingceng.github.io/</id>
   <author>
     <name><![CDATA[Lingceng]]></name>
@@ -14,24 +14,24 @@
 
   
   <entry>
-    <title type="html"><![CDATA[git get start]]></title>
+    <title type="html"><![CDATA[Git Get Started]]></title>
     <link href="http://lingceng.github.io/blog/2014/03/13/git-get-start/"/>
     <updated>2014-03-13T07:21:00+08:00</updated>
     <id>http://lingceng.github.io/blog/2014/03/13/git-get-start</id>
-    <content type="html"><![CDATA[<p>config</p>
+    <content type="html"><![CDATA[<p>Config name and email</p>
 
 <pre><code>git config --global user.name "John Doe"
 git config --global user.email "johndoe@example.com"
 </code></pre>
 
-<p>how to get help</p>
+<p>Get help</p>
 
 <pre><code>git config --help
 git help config
 man git-config
 </code></pre>
 
-<p>start up</p>
+<p>Start up</p>
 
 <pre><code>git init
 git add .
@@ -41,7 +41,7 @@ add and commit
 git commit -a -m "Depot Scaffold"
 </code></pre>
 
-<p>compare with version before last commit and last commit</p>
+<p>Compare</p>
 
 <pre><code>git diff HEAD^ HEAD
 
@@ -52,22 +52,22 @@ git diff --stat
 git log --graph --oneline --all
 </code></pre>
 
-<p>specify the file path</p>
+<p>Specify the file path</p>
 
 <pre><code>git diff HEAD^ HEAD app/models/product.rb
 </code></pre>
 
-<p>git ammend the last commit</p>
+<p>Git ammend the last commit</p>
 
 <pre><code>git commit -amend
 </code></pre>
 
-<p>powerful edit commit command</p>
+<p>Powerful edit commit command</p>
 
 <pre><code>git rebase --interactive HEAD^5
 </code></pre>
 
-<p>git include delelted files</p>
+<p>Git include delelted files</p>
 
 <pre><code>git add -A
 </code></pre>
@@ -82,7 +82,7 @@ git log --graph --oneline --all
 <pre><code>git push origin master
 </code></pre>
 
-<p>pull down changes</p>
+<p>Pull down changes</p>
 
 <pre><code>git pull orgin master
 </code></pre>

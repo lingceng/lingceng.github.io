@@ -102,7 +102,7 @@ Then we&rsquo;ll do some tests about time in rails console. &hellip;">
   </header>
 
 
-<div class="entry-content"><h4>Setup</h4>
+<div class="entry-content"><h3>Setup</h3>
 
 <p>Let&rsquo;s create a demo table and do some configurations in a rails project.
 Then we&rsquo;ll do some tests about time in <code>rails console</code>.</p>
@@ -125,14 +125,18 @@ Rails.application.config.time_zone = 'Beijing'
 <p><code>config.time_zone</code> sets the default time zone for the application
 and enables time zone awareness for Active Record.</p>
 
-<p><code>config.active_record.default_timezone</code> determines whether to use Time.local
- (if set to :local) or Time.utc (if set to :utc) when pulling dates and times
+<p><code>config.active_record.default_timezone</code> determines whether to use Time.zone.local
+ (if set to :local) or Time.zone.utc (if set to :utc) when pulling dates and times
 from the database.  The default is :utc.</p>
 
-<h4><code>to_s(:db)</code> is error-prone</h4>
+<p><strong>Update:</strong><br/>
+Let active_record.default_timezone be :utc is a better practice.<br/>
+Always save the utc to database.<br/>
+It helps when you make a world-wide application.</p>
 
-<p>Run following codes in rails console.
-Here CST stands for (China Standard Time) which is zone name for Beijing.</p>
+<h3>Rails console datetime ouptut</h3>
+
+<p>Run following codes in rails console.</p>
 
 <pre><code>l = FinanceItem.create
 #=&gt; #&lt;FinanceItem id: 1, created_at: "2014-11-22 03:00:32", updated_at: "2014-11-22 03:00:32" &gt;
@@ -140,66 +144,14 @@ l.created_at
 #=&gt; Sat, 22 Nov 2014 11:00:32 CST +08:00
 </code></pre>
 
-<p>The timezone offset is <strong>+08:00</strong> because I set <code>config.time_zone = 'Beijing'</code></p>
+<p>The rails console calls <code>inspect</code> to show return value.<br/>
+The default datatime inspcet is to_s(:db).<br/>
+So the created_at is &ldquo;2014-11-22 03:00:32&rdquo;.</p>
 
-<pre><code>l.created_at.class
-#=&gt; ActiveSupport::TimeWithZone
-</code></pre>
+<p>But <code>l.created_at</code>is an instance of ActiveSupport::TimeWithZone.
+So it&rsquo;s output is &ldquo;Sat, 22 Nov 2014 11:00:32 CST +08:00&rdquo;</p>
 
-<p>Rails use <a href="http://api.rubyonrails.org/classes/ActiveSupport/TimeWithZone.html#method-i-to_s">ActiveSupport::TimeWithZone</a> for datetime field.</p>
-
-<pre><code>l.created_at.strftime("%Y-%m-%d %H:%M%S")
-#=&gt; "2014-11-22 11:00:32"
-l.created_at.to_s(:db)
-#=&gt; "2014-11-22 03:00:32"
-</code></pre>
-
-<p>We can see, two date strings are different.
-Because <code>to_s(:db)</code> always output time string in UTC.
-<code>strftime</code> or <code>to_s</code> ouptut time string with configured time zone.</p>
-
-<p>Here is the <code>TimewithZone#to_s(format)</code> source:</p>
-
-<pre><code>:default - default value, mimics Ruby 1.9 Time#to_s format.
-:db - format outputs time in UTC :db time. See Time#to_formatted_s(:db).
-Any key in Time::DATE_FORMATS can be used. See active_support/core_ext/time/conversions.rb.
-# File activesupport/lib/active_support/time_with_zone.rb, line 193
-def to_s(format = :default)
-  if format == :db
-    utc.to_s(format)
-  elsif formatter = ::Time::DATE_FORMATS[format]
-    formatter.respond_to?(:call) ? formatter.call(self).to_s : strftime(formatter)
-  else
-    "#{time.strftime("%Y-%m-%d %H:%M:%S")} #{formatted_offset(false, 'UTC')}" # mimicking Ruby 1.9 Time#to_s format
-  end
-end
-</code></pre>
-
-<p>How about <code>Time#to_s(:db)</code> and <code>Time#strftime("%Y-%m-%d %H:%M:%S")</code>?
-Here zone name is CST because my system local is &lsquo;Beijing&rsquo;.
-It&rsquo;s different with TimeWithZone which get zone from project configurations <code>config.time_zone</code>.</p>
-
-<pre><code>a = Time.now
-=&gt; 2015-03-12 16:56:21
-a.zone
-=&gt; "CST"
-a.to_s(:db)
-=&gt; "2015-03-12 16:56:21"
-a.strftime("%Y-%m-%d %H:%M:%S")
-=&gt; "2015-03-12 16:56:21"
-</code></pre>
-
-<p><code>Time#to_s(:db)</code> and <code>Time#strftime("%Y-%m-%d %H:%M:%S")</code> output the same.
-We can find out that <code>Time#to_s(:db)</code> is actually called Time#strftime(&lsquo;%Y-%m-%d %H:%M:%S&rsquo;) from source</p>
-
-<p>As we can see, <code>to_s(:db)</code> is NOT consistent between Time and TimeWithZone.
-TimeWithZone#to_s(:db) will generate time string of UTC.
-Time#to_s(:db) will return time string of configured local.</p>
-
-<p>So calling <code>to_s(:db)</code> is always error-prone. Do not use it unless you know what you are doing.
-And you&rsquo;d better not use Time and TimeWithZone interchangeably.</p>
-
-<h4>Time.zone.parse get time with timezone</h4>
+<h3>Time.zone.parse VS Datetime.parse</h3>
 
 <p>Let&rsquo;s try following codes.</p>
 
@@ -216,12 +168,9 @@ b.to_s(:rfc822)
 #=&gt; "Sat, 22 Nov 2014 12:35:05 +0800"
 </code></pre>
 
-<p>Notice that <code>Time.zone.parse</code> has <code>+0800</code> timezone offset but <code>DateTime.parse</code>
-has &lsquo;+0000&rsquo; timezone offset.</p>
-
 <p>So <code>Time.zone.parse</code> may be better for you.</p>
 
-<h3>Time.now vs Time.current</h3>
+<h3>Time.now VS Time.current</h3>
 
 <p>Let&rsquo;s see the definition of <code>Time.current</code></p>
 
@@ -231,25 +180,22 @@ def current
 end
 </code></pre>
 
-<p>Time.now uses the <strong>system time zone</strong> because it&rsquo;s is part of the Ruby standard library.
+<p>Time.now uses the <strong>system time zone</strong> because it&rsquo;s is part of the Ruby standard library.<br/>
 Time.zone.now will set zone with <code>config.time_zone</code>.</p>
 
-<p>Using <code>Time.now</code> make troubles when your system time zone is different with
-<code>config.time_zone</code></p>
+<p>Using <code>Time.now</code> make troubles when your system time zone is different with <code>config.time_zone</code></p>
 
 <h3>Best practice</h3>
 
 <p>Set the following config.</p>
 
-<pre><code>config.active_record.default_timezone = :local
+<pre><code>config.active_record.default_timezone = :utc
 config.time_zone = 'YourLocalName'
 </code></pre>
 
-<p>Use <code>Time.zone.parse</code> and do <strong>NOT</strong> use <code>DateTime.parse</code>.</p>
-
-<p>Use <code>Time.zone.now</code> or <code>Time.current</code> and do <strong>NOT</strong> use <code>Time.now</code>.</p>
-
-<p>Thus we can keep all time class to TimeWithZone and get consistent behavior.</p>
+<p>Use <code>Time.zone.parse</code> and do <strong>NOT</strong> use <code>DateTime.parse</code>.<br/>
+Use <code>Time.zone.now</code> or <code>Time.current</code> and do <strong>NOT</strong> use <code>Time.now</code>.<br/>
+Thus we can keep all time class to TimeWithZone and get consistent behavior.</p>
 </div>
 
 
@@ -277,7 +223,7 @@ config.time_zone = 'YourLocalName'
 
 <span class="categories">
   
-    <a class='category' href='/blog/categories/rails/'>Rails</a>, <a class='category' href='/blog/categories/ruby/'>Ruby</a>
+    <a class='category' href='/blog/categories/rails/'>rails</a>, <a class='category' href='/blog/categories/ruby/'>ruby</a>
   
 </span>
 

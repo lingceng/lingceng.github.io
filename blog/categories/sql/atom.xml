@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Category: SQL | Lingceng's Blog]]></title>
+  <title><![CDATA[Category: sql | Lingceng's Blog]]></title>
   <link href="http://lingceng.github.io/blog/categories/sql/atom.xml" rel="self"/>
   <link href="http://lingceng.github.io/"/>
-  <updated>2017-01-15T11:17:57+08:00</updated>
+  <updated>2017-06-06T19:07:54+08:00</updated>
   <id>http://lingceng.github.io/</id>
   <author>
     <name><![CDATA[Lingceng]]></name>

@@ -5,13 +5,14 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>basics about minitest - Lingceng's Blog</title>
+  <title>Basics About Minitest - Lingceng's Blog</title>
   <meta name="author" content="Lingceng">
 
   
-  <meta name="description" content="home :: https://github.com/seattlerb/minitest
-rdoc :: http://docs.seattlerb.org/minitest
-vim :: https://github.com/sunaku/vim-ruby-minitest With &hellip;">
+  <meta name="description" content="With Ruby 1.9, MiniTest entered standard lib.
+MiniTest is pretty small and readable, here are all source files: lib:
+hoe minitest lib/hoe:
+minitest. &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -103,28 +104,22 @@ vim :: https://github.com/sunaku/vim-ruby-minitest With &hellip;">
   </header>
 
 
-<div class="entry-content"><ul>
-<li>home :: <a href="https://github.com/seattlerb/minitest">https://github.com/seattlerb/minitest</a></li>
-<li>rdoc :: <a href="http://docs.seattlerb.org/minitest">http://docs.seattlerb.org/minitest</a></li>
-<li>vim  :: <a href="https://github.com/sunaku/vim-ruby-minitest">https://github.com/sunaku/vim-ruby-minitest</a></li>
-</ul>
+<div class="entry-content"><p>With Ruby 1.9, MiniTest entered standard lib.<br/>
+MiniTest is pretty small and readable, here are all source files:</p>
 
+<pre><code>lib:
+hoe  minitest
 
-<p>With Ruby 1.9, MiniTest entered standard lib.
-MiniTest is pretty small and readable, here is all source file list:</p>
+lib/hoe:
+minitest.rb
 
-<blockquote><p>lib:
-hoe  minitest</p>
-
-<p>lib/hoe:
-minitest.rb</p>
-
-<p>lib/minitest:
-autorun.rb  benchmark.rb  hell.rb  mock.rb  parallel_each.rb  pride.rb  spec.rb  unit.rb</p></blockquote>
+lib/minitest:
+autorun.rb  benchmark.rb  hell.rb  mock.rb  parallel_each.rb  pride.rb  spec.rb  unit.rb
+</code></pre>
 
 <h3>Assert Methods</h3>
 
-<p>See  Minitest::Assertions doc or unit.rb source</p>
+<p>See Minitest::Assertions doc or unit.rb source</p>
 
 <pre><code>assert assert_equal assert_raises
 capture_io
@@ -141,14 +136,7 @@ wont_be_empty
 ...
 </code></pre>
 
-<p>Most methods just redirect to assert methods internally.
-<strong>describe</strong> method is added to <strong>Kernel</strong> to start the DSL road;
-expectations method is added to <strong>Object</strong></p>
-
-<pre><code>class Object
-  include MiniTest::Expectations unless ENV["MT_NO_EXPECTATIONS"]
-end
-</code></pre>
+<p>Most methods just redirect to assert methods internally.</p>
 
 <h3>Simple Start</h3>
 
@@ -190,9 +178,7 @@ end
 
 <p>Specs</p>
 
-<pre><code># the following have required in autorun
-# no need to repeat !
-# require 'minitest/unit'
+<pre><code># require 'minitest/unit'
 # require 'minitest/spec'
 # require 'minitest/mock'
 
@@ -216,6 +202,13 @@ describe Meme do
   end
 end
 </code></pre>
+
+<ul>
+<li>home :: <a href="https://github.com/seattlerb/minitest">https://github.com/seattlerb/minitest</a></li>
+<li>rdoc :: <a href="http://docs.seattlerb.org/minitest">http://docs.seattlerb.org/minitest</a></li>
+<li>vim  :: <a href="https://github.com/sunaku/vim-ruby-minitest">https://github.com/sunaku/vim-ruby-minitest</a></li>
+</ul>
+
 </div>
 
 
@@ -243,7 +236,7 @@ end
 
 <span class="categories">
   
-    <a class='category' href='/blog/categories/ruby/'>Ruby</a>, <a class='category' href='/blog/categories/test/'>Test</a>
+    <a class='category' href='/blog/categories/ruby/'>ruby</a>, <a class='category' href='/blog/categories/test/'>test</a>
   
 </span>
 
@@ -259,10 +252,10 @@ end
     
     <p class="meta">
       
-        <a class="basic-alignment left" href="/blog/2014/03/14/vim-tips/" title="Previous Post: vim tips">&laquo; vim tips</a>
+        <a class="basic-alignment left" href="/blog/2014/03/14/vim-tips/" title="Previous Post: Vim Tips">&laquo; Vim Tips</a>
       
       
-        <a class="basic-alignment right" href="/blog/2014/03/18/minitest-mock-and-stud/" title="Next Post: minitest mock and stud">minitest mock and stud &raquo;</a>
+        <a class="basic-alignment right" href="/blog/2014/03/18/minitest-mock-and-stud/" title="Next Post: Minitest Mock And Stud">Minitest Mock And Stud &raquo;</a>
       
     </p>
   </footer>

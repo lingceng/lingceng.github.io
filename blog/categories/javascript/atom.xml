@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Category: Javascript | Lingceng's Blog]]></title>
+  <title><![CDATA[Category: javascript | Lingceng's Blog]]></title>
   <link href="http://lingceng.github.io/blog/categories/javascript/atom.xml" rel="self"/>
   <link href="http://lingceng.github.io/"/>
-  <updated>2017-01-15T11:17:57+08:00</updated>
+  <updated>2017-06-06T19:07:54+08:00</updated>
   <id>http://lingceng.github.io/</id>
   <author>
     <name><![CDATA[Lingceng]]></name>
@@ -52,6 +52,85 @@ assets. So we can refer the <code>sweet-alert.js</code> in our application.js as
 <p>We can do the same for <code>sweet-alert.less</code> in our application.less.</p>
 
 <p>Note that we have <a href="https://www.codefellows.org/blog/5-ways-to-manage-front-end-assets-in-rails">other ways to manage the assets</a>. But it&rsquo;s another topic then.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[jQuery Source Structure Tip]]></title>
+    <link href="http://lingceng.github.io/blog/2014/03/26/jquery-source-structure-tip/"/>
+    <updated>2014-03-26T09:12:00+08:00</updated>
+    <id>http://lingceng.github.io/blog/2014/03/26/jquery-source-structure-tip</id>
+    <content type="html"><![CDATA[<p>I was puzzled when I first see the jQuery source code.
+But I finally find a clue.</p>
+
+<p>Put aside other modules, we can find out that jQuery has the ordinary JS class structrue.</p>
+
+<pre><code>jQuery = function() {
+
+}
+
+jQuery.prototype = {
+
+}
+</code></pre>
+
+<p><code>$</code> is alias of jQuery.</p>
+
+<pre><code>// we can use the dollar sign to call the jQuery function
+$ = jQuery;
+
+// we can use the `jQuery.fn.newFeature = function() {}` to extend the jQuery instance function
+// Why we can add fn key to jQuery?
+// Answer is jQuery is a function and function is a object too. So we can add
+// properties to function
+jQuery.fn = jQuery.prototype;
+</code></pre>
+
+<p>But when <code>$("#someid")</code> always return a jQuery instance, where the <code>new</code> keyword?</p>
+
+<pre><code>jQuery = function() {
+    // jQuery.prototype.init is the actually creator function
+    return new jQuery.fn.init( selector, context );
+}
+
+//  mount prototype on jQuery to jQuery.fn.init
+jQuery.fn.init.prototype = jquery.fn
+</code></pre>
+
+<p>Let&rsquo;s see the complete struture now.</p>
+
+<pre><code>// utils
+
+// class structure
+jQuery = function() {
+    return new jQuery.fn.init( selector, context );
+}
+jQuery.fn = {
+   init: function(selector, context) {}
+   // other core instance methods
+}
+jQuery.fn = jQuery.prototype;
+jQuery.fn.init.prototype = jquery.fn
+
+// instance methods extend
+// or use this style: jQuery.fn.hello = funtion() {}
+jQuery.extend(jQuery.fn, {
+   // ...
+});
+
+// class methods extend
+// or use this style: jQuery.hello = funtion() {}
+// maybe some utils
+jQuery.extend(jQuery, {
+  isFunction: function( obj ) {
+    return jQuery.type(obj) === "function";
+  }
+  // ...
+});
+
+// module export or AMD
+window.$ = window.jQuery = jQuery
+</code></pre>
 ]]></content>
   </entry>
   

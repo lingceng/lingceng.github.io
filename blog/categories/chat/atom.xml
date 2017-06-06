@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: chat | Lingceng's Blog]]></title>
+  <link href="http://lingceng.github.io/blog/categories/chat/atom.xml" rel="self"/>
+  <link href="http://lingceng.github.io/"/>
+  <updated>2017-06-06T19:07:54+08:00</updated>
+  <id>http://lingceng.github.io/</id>
+  <author>
+    <name><![CDATA[Lingceng]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Hello World]]></title>
+    <link href="http://lingceng.github.io/blog/2013/10/08/hello-world/"/>
+    <updated>2013-10-08T13:41:00+08:00</updated>
+    <id>http://lingceng.github.io/blog/2013/10/08/hello-world</id>
+    <content type="html"><![CDATA[<p>Hello everyone! Here&rsquo;s my first post on my blog!</p>
+]]></content>
+  </entry>
+  
+</feed>
