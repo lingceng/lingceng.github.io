@@ -4,7 +4,7 @@
   <title><![CDATA[Category: mysql | Lingceng's Blog]]></title>
   <link href="http://lingceng.github.io/blog/categories/mysql/atom.xml" rel="self"/>
   <link href="http://lingceng.github.io/"/>
-  <updated>2017-06-09T01:17:15+08:00</updated>
+  <updated>2017-06-09T01:19:42+08:00</updated>
   <id>http://lingceng.github.io/</id>
   <author>
     <name><![CDATA[Lingceng]]></name>
@@ -34,7 +34,8 @@ But an index won&rsquo;t help text matching with a leading wildcard, an index ca
 <pre><code>LIKE 'text%'
 </code></pre>
 
-<p>The query gets much faster with &lsquo;name&rsquo; index, but comic name such as &ldquo;hitext&rdquo; won&rsquo;t match.</p>
+<p>The query gets much faster with &lsquo;name&rsquo; index, but comic name such as &ldquo;hitext&rdquo; won&rsquo;t match.
+It&rsquo;s not the solution.</p>
 
 <p>I find out, that the same query is much faster on my MacBook, which only takes about 200ms.
 Here&rsquo;s the diff:</p>

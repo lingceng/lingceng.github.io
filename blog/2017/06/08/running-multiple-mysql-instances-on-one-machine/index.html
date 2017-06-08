@@ -119,7 +119,8 @@ But an index won&rsquo;t help text matching with a leading wildcard, an index ca
 <pre><code>LIKE 'text%'
 </code></pre>
 
-<p>The query gets much faster with &lsquo;name&rsquo; index, but comic name such as &ldquo;hitext&rdquo; won&rsquo;t match.</p>
+<p>The query gets much faster with &lsquo;name&rsquo; index, but comic name such as &ldquo;hitext&rdquo; won&rsquo;t match.
+It&rsquo;s not the solution.</p>
 
 <p>I find out, that the same query is much faster on my MacBook, which only takes about 200ms.
 Here&rsquo;s the diff:</p>
