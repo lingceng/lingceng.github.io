@@ -21,6 +21,7 @@ But an index won't help text matching with a leading wildcard, an index can be u
     LIKE 'text%'
 
 The query gets much faster with 'name' index, but comic name such as "hitext" won't match.
+It's not the solution.
 
 I find out, that the same query is much faster on my MacBook, which only takes about 200ms.
 Here's the diff:
