@@ -5,12 +5,13 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Minitest Mock And Stud - Lingceng's Blog</title>
+  <title>Upgrade MySQL With Docker - Lingceng's Blog</title>
   <meta name="author" content="Lingceng">
 
   
-  <meta name="description" content="Capture IO Use capture_io to test standard output.
-capture_io uses StringIO to wrap $stdout and $stderr. out, err = capture_io do puts "Some info" &hellip;">
+  <meta name="description" content="The search problem Recently a friend and I made a comic App.
+I crawled about 70,000 comics and saved them into MySQL.
+Search for comic name starts to &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -19,7 +20,7 @@ capture_io uses StringIO to wrap $stdout and $stderr. out, err = capture_io do p
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://lingceng.github.io/blog/2014/03/18/minitest-mock-and-stud">
+  <link rel="canonical" href="http://lingceng.github.io/blog/2017/06/08/running-multiple-mysql-instances-on-one-machine">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/atom.xml" rel="alternate" title="Lingceng's Blog" type="application/atom+xml">
@@ -79,7 +80,7 @@ capture_io uses StringIO to wrap $stdout and $stderr. out, err = capture_io do p
   
   <header>
     
-      <h1 class="entry-title">Minitest Mock and Stud</h1>
+      <h1 class="entry-title">Upgrade MySQL With Docker</h1>
     
     
       <p class="meta">
@@ -95,74 +96,97 @@ capture_io uses StringIO to wrap $stdout and $stderr. out, err = capture_io do p
   
 
 
-<time datetime="2014-03-18T08:28:00+08:00" pubdate data-updated="true">Mar 18<span>th</span>, 2014</time>
+<time datetime="2017-06-08T23:18:00+08:00" pubdate data-updated="true">Jun 8<span>th</span>, 2017</time>
         
       </p>
     
   </header>
 
 
-<div class="entry-content"><h3>Capture IO</h3>
+<div class="entry-content"><h3>The search problem</h3>
 
-<p>Use <code>capture_io</code> to test standard output.<br/>
-<code>capture_io</code> uses StringIO to wrap $stdout and $stderr.</p>
+<p>Recently a friend and I made <a href="http://www.cookacg.com">a comic App</a>.
+I crawled about 70,000 comics and saved them into MySQL.
+Search for comic name starts to slow down.
+It takes about 2000ms.</p>
 
-<pre><code>out, err = capture_io do
-  puts "Some info"
-  warn "You did a bad thing"
-end
-
-assert_match /info/, out
-assert_match /bad/, err
+<pre><code>SELECT `comics`.* FROM `comics` WHERE `comics`.`name` LIKE '%text%' LIMIT 21 OFFSET 0
 </code></pre>
 
-<h3>Mock</h3>
+<p>I have added an index for name field.
+But an index won&rsquo;t help text matching with a leading wildcard, an index can be used for:</p>
 
-<pre><code>class Stupidc
-  def initialize(input=STDIN, output=STDOUT)
-    @input = input
-    @output = output
-  end
-
-  def say_hello()
-    @output.puts 'hello'
-  end
-end
-
-
-require 'minitest/autorun'
-
-describe Stupidc do
-  before do
-    @input = MiniTest::Mock.new
-    @output = MiniTest::Mock.new
-
-    @stupidc = Stupidc.new(@input, @output)
-  end
-
-
-  it "should copy file to source when file is target" do
-    @output.expect :puts, nil, ['hello']
-    @stupidc.say_hello()
-    @output.verify
-  end
-end
+<pre><code>LIKE 'text%'
 </code></pre>
 
-<h3>Stub</h3>
+<p>The query gets much faster with &lsquo;name&rsquo; index, but comic name such as &ldquo;hitext&rdquo; won&rsquo;t match.</p>
 
-<p>see <a href="https://github.com/seattlerb/minitest/blob/master/test/minitest/test_minitest_mock.rb">test</a></p>
+<p>I find out, that the same query is much faster on my MacBook, which only takes about 200ms.
+Here&rsquo;s the diff:</p>
 
-<pre><code>def test_stub_yield_self
-  obj = "foo"
-
-  val = obj.stub :to_s, "bar" do |s|
-    s.to_s
-  end
-
-  @tc.assert_equal "bar", val
-end
+<pre><code>EVN        | CPU                   | Memory | OS           | MySQL Version
+---        | ---                   | ---    | ---          | ---
+MacBook    | 2.7 GHz Intel Core i5 | 8G     | MacOS Sierra | 5.7.17
+Production | 2.6 GHZ 1 Core        | 2G     | CentOS 6.5   | 5.1.73
 </code></pre>
+
+<p>After some tests, I find out MySQL Version is the key point.
+Why 5.7 is so much faster than 5.1? I don&rsquo;t know.</p>
+
+<h3>Try to upgrade MySQL</h3>
+
+<p>So I need to upgrade MySQL from 5.1 to 5.7.
+I have 3 choices:</p>
+
+<ul>
+<li>Use mysql_upgrade</li>
+<li>Install MySQL5.7 manually on the same machine and import data</li>
+<li>Install MySQL5.7 in docker and import data</li>
+</ul>
+
+
+<p>Install MySQL.7 in docker seems much safer and simpler.
+I tried to install the latest stable docker but failed, as the lastest Docker CE is only supported on CentOS 7.3 64-bit.
+I installed the <a href="https://docs.docker.com/v1.7/docker/installation/centos/">docker1.7</a> which is supported on CentOS6.5.</p>
+
+<p>Install MySQL and publish to host port 6603:</p>
+
+<pre><code>sudo docker run --detach --name=comic-mysql --env="MYSQL_ROOT_PASSWORD=mypassword" --publish 6603:3306 mysql
+</code></pre>
+
+<p>Connect with host MySQL client, it works:</p>
+
+<pre><code>mysql -uroot -p -h 127.0.0.1 -P 6603
+</code></pre>
+
+<p>Create database:</p>
+
+<pre><code>CREATE DATABASE comic_production CHARACTER SET utf8 COLLATE utf8_general_ci;
+</code></pre>
+
+<p>Import sql.gz file:</p>
+
+<pre><code>zcat ~/backup/comic_production.20170606112459.sql.gz  | sudo docker exec -i comic-mysql mysql -uroot -pmypassword comic_production
+</code></pre>
+
+<p>Config my rails database.yml:</p>
+
+<pre><code>default: &amp;default
+  adapter: mysql2
+  pool: 5
+  username: root
+  password: mypassword
+  host: 127.0.0.1
+  port: 6603
+</code></pre>
+
+<h3>References</h3>
+
+<ul>
+<li><a href="https://stackoverflow.com/questions/2042269/how-to-speed-up-select-like-queries-in-mysql-on-multiple-columns">https://stackoverflow.com/questions/2042269/how-to-speed-up-select-like-queries-in-mysql-on-multiple-columns</a></li>
+<li><a href="https://dev.mysql.com/doc/refman/5.7/en/multiple-servers.html">https://dev.mysql.com/doc/refman/5.7/en/multiple-servers.html</a></li>
+</ul>
+
 </div>
 
 
@@ -185,12 +209,12 @@ end
   
 
 
-<time datetime="2014-03-18T08:28:00+08:00" pubdate data-updated="true">Mar 18<span>th</span>, 2014</time>
+<time datetime="2017-06-08T23:18:00+08:00" pubdate data-updated="true">Jun 8<span>th</span>, 2017</time>
       
 
 <span class="categories">
   
-    <a class='category' href='/blog/categories/ruby/'>ruby</a>, <a class='category' href='/blog/categories/test/'>test</a>
+    <a class='category' href='/blog/categories/docker/'>docker</a>, <a class='category' href='/blog/categories/mysql/'>mysql</a>, <a class='category' href='/blog/categories/rails/'>rails</a>
   
 </span>
 
@@ -206,10 +230,8 @@ end
     
     <p class="meta">
       
-        <a class="basic-alignment left" href="/blog/2014/03/17/basics-about-minitest/" title="Previous Post: Basics About Minitest">&laquo; Basics About Minitest</a>
+        <a class="basic-alignment left" href="/blog/2016/03/18/migrate-legacy-data-to-anthother-rails-project-practical-tips-about-using-activerecord/" title="Previous Post: Migrate Legacy Data To Anthother Rails Project: Practical Tips About Using ActiveRecord">&laquo; Migrate Legacy Data To Anthother Rails Project: Practical Tips About Using ActiveRecord</a>
       
-      
-        <a class="basic-alignment right" href="/blog/2014/03/26/jquery-source-structure-tip/" title="Next Post: jQuery Source Structure Tip">jQuery Source Structure Tip &raquo;</a>
       
     </p>
   </footer>
@@ -275,8 +297,8 @@ end
       
         
         // var disqus_developer = 1;
-        var disqus_identifier = 'http://lingceng.github.io/blog/2014/03/18/minitest-mock-and-stud/';
-        var disqus_url = 'http://lingceng.github.io/blog/2014/03/18/minitest-mock-and-stud/';
+        var disqus_identifier = 'http://lingceng.github.io/blog/2017/06/08/running-multiple-mysql-instances-on-one-machine/';
+        var disqus_url = 'http://lingceng.github.io/blog/2017/06/08/running-multiple-mysql-instances-on-one-machine/';
         var disqus_script = 'embed.js';
       
     (function () {

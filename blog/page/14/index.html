@@ -9,8 +9,8 @@
   <meta name="author" content="Lingceng">
 
   
-  <meta name="description" content="I was puzzled when I first see the jQuery source code.
-But I finally find a clue. Put aside other modules, we can find out that jQuery has the &hellip;">
+  <meta name="description" content="TLDR: Take care of global variables, global events binding. What does Turbolink do? Turbolink
+makes browser only replace page&rsquo;s &lt;body&gt; &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -82,7 +82,7 @@ But I finally find a clue. Put aside other modules, we can find out that jQuery 
       
   <header>
     
-      <h1 class="entry-title"><a href="/blog/2014/03/26/jquery-source-structure-tip/">jQuery Source Structure Tip</a></h1>
+      <h1 class="entry-title"><a href="/blog/2014/10/16/turbolink-best-practice/">Turbolink Best Practice</a></h1>
     
     
       <p class="meta">
@@ -98,84 +98,176 @@ But I finally find a clue. Put aside other modules, we can find out that jQuery 
   
 
 
-<time datetime="2014-03-26T09:12:00+08:00" pubdate data-updated="true">Mar 26<span>th</span>, 2014</time>
+<time datetime="2014-10-16T12:12:00+08:00" pubdate data-updated="true">Oct 16<span>th</span>, 2014</time>
         
       </p>
     
   </header>
 
 
-  <div class="entry-content"><p>I was puzzled when I first see the jQuery source code.
-But I finally find a clue.</p>
+  <div class="entry-content"><p>TLDR: Take care of global variables, global events binding.</p>
 
-<p>Put aside other modules, we can find out that jQuery has the ordinary JS class structrue.</p>
+<h3>What does Turbolink do?</h3>
 
-<pre><code>jQuery = function() {
+<p><a href="https://github.com/rails/turbolinks">Turbolink</a>
+makes browser only replace page&rsquo;s <code>&lt;body&gt;</code> and <code>&lt;title&gt;</code> to simulate page jumping.<br/>
+So Javascript context will not change even when page jumps.</p>
 
-}
+<h3>What&rsquo;s the best practice?</h3>
 
-jQuery.prototype = {
+<p>Put all JavaScript and CSS in <code>&lt;HEAD&gt;</code> and keep them the same for every page.<br/>
+Mark page to separate logic:</p>
 
-}
+<pre><code>// In app/views/layouts/application.html.erb
+&lt;body data-controller-name="&lt;%= controller_name %&gt;"&gt;
+
+$(document).ready -&gt;
+  if $('body').data('controller-name') in ['topics']
+    console.log "Only run in topics page"
 </code></pre>
 
-<p><code>$</code> is alias of jQuery.</p>
+<h3>Another practice</h3>
 
-<pre><code>// we can use the dollar sign to call the jQuery function
-$ = jQuery;
+<p>If you are maintaining a ERP like system.<br/>
+The javascript may diffs from page to page, you can put javascript at the end of body.</p>
 
-// we can use the `jQuery.fn.newFeature = function() {}` to extend the jQuery instance function
-// Why we can add fn key to jQuery?
-// Answer is jQuery is a function and function is a object too. So we can add
-// properties to function
-jQuery.fn = jQuery.prototype;
+<pre><code>&lt;body&gt;
+  &lt;script type="text/javascript" src="/topics.js"&gt;&lt;/script&gt;
+&lt;body&gt;
 </code></pre>
 
-<p>But when <code>$("#someid")</code> always return a jQuery instance, where the <code>new</code> keyword?</p>
+<h3>Fix jQuery ready</h3>
 
-<pre><code>jQuery = function() {
-    // jQuery.prototype.init is the actually creator function
-    return new jQuery.fn.init( selector, context );
-}
+<p>Use <a href="https://coderwall.com/p/ypzfdw/faster-page-loads-with-turbolinks">jquery.turbolink</a>
+to hijack <code>jQuery.ready()</code>.<br/>
+It guarantee all events binded with <code>jQuery.ready()</code> are triggered,
+no matter how you do a page jump, a html page load or  a turbolink jump.</p>
 
-//  mount prototype on jQuery to jQuery.fn.init
-jQuery.fn.init.prototype = jquery.fn
+<p>You should load scripts in following order:</p>
+
+<pre><code>jQuery
+jQuery.turbolinks
+...other scripts go here...
+Turbolinks
 </code></pre>
 
-<p>Let&rsquo;s see the complete struture now.</p>
+<p><a href="https://coderwall.com/p/ypzfdw/faster-page-loads-with-turbolinks">Here</a> explains:</p>
 
-<pre><code>// utils
+<blockquote><p>The reason for jQuery.turbolinks being before all scripts is so to let
+it hijack the <code>$(function() { ... })</code> call that your other scripts will use.</p>
 
-// class structure
-jQuery = function() {
-    return new jQuery.fn.init( selector, context );
-}
-jQuery.fn = {
-   init: function(selector, context) {}
-   // other core instance methods
-}
-jQuery.fn = jQuery.prototype;
-jQuery.fn.init.prototype = jquery.fn
+<p>Turbolinks then needs to be at the end because it has to be the last
+to install the click handler, so not to interfere with other scripts.</p></blockquote>
 
-// instance methods extend
-// or use this style: jQuery.fn.hello = funtion() {}
-jQuery.extend(jQuery.fn, {
-   // ...
-});
+<h3>Take care of dangerous global handles</h3>
 
-// class methods extend
-// or use this style: jQuery.hello = funtion() {}
-// maybe some utils
-jQuery.extend(jQuery, {
-  isFunction: function( obj ) {
-    return jQuery.type(obj) === "function";
+<p>Global delegated events will effect every page.
+eg. You add a script as following:</p>
+
+<pre><code>$(document).on('click', 'button', function(){
+  console.log("clicked button")
+})
+</code></pre>
+
+<p>&ldquo;clicked button&rdquo; will be printed when you click a button <strong>in every pages</strong>.</p>
+
+<p>Another example is the hijacked jquery ready event as mentioned above.
+So you should distinguish pages in you codes. eg.</p>
+
+<pre><code>$(function() {
+  if (current_page == 'index') {
+    // do staff for index page
   }
-  // ...
 });
-
-// module export or AMD
-window.$ = window.jQuery = jQuery
 </code></pre>
+
+<p>See details about distinguishing pages below.</p>
+
+<p>Global <code>setInterval</code> or <code>setTimeout</code> need to be clear too!</p>
+
+<pre><code>$(document).one('page:before-change', function(event) {
+  clearTheTimer();
+}
+</code></pre>
+
+<p>See more <a href="http://staal.io/blog/2013/01/18/dangers-of-turbolinks/">here</a></p>
+
+<h3>What will happen when I changed head content?</h3>
+
+<p>It depends on how you change it.</p>
+
+<p>If you add some <code>&lt;script type="text/javascript"&gt;</code> tag in head, eg.</p>
+
+<pre><code>// On page B
+&lt;script type="text/javascript"&gt;
+  console.log('hello')
+&lt;/script&gt;
+</code></pre>
+
+<p>When you click a link on page A and jump to page B, the &lsquo;hello&rsquo; will <strong>not</strong> printed.
+The script tag will be ignored.</p>
+
+<p>It&rsquo;s the same when you make it a <code>src</code> link.</p>
+
+<pre><code>// On page B
+&lt;script type="text/javascript" src='hello.js'&gt; &lt;/script&gt;
+</code></pre>
+
+<p>You can add a <code>data-turbolinks-track</code> tag to make it work. But it has drawbacks.</p>
+
+<pre><code>&lt;script type="text/javascript" src="/hello.js" data-turbolinks-track&gt;&lt;/script&gt;
+</code></pre>
+
+<p>When this case, &lsquo;hello&rsquo; will be printed,
+every things seems fine except <strong>slow page load</strong>.</p>
+
+<p>You&rsquo;ll technically be requesting the same page twice.
+Once through Turbolinks to detect that the assets changed,
+and then again do a full redirect to that page.</p>
+
+<p>You should always add <code>data-turbolinks-track</code> to JavaScript and CSS links.
+This will trigger full page load when your assets changed.</p>
+
+<p>When page A and page B have different <code>track targets</code>,
+every switch between them will cause <code>double load</code>.</p>
+
+<p>See the <a href="https://github.com/rails/turbolinks/blob/master/lib%2Fassets%2Fjavascripts%2Fturbolinks.js.coffee#L231">code</a>
+to know the details</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='coffeescript'><span class='line'><span class="nv">extractTrackAssets = </span><span class="nf">(doc) -&gt;</span>
+</span><span class='line'>  <span class="k">for</span> <span class="nx">node</span> <span class="k">in</span> <span class="nx">doc</span><span class="p">.</span><span class="nx">querySelector</span><span class="p">(</span><span class="s">&#39;head&#39;</span><span class="p">).</span><span class="nx">childNodes</span> <span class="k">when</span> <span class="nx">node</span><span class="p">.</span><span class="nx">getAttribute</span><span class="o">?</span><span class="p">(</span><span class="s">&#39;data-turbolinks-track&#39;</span><span class="p">)</span><span class="o">?</span>
+</span><span class='line'>    <span class="nx">node</span><span class="p">.</span><span class="nx">getAttribute</span><span class="p">(</span><span class="s">&#39;src&#39;</span><span class="p">)</span> <span class="o">or</span> <span class="nx">node</span><span class="p">.</span><span class="nx">getAttribute</span><span class="p">(</span><span class="s">&#39;href&#39;</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="nv">assetsChanged = </span><span class="nf">(doc) -&gt;</span>
+</span><span class='line'>  <span class="nx">loadedAssets</span> <span class="o">||=</span> <span class="nx">extractTrackAssets</span> <span class="nb">document</span>
+</span><span class='line'>  <span class="nv">fetchedAssets  = </span><span class="nx">extractTrackAssets</span> <span class="nx">doc</span>
+</span><span class='line'>  <span class="nx">fetchedAssets</span><span class="p">.</span><span class="nx">length</span> <span class="o">isnt</span> <span class="nx">loadedAssets</span><span class="p">.</span><span class="nx">length</span> <span class="o">or</span> <span class="nx">intersection</span><span class="p">(</span><span class="nx">fetchedAssets</span><span class="p">,</span> <span class="nx">loadedAssets</span><span class="p">).</span><span class="nx">length</span> <span class="o">isnt</span> <span class="nx">loadedAssets</span><span class="p">.</span><span class="nx">length</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>One last rescue is to prevent turbolink jump by add <code>data-no-turbolink</code> tag.
+And then you will not benefit from turbolink speed boost.</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='html'><span class='line'><span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">&quot;/&quot;</span><span class="nt">&gt;</span>Home (via Turbolinks)<span class="nt">&lt;/a&gt;</span>
+</span><span class='line'><span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">&quot;some-div&quot;</span> <span class="na">data-no-turbolink</span><span class="nt">&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">&quot;/&quot;</span><span class="nt">&gt;</span>Home (without Turbolinks)<span class="nt">&lt;/a&gt;</span>
+</span><span class='line'><span class="nt">&lt;/div&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
 </div>
   
   
@@ -200,6 +292,10 @@ window.$ = window.jQuery = jQuery
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2017/06/08/running-multiple-mysql-instances-on-one-machine/">Upgrade MySQL With Docker</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2016/03/18/migrate-legacy-data-to-anthother-rails-project-practical-tips-about-using-activerecord/">Migrate Legacy Data to Anthother Rails Project: Practical Tips About Using ActiveRecord</a>
       </li>
     
@@ -213,10 +309,6 @@ window.$ = window.jQuery = jQuery
     
       <li class="post">
         <a href="/blog/2016/01/18/dive-into-the-source-code-find-more-information-besides-the-doc/">Dive Into the Source Code: Find More Information Besides the Doc</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2016/01/11/diffs-between-formhelper-and-formtaghelper-in-rails/">Diffs Between FormHelper and FormTagHelper in Rails</a>
       </li>
     
   </ul>

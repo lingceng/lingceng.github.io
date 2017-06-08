@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: docker | Lingceng's Blog]]></title>
+  <link href="http://lingceng.github.io/blog/categories/docker/atom.xml" rel="self"/>
+  <link href="http://lingceng.github.io/"/>
+  <updated>2017-06-09T01:17:15+08:00</updated>
+  <id>http://lingceng.github.io/</id>
+  <author>
+    <name><![CDATA[Lingceng]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Upgrade MySQL With Docker]]></title>
+    <link href="http://lingceng.github.io/blog/2017/06/08/running-multiple-mysql-instances-on-one-machine/"/>
+    <updated>2017-06-08T23:18:00+08:00</updated>
+    <id>http://lingceng.github.io/blog/2017/06/08/running-multiple-mysql-instances-on-one-machine</id>
+    <content type="html"><![CDATA[<h3>The search problem</h3>
+
+<p>Recently a friend and I made <a href="http://www.cookacg.com">a comic App</a>.
+I crawled about 70,000 comics and saved them into MySQL.
+Search for comic name starts to slow down.
+It takes about 2000ms.</p>
+
+<pre><code>SELECT `comics`.* FROM `comics` WHERE `comics`.`name` LIKE '%text%' LIMIT 21 OFFSET 0
+</code></pre>
+
+<p>I have added an index for name field.
+But an index won&rsquo;t help text matching with a leading wildcard, an index can be used for:</p>
+
+<pre><code>LIKE 'text%'
+</code></pre>
+
+<p>The query gets much faster with &lsquo;name&rsquo; index, but comic name such as &ldquo;hitext&rdquo; won&rsquo;t match.</p>
+
+<p>I find out, that the same query is much faster on my MacBook, which only takes about 200ms.
+Here&rsquo;s the diff:</p>
+
+<pre><code>EVN        | CPU                   | Memory | OS           | MySQL Version
+---        | ---                   | ---    | ---          | ---
+MacBook    | 2.7 GHz Intel Core i5 | 8G     | MacOS Sierra | 5.7.17
+Production | 2.6 GHZ 1 Core        | 2G     | CentOS 6.5   | 5.1.73
+</code></pre>
+
+<p>After some tests, I find out MySQL Version is the key point.
+Why 5.7 is so much faster than 5.1? I don&rsquo;t know.</p>
+
+<h3>Try to upgrade MySQL</h3>
+
+<p>So I need to upgrade MySQL from 5.1 to 5.7.
+I have 3 choices:</p>
+
+<ul>
+<li>Use mysql_upgrade</li>
+<li>Install MySQL5.7 manually on the same machine and import data</li>
+<li>Install MySQL5.7 in docker and import data</li>
+</ul>
+
+
+<p>Install MySQL.7 in docker seems much safer and simpler.
+I tried to install the latest stable docker but failed, as the lastest Docker CE is only supported on CentOS 7.3 64-bit.
+I installed the <a href="https://docs.docker.com/v1.7/docker/installation/centos/">docker1.7</a> which is supported on CentOS6.5.</p>
+
+<p>Install MySQL and publish to host port 6603:</p>
+
+<pre><code>sudo docker run --detach --name=comic-mysql --env="MYSQL_ROOT_PASSWORD=mypassword" --publish 6603:3306 mysql
+</code></pre>
+
+<p>Connect with host MySQL client, it works:</p>
+
+<pre><code>mysql -uroot -p -h 127.0.0.1 -P 6603
+</code></pre>
+
+<p>Create database:</p>
+
+<pre><code>CREATE DATABASE comic_production CHARACTER SET utf8 COLLATE utf8_general_ci;
+</code></pre>
+
+<p>Import sql.gz file:</p>
+
+<pre><code>zcat ~/backup/comic_production.20170606112459.sql.gz  | sudo docker exec -i comic-mysql mysql -uroot -pmypassword comic_production
+</code></pre>
+
+<p>Config my rails database.yml:</p>
+
+<pre><code>default: &amp;default
+  adapter: mysql2
+  pool: 5
+  username: root
+  password: mypassword
+  host: 127.0.0.1
+  port: 6603
+</code></pre>
+
+<h3>References</h3>
+
+<ul>
+<li><a href="https://stackoverflow.com/questions/2042269/how-to-speed-up-select-like-queries-in-mysql-on-multiple-columns">https://stackoverflow.com/questions/2042269/how-to-speed-up-select-like-queries-in-mysql-on-multiple-columns</a></li>
+<li><a href="https://dev.mysql.com/doc/refman/5.7/en/multiple-servers.html">https://dev.mysql.com/doc/refman/5.7/en/multiple-servers.html</a></li>
+</ul>
+
+]]></content>
+  </entry>
+  
+</feed>

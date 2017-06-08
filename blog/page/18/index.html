@@ -9,9 +9,9 @@
   <meta name="author" content="Lingceng">
 
   
-  <meta name="description" content="Config name and email git config --global user.name "John Doe"
-git config --global user.email "johndoe@example.com" Get help git config --help
-git &hellip;">
+  <meta name="description" content="HERE IS MY vimrc Wonderful block insert in Visual block mode:
+|v_b_I| I insert the same text in front of all the selected lines
+|v_b_A| A append the &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -83,7 +83,7 @@ git &hellip;">
       
   <header>
     
-      <h1 class="entry-title"><a href="/blog/2014/03/13/git-get-start/">Git Get Started</a></h1>
+      <h1 class="entry-title"><a href="/blog/2014/03/14/vim-tips/">Vim Tips</a></h1>
     
     
       <p class="meta">
@@ -99,80 +99,91 @@ git &hellip;">
   
 
 
-<time datetime="2014-03-13T07:21:00+08:00" pubdate data-updated="true">Mar 13<span>th</span>, 2014</time>
+<time datetime="2014-03-14T22:39:00+08:00" pubdate data-updated="true">Mar 14<span>th</span>, 2014</time>
         
       </p>
     
   </header>
 
 
-  <div class="entry-content"><p>Config name and email</p>
+  <div class="entry-content"><p>HERE IS MY <a href="https://gist.github.com/lingceng/6097985">vimrc</a></p>
 
-<pre><code>git config --global user.name "John Doe"
-git config --global user.email "johndoe@example.com"
+<h3>Wonderful block insert</h3>
+
+<pre><code>in Visual block mode:
+|v_b_I|    I insert the same text in front of all the selected lines
+|v_b_A|    A append the same text after all the selected lines
 </code></pre>
 
-<p>Get help</p>
+<h3>Search word under cursor</h3>
 
-<pre><code>git config --help
-git help config
-man git-config
+<pre><code>* to search current word, n to next, N to previous
 </code></pre>
 
-<p>Start up</p>
+<h3>Srround tag</h3>
 
-<pre><code>git init
-git add .
-git commit -m "Depot Scaffold"
-
-add and commit
-git commit -a -m "Depot Scaffold"
+<pre><code>:help v_a
+at  # arround tag
+it  # inner tag
 </code></pre>
 
-<p>Compare</p>
+<h3>Use mark</h3>
 
-<pre><code>git diff HEAD^ HEAD
-
-# show diff stat
-git diff --stat
-
-# show the tree-like view
-git log --graph --oneline --all
+<pre><code>ma # mark a
+`a # go to a
+`A # go to A between buffers
 </code></pre>
 
-<p>Specify the file path</p>
+<h3>Autocomplete with filesystem</h3>
 
-<pre><code>git diff HEAD^ HEAD app/models/product.rb
+<pre><code>ctrl-x ctrl-f
 </code></pre>
 
-<p>Git ammend the last commit</p>
+<h3>Jump between windows</h3>
 
-<pre><code>git commit -amend
+<pre><code>:help window
+
+# make the only window
+CTRL-W o
+
+# split
+CTRL-W s
+# split vertically
+CTRL-W v
+
+# navigate with h j k l
+# go to left
+CTRL-W h
+
+# resize with &lt; &gt; + -
+# add 10 width
+CTRL-W 10&gt;
 </code></pre>
 
-<p>Powerful edit commit command</p>
+<h3>Show whitespace characters</h3>
 
-<pre><code>git rebase --interactive HEAD^5
+<pre><code>:set list
+
+# close list
+:set nolist
 </code></pre>
 
-<p>Git include delelted files</p>
+<h3>Buffer change</h3>
 
-<pre><code>git add -A
+<pre><code>CTRL-I
+CTRL-O
 </code></pre>
 
-<p>Creates a remote named &ldquo;origin&rdquo; pointing at your GitHub repository</p>
+<h3>Scroll page</h3>
 
-<pre><code>git remote add origin https://github.com/username/Hello-World.git
+<pre><code>N  CTRL-D   window N lines Downwards (default: 1/2 window)
+N  CTRL-U   window N lines Upwards (default: 1/2 window)
 </code></pre>
 
-<p>Sends your commits in the &ldquo;master&rdquo; branch to GitHub</p>
+<h3>Set highlight when search</h3>
 
-<pre><code>git push origin master
-</code></pre>
-
-<p>Pull down changes</p>
-
-<pre><code>git pull orgin master
+<pre><code>set hlsearch
+set nohlsearch
 </code></pre>
 </div>
   
@@ -198,6 +209,10 @@ git log --graph --oneline --all
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2017/06/08/running-multiple-mysql-instances-on-one-machine/">Upgrade MySQL With Docker</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2016/03/18/migrate-legacy-data-to-anthother-rails-project-practical-tips-about-using-activerecord/">Migrate Legacy Data to Anthother Rails Project: Practical Tips About Using ActiveRecord</a>
       </li>
     
@@ -211,10 +226,6 @@ git log --graph --oneline --all
     
       <li class="post">
         <a href="/blog/2016/01/18/dive-into-the-source-code-find-more-information-besides-the-doc/">Dive Into the Source Code: Find More Information Besides the Doc</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2016/01/11/diffs-between-formhelper-and-formtaghelper-in-rails/">Diffs Between FormHelper and FormTagHelper in Rails</a>
       </li>
     
   </ul>

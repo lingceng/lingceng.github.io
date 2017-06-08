@@ -9,8 +9,8 @@
   <meta name="author" content="Lingceng">
 
   
-  <meta name="description" content="Setup Let&rsquo;s create a demo table and do some configurations in a rails project.
-Then we&rsquo;ll do some tests about time in rails console. &hellip;">
+  <meta name="description" content="InvalidAuthenticityToken happens if you enabled protect_from_forgery
+but does not handle token well. If you use the jquery-ujs library the content of &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -82,7 +82,7 @@ Then we&rsquo;ll do some tests about time in rails console. &hellip;">
       
   <header>
     
-      <h1 class="entry-title"><a href="/blog/2014/11/22/rails-time-best-practice/">Rails Time Best Practice</a></h1>
+      <h1 class="entry-title"><a href="/blog/2014/11/26/when-rails-invalidauthenticitytoken-happens/">When Rails InvalidAuthenticityToken Happens</a></h1>
     
     
       <p class="meta">
@@ -98,107 +98,34 @@ Then we&rsquo;ll do some tests about time in rails console. &hellip;">
   
 
 
-<time datetime="2014-11-22T18:38:00+08:00" pubdate data-updated="true">Nov 22<span>nd</span>, 2014</time>
+<time datetime="2014-11-26T16:31:00+08:00" pubdate data-updated="true">Nov 26<span>th</span>, 2014</time>
         
       </p>
     
   </header>
 
 
-  <div class="entry-content"><h3>Setup</h3>
+  <div class="entry-content"><p><code>InvalidAuthenticityToken</code> happens if you enabled <code>protect_from_forgery</code>
+but does not handle token well.</p>
 
-<p>Let&rsquo;s create a demo table and do some configurations in a rails project.
-Then we&rsquo;ll do some tests about time in <code>rails console</code>.</p>
+<p>If you use the jquery-ujs library the content of that meta tag is automatically
+added (as a request header) to any ajax requests made.</p>
 
-<pre><code>class CreateHellos &lt; ActiveRecord::Migration
-  def change
-    create_table :hellos do |t|
-      t.timestamps
-    end
-  end
-end
+<p><code>jquery-ujs</code> add a ajax filter to append token to parameter</p>
+
+<pre><code>// ajaxPrefilter is a jquery method
+$.ajaxPrefilter(function(options, originalOptions, xhr) {
+  if ( !options.crossDomain ) { rails.CSRFProtection(xhr); }
+});
 </code></pre>
 
-<p>Add following to <code>config/application.rb</code></p>
+<p>Note: Only HTML and JavaScript requests are checked.
+See more about <code>ActionController::RequestForgeryProtection</code> in rails API.</p>
 
-<pre><code>Rails.application.config.active_record.default_timezone = :local
-Rails.application.config.time_zone = 'Beijing'
-</code></pre>
+<h3>Conclusion</h3>
 
-<p><code>config.time_zone</code> sets the default time zone for the application
-and enables time zone awareness for Active Record.</p>
-
-<p><code>config.active_record.default_timezone</code> determines whether to use Time.zone.local
- (if set to :local) or Time.zone.utc (if set to :utc) when pulling dates and times
-from the database.  The default is :utc.</p>
-
-<p><strong>Update:</strong><br/>
-Let active_record.default_timezone be :utc is a better practice.<br/>
-Always save the utc to database.<br/>
-It helps when you make a world-wide application.</p>
-
-<h3>Rails console datetime ouptut</h3>
-
-<p>Run following codes in rails console.</p>
-
-<pre><code>l = FinanceItem.create
-#=&gt; #&lt;FinanceItem id: 1, created_at: "2014-11-22 03:00:32", updated_at: "2014-11-22 03:00:32" &gt;
-l.created_at
-#=&gt; Sat, 22 Nov 2014 11:00:32 CST +08:00
-</code></pre>
-
-<p>The rails console calls <code>inspect</code> to show return value.<br/>
-The default datatime inspcet is to_s(:db).<br/>
-So the created_at is &ldquo;2014-11-22 03:00:32&rdquo;.</p>
-
-<p>But <code>l.created_at</code>is an instance of ActiveSupport::TimeWithZone.
-So it&rsquo;s output is &ldquo;Sat, 22 Nov 2014 11:00:32 CST +08:00&rdquo;</p>
-
-<h3>Time.zone.parse VS Datetime.parse</h3>
-
-<p>Let&rsquo;s try following codes.</p>
-
-<pre><code>a = DateTime.parse('2014-11-22 12:35:05')
-#=&gt; Sat, 22 Nov 2014 12:35:05 +0000
-a.to_s(:rfc822)
-#=&gt; "Sat, 22 Nov 2014 12:35:05 +0000"
-a.in_time_zone.to_s(:rfc822)
-#=&gt; "Sat, 22 Nov 2014 20:35:05 +0800"
-
-b = Time.zone.parse('2014-11-22 12:35:05')
-#=&gt; 2014-11-22 12:35:05
-b.to_s(:rfc822)
-#=&gt; "Sat, 22 Nov 2014 12:35:05 +0800"
-</code></pre>
-
-<p>So <code>Time.zone.parse</code> may be better for you.</p>
-
-<h3>Time.now VS Time.current</h3>
-
-<p>Let&rsquo;s see the definition of <code>Time.current</code></p>
-
-<pre><code># File activesupport/lib/active_support/core_ext/time/calculations.rb, line 29
-def current
-  ::Time.zone ? ::Time.zone.now : ::Time.now
-end
-</code></pre>
-
-<p>Time.now uses the <strong>system time zone</strong> because it&rsquo;s is part of the Ruby standard library.<br/>
-Time.zone.now will set zone with <code>config.time_zone</code>.</p>
-
-<p>Using <code>Time.now</code> make troubles when your system time zone is different with <code>config.time_zone</code></p>
-
-<h3>Best practice</h3>
-
-<p>Set the following config.</p>
-
-<pre><code>config.active_record.default_timezone = :utc
-config.time_zone = 'YourLocalName'
-</code></pre>
-
-<p>Use <code>Time.zone.parse</code> and do <strong>NOT</strong> use <code>DateTime.parse</code>.<br/>
-Use <code>Time.zone.now</code> or <code>Time.current</code> and do <strong>NOT</strong> use <code>Time.now</code>.<br/>
-Thus we can keep all time class to TimeWithZone and get consistent behavior.</p>
+<p>Always import <code>jquery-ujs</code> when enabled <code>protect_from_forgery</code>
+And put <code>&lt;%= csrf_meta_tags %&gt;</code> in page head.</p>
 </div>
   
   
@@ -223,6 +150,10 @@ Thus we can keep all time class to TimeWithZone and get consistent behavior.</p>
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2017/06/08/running-multiple-mysql-instances-on-one-machine/">Upgrade MySQL With Docker</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2016/03/18/migrate-legacy-data-to-anthother-rails-project-practical-tips-about-using-activerecord/">Migrate Legacy Data to Anthother Rails Project: Practical Tips About Using ActiveRecord</a>
       </li>
     
@@ -236,10 +167,6 @@ Thus we can keep all time class to TimeWithZone and get consistent behavior.</p>
     
       <li class="post">
         <a href="/blog/2016/01/18/dive-into-the-source-code-find-more-information-besides-the-doc/">Dive Into the Source Code: Find More Information Besides the Doc</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2016/01/11/diffs-between-formhelper-and-formtaghelper-in-rails/">Diffs Between FormHelper and FormTagHelper in Rails</a>
       </li>
     
   </ul>
