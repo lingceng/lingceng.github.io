@@ -4,7 +4,7 @@
   <title><![CDATA[Lingceng's Blog]]></title>
   <link href="http://lingceng.github.io/atom.xml" rel="self"/>
   <link href="http://lingceng.github.io/"/>
-  <updated>2017-06-09T01:19:42+08:00</updated>
+  <updated>2017-06-09T01:23:32+08:00</updated>
   <id>http://lingceng.github.io/</id>
   <author>
     <name><![CDATA[Lingceng]]></name>
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[Upgrade MySQL With Docker]]></title>
-    <link href="http://lingceng.github.io/blog/2017/06/08/running-multiple-mysql-instances-on-one-machine/"/>
+    <link href="http://lingceng.github.io/blog/2017/06/08/upgrade-mysql-with-docker/"/>
     <updated>2017-06-08T23:18:00+08:00</updated>
-    <id>http://lingceng.github.io/blog/2017/06/08/running-multiple-mysql-instances-on-one-machine</id>
+    <id>http://lingceng.github.io/blog/2017/06/08/upgrade-mysql-with-docker</id>
     <content type="html"><![CDATA[<h3>The search problem</h3>
 
 <p>Recently a friend and I made <a href="http://www.cookacg.com">a comic App</a>.
