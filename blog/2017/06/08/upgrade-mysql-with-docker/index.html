@@ -11,7 +11,7 @@
   
   <meta name="description" content="The search problem Recently a friend and I made a comic App.
 I crawled about 70,000 comics and saved them into MySQL.
-Search for comic name starts to &hellip;">
+Search for comic name started &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -107,23 +107,23 @@ Search for comic name starts to &hellip;">
 
 <p>Recently a friend and I made <a href="http://www.cookacg.com">a comic App</a>.
 I crawled about 70,000 comics and saved them into MySQL.
-Search for comic name starts to slow down.
+Search for comic name started to slow down.
 It takes about 2000ms.</p>
 
 <pre><code>SELECT `comics`.* FROM `comics` WHERE `comics`.`name` LIKE '%text%' LIMIT 21 OFFSET 0
 </code></pre>
 
-<p>I have added an index for name field.
+<p>I had added an index for name field.
 But an index won&rsquo;t help text matching with a leading wildcard, an index can be used for:</p>
 
 <pre><code>LIKE 'text%'
 </code></pre>
 
-<p>The query gets much faster with &lsquo;name&rsquo; index, but comic name such as &ldquo;hitext&rdquo; won&rsquo;t match.
-It&rsquo;s not the solution.</p>
+<p>Query with <code>LIKE 'text%'</code> is much faster. But comic name such as &ldquo;sometext&rdquo; won&rsquo;t match.
+It does not fit my need.</p>
 
-<p>I find out, that the same query is much faster on my MacBook, which only takes about 200ms.
-Here&rsquo;s the diff:</p>
+<p><strong>I found out, that the same query was much faster on my MacBook, which only took about 200ms.</strong>
+Here was the difference:</p>
 
 <pre><code>EVN        | CPU                   | Memory | OS           | MySQL Version
 ---        | ---                   | ---    | ---          | ---
@@ -131,31 +131,32 @@ MacBook    | 2.7 GHz Intel Core i5 | 8G     | MacOS Sierra | 5.7.17
 Production | 2.6 GHZ 1 Core        | 2G     | CentOS 6.5   | 5.1.73
 </code></pre>
 
-<p>After some tests, I find out MySQL Version is the key point.
+<p><strong>After some tests, I found out MySQL Version was the key point.</strong>
 Why 5.7 is so much faster than 5.1? I don&rsquo;t know.</p>
 
 <h3>Try to upgrade MySQL</h3>
 
-<p>So I need to upgrade MySQL from 5.1 to 5.7.
-I have 3 choices:</p>
+<p>So I needed to upgrade MySQL from 5.1 to 5.7.
+I had 3 choices:</p>
 
 <ul>
-<li>Use mysql_upgrade</li>
-<li>Install MySQL5.7 manually on the same machine and import data</li>
-<li>Install MySQL5.7 in docker and import data</li>
+<li>Using mysql_upgrade</li>
+<li>Installing MySQL5.7 manually on the same machine</li>
+<li>Installing MySQL5.7 in docker</li>
 </ul>
 
 
-<p>Install MySQL.7 in docker seems much safer and simpler.
-I tried to install the latest stable docker but failed, as the lastest Docker CE is only supported on CentOS 7.3 64-bit.
-I installed the <a href="https://docs.docker.com/v1.7/docker/installation/centos/">docker1.7</a> which is supported on CentOS6.5.</p>
+<p>Installing MySQL.7 in docker seemed much safer and simpler for me.
+And docker is an useful tool to help deploying.
+<strong>I tried to install the latest stable docker but failed, as the latest Docker CE is only supported on CentOS 7.3 64-bit.</strong>
+I installed the <a href="https://docs.docker.com/v1.7/docker/installation/centos/">docker 1.7</a> which is supported on CentOS 6.5.</p>
 
-<p>Install MySQL and publish to host port 6603:</p>
+<p>Run MySQL in docker and publish to host port 6603:</p>
 
 <pre><code>sudo docker run --detach --name=comic-mysql --env="MYSQL_ROOT_PASSWORD=mypassword" --publish 6603:3306 mysql
 </code></pre>
 
-<p>Connect with host MySQL client, it works:</p>
+<p>Connect MySQL in docker with host MySQL client:</p>
 
 <pre><code>mysql -uroot -p -h 127.0.0.1 -P 6603
 </code></pre>
@@ -170,7 +171,7 @@ I installed the <a href="https://docs.docker.com/v1.7/docker/installation/centos
 <pre><code>zcat ~/backup/comic_production.20170606112459.sql.gz  | sudo docker exec -i comic-mysql mysql -uroot -pmypassword comic_production
 </code></pre>
 
-<p>Config my rails database.yml:</p>
+<p>Configure my rails database.yml:</p>
 
 <pre><code>default: &amp;default
   adapter: mysql2
@@ -180,6 +181,10 @@ I installed the <a href="https://docs.docker.com/v1.7/docker/installation/centos
   host: 127.0.0.1
   port: 6603
 </code></pre>
+
+<p>It worked!
+I restarted the rails server, the database changed.
+The users got much faster response for searching.</p>
 
 <h3>References</h3>
 
