@@ -44,7 +44,7 @@ I had 3 choices:
 
 Installing MySQL.7 in docker seemed much safer and simpler for me. 
 And docker is an useful tool to help deploying.
-I tried to install the latest stable docker but failed, as the latest Docker CE is only supported on CentOS 7.3 64-bit.
+**I tried to install the latest stable docker but failed, as the latest Docker CE is only supported on CentOS 7.3 64-bit.**
 I installed the [docker 1.7](https://docs.docker.com/v1.7/docker/installation/centos/) which is supported on CentOS 6.5.
 
 Run MySQL in docker and publish to host port 6603:
