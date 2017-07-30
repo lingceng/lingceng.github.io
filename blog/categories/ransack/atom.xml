@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Category: ransack | Lingceng's Blog]]></title>
-  <link href="http://lingceng.github.io/blog/categories/ransack/atom.xml" rel="self"/>
-  <link href="http://lingceng.github.io/"/>
-  <updated>2017-07-30T10:20:31+08:00</updated>
-  <id>http://lingceng.github.io/</id>
+  <link href="https://lingceng.github.io/blog/categories/ransack/atom.xml" rel="self"/>
+  <link href="https://lingceng.github.io/"/>
+  <updated>2017-07-30T10:26:49+08:00</updated>
+  <id>https://lingceng.github.io/</id>
   <author>
     <name><![CDATA[Lingceng]]></name>
     
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[Query Date Range with Ransack]]></title>
-    <link href="http://lingceng.github.io/blog/2015/12/28/query-date-range-with-ransack/"/>
+    <link href="https://lingceng.github.io/blog/2015/12/28/query-date-range-with-ransack/"/>
     <updated>2015-12-28T19:42:00+08:00</updated>
-    <id>http://lingceng.github.io/blog/2015/12/28/query-date-range-with-ransack</id>
+    <id>https://lingceng.github.io/blog/2015/12/28/query-date-range-with-ransack</id>
     <content type="html"><![CDATA[<h3>The Traditional Way</h3>
 
 <p>Here I have a table of change records in my rails app.

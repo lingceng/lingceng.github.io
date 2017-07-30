@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Category: deploy | Lingceng's Blog]]></title>
-  <link href="http://lingceng.github.io/blog/categories/deploy/atom.xml" rel="self"/>
-  <link href="http://lingceng.github.io/"/>
-  <updated>2017-07-30T10:20:31+08:00</updated>
-  <id>http://lingceng.github.io/</id>
+  <link href="https://lingceng.github.io/blog/categories/deploy/atom.xml" rel="self"/>
+  <link href="https://lingceng.github.io/"/>
+  <updated>2017-07-30T10:26:49+08:00</updated>
+  <id>https://lingceng.github.io/</id>
   <author>
     <name><![CDATA[Lingceng]]></name>
     
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[Understand Capistrano]]></title>
-    <link href="http://lingceng.github.io/blog/2017/07/29/understand-capistrano/"/>
+    <link href="https://lingceng.github.io/blog/2017/07/29/understand-capistrano/"/>
     <updated>2017-07-29T19:00:00+08:00</updated>
-    <id>http://lingceng.github.io/blog/2017/07/29/understand-capistrano</id>
+    <id>https://lingceng.github.io/blog/2017/07/29/understand-capistrano</id>
     <content type="html"><![CDATA[<p><a href="https://github.com/capistrano/capistrano">Capistrano</a> is based on <strong>Rake</strong> and <strong>SSHKit</strong>.</p>
 
 <p>Capistrano adds some DSL to <strong>Rake</strong>, such as <code>on roles(:app)</code>, <code>within release_path</code> and <code>with rails_env: fetch(:rails_env)</code>.

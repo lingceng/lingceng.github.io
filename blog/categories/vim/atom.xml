@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Category: vim | Lingceng's Blog]]></title>
-  <link href="http://lingceng.github.io/blog/categories/vim/atom.xml" rel="self"/>
-  <link href="http://lingceng.github.io/"/>
-  <updated>2017-07-30T10:20:31+08:00</updated>
-  <id>http://lingceng.github.io/</id>
+  <link href="https://lingceng.github.io/blog/categories/vim/atom.xml" rel="self"/>
+  <link href="https://lingceng.github.io/"/>
+  <updated>2017-07-30T10:26:49+08:00</updated>
+  <id>https://lingceng.github.io/</id>
   <author>
     <name><![CDATA[Lingceng]]></name>
     
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[Vim Tips]]></title>
-    <link href="http://lingceng.github.io/blog/2014/03/14/vim-tips/"/>
+    <link href="https://lingceng.github.io/blog/2014/03/14/vim-tips/"/>
     <updated>2014-03-14T22:39:00+08:00</updated>
-    <id>http://lingceng.github.io/blog/2014/03/14/vim-tips</id>
+    <id>https://lingceng.github.io/blog/2014/03/14/vim-tips</id>
     <content type="html"><![CDATA[<p>HERE IS MY <a href="https://gist.github.com/lingceng/6097985">vimrc</a></p>
 
 <h3>Wonderful block insert</h3>

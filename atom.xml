@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Lingceng's Blog]]></title>
-  <link href="http://lingceng.github.io/atom.xml" rel="self"/>
-  <link href="http://lingceng.github.io/"/>
-  <updated>2017-07-30T10:20:31+08:00</updated>
-  <id>http://lingceng.github.io/</id>
+  <link href="https://lingceng.github.io/atom.xml" rel="self"/>
+  <link href="https://lingceng.github.io/"/>
+  <updated>2017-07-30T10:26:49+08:00</updated>
+  <id>https://lingceng.github.io/</id>
   <author>
     <name><![CDATA[Lingceng]]></name>
     
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[Understand Capistrano]]></title>
-    <link href="http://lingceng.github.io/blog/2017/07/29/understand-capistrano/"/>
+    <link href="https://lingceng.github.io/blog/2017/07/29/understand-capistrano/"/>
     <updated>2017-07-29T19:00:00+08:00</updated>
-    <id>http://lingceng.github.io/blog/2017/07/29/understand-capistrano</id>
+    <id>https://lingceng.github.io/blog/2017/07/29/understand-capistrano</id>
     <content type="html"><![CDATA[<p><a href="https://github.com/capistrano/capistrano">Capistrano</a> is based on <strong>Rake</strong> and <strong>SSHKit</strong>.</p>
 
 <p>Capistrano adds some DSL to <strong>Rake</strong>, such as <code>on roles(:app)</code>, <code>within release_path</code> and <code>with rails_env: fetch(:rails_env)</code>.
@@ -116,9 +116,9 @@ So you can specify some tasks that can only run once with <strong>db</strong> ro
   
   <entry>
     <title type="html"><![CDATA[Upgrade MySQL With Docker]]></title>
-    <link href="http://lingceng.github.io/blog/2017/06/08/upgrade-mysql-with-docker/"/>
+    <link href="https://lingceng.github.io/blog/2017/06/08/upgrade-mysql-with-docker/"/>
     <updated>2017-06-08T23:18:00+08:00</updated>
-    <id>http://lingceng.github.io/blog/2017/06/08/upgrade-mysql-with-docker</id>
+    <id>https://lingceng.github.io/blog/2017/06/08/upgrade-mysql-with-docker</id>
     <content type="html"><![CDATA[<h3>The search problem</h3>
 
 <p>Recently a friend and I made <a href="http://www.cookacg.com">a comic App</a>.
@@ -214,9 +214,9 @@ The users got much faster response for searching.</p>
   
   <entry>
     <title type="html"><![CDATA[Migrate Legacy Data To Anthother Rails Project: Practical Tips About Using ActiveRecord]]></title>
-    <link href="http://lingceng.github.io/blog/2016/03/18/migrate-legacy-data-to-anthother-rails-project-practical-tips-about-using-activerecord/"/>
+    <link href="https://lingceng.github.io/blog/2016/03/18/migrate-legacy-data-to-anthother-rails-project-practical-tips-about-using-activerecord/"/>
     <updated>2016-03-18T20:38:00+08:00</updated>
-    <id>http://lingceng.github.io/blog/2016/03/18/migrate-legacy-data-to-anthother-rails-project-practical-tips-about-using-activerecord</id>
+    <id>https://lingceng.github.io/blog/2016/03/18/migrate-legacy-data-to-anthother-rails-project-practical-tips-about-using-activerecord</id>
     <content type="html"><![CDATA[<p>I migrated legacy data from one Rails project to its refactored Rails project
 recently. I&rsquo;ll share some tips while I&rsquo;m doing this job.</p>
 
@@ -342,9 +342,9 @@ Settlement.connection.select_all(sql)
   
   <entry>
     <title type="html"><![CDATA[Keep Learning As a Ruby Programmer]]></title>
-    <link href="http://lingceng.github.io/blog/2016/01/22/keep-learning-as-a-ruby-programmer/"/>
+    <link href="https://lingceng.github.io/blog/2016/01/22/keep-learning-as-a-ruby-programmer/"/>
     <updated>2016-01-22T09:27:00+08:00</updated>
-    <id>http://lingceng.github.io/blog/2016/01/22/keep-learning-as-a-ruby-programmer</id>
+    <id>https://lingceng.github.io/blog/2016/01/22/keep-learning-as-a-ruby-programmer</id>
     <content type="html"><![CDATA[<p>I started learning Ruby and Rails about 3 years ago.<br/>
 I always didn&rsquo;t know how to keep up with the community.<br/>
 I find some clues nowadays. So I share the tips with you here.</p>
@@ -396,9 +396,9 @@ Add their blogs to RSS reader.</p>
   
   <entry>
     <title type="html"><![CDATA[Save Your Time: Install ruby2.3.0 with RVM]]></title>
-    <link href="http://lingceng.github.io/blog/2016/01/19/save-your-time-install-ruby2-dot-3-0-with-rvm/"/>
+    <link href="https://lingceng.github.io/blog/2016/01/19/save-your-time-install-ruby2-dot-3-0-with-rvm/"/>
     <updated>2016-01-19T12:24:00+08:00</updated>
-    <id>http://lingceng.github.io/blog/2016/01/19/save-your-time-install-ruby2-dot-3-0-with-rvm</id>
+    <id>https://lingceng.github.io/blog/2016/01/19/save-your-time-install-ruby2-dot-3-0-with-rvm</id>
     <content type="html"><![CDATA[<p>Note that:  <strong>ruby-2.3.0</strong> is not present now when run <code>rvm list known</code> command in rvm 1.26.11.<br/>
 It may be available in next rvm version.
 See <a href="https://github.com/rvm/rvm/blob/1.26.11/config/known#L11">here</a> for more details.</p>
@@ -436,9 +436,9 @@ h = { a: 1, b: 2, c: 3, d: 4 }
   
   <entry>
     <title type="html"><![CDATA[Dive Into The Source Code: Find More Information Besides The Doc]]></title>
-    <link href="http://lingceng.github.io/blog/2016/01/18/dive-into-the-source-code-find-more-information-besides-the-doc/"/>
+    <link href="https://lingceng.github.io/blog/2016/01/18/dive-into-the-source-code-find-more-information-besides-the-doc/"/>
     <updated>2016-01-18T21:27:00+08:00</updated>
-    <id>http://lingceng.github.io/blog/2016/01/18/dive-into-the-source-code-find-more-information-besides-the-doc</id>
+    <id>https://lingceng.github.io/blog/2016/01/18/dive-into-the-source-code-find-more-information-besides-the-doc</id>
     <content type="html"><![CDATA[<p>We can use <strong>pry</strong> and  <strong>pry-byebug</strong> gem to help us dive into the source code.</p>
 
 <h3>Let&rsquo;s see an example about <code>to_json</code> vs <code>as_json</code></h3>
@@ -567,9 +567,9 @@ Dive into the code and get your information.</p>
   
   <entry>
     <title type="html"><![CDATA[Diffs Between FormHelper and FormTagHelper in Rails]]></title>
-    <link href="http://lingceng.github.io/blog/2016/01/11/diffs-between-formhelper-and-formtaghelper-in-rails/"/>
+    <link href="https://lingceng.github.io/blog/2016/01/11/diffs-between-formhelper-and-formtaghelper-in-rails/"/>
     <updated>2016-01-11T13:10:00+08:00</updated>
-    <id>http://lingceng.github.io/blog/2016/01/11/diffs-between-formhelper-and-formtaghelper-in-rails</id>
+    <id>https://lingceng.github.io/blog/2016/01/11/diffs-between-formhelper-and-formtaghelper-in-rails</id>
     <content type="html"><![CDATA[<p>We can use <strong>form_for</strong> or <strong>form_tag</strong> to build forms in Rails.
 But their parameters act differently, which always bites me.</p>
 
@@ -688,9 +688,9 @@ Is it a historical reason?</p>
   
   <entry>
     <title type="html"><![CDATA[Query Date Range with Ransack]]></title>
-    <link href="http://lingceng.github.io/blog/2015/12/28/query-date-range-with-ransack/"/>
+    <link href="https://lingceng.github.io/blog/2015/12/28/query-date-range-with-ransack/"/>
     <updated>2015-12-28T19:42:00+08:00</updated>
-    <id>http://lingceng.github.io/blog/2015/12/28/query-date-range-with-ransack</id>
+    <id>https://lingceng.github.io/blog/2015/12/28/query-date-range-with-ransack</id>
     <content type="html"><![CDATA[<h3>The Traditional Way</h3>
 
 <p>Here I have a table of change records in my rails app.
@@ -808,9 +808,9 @@ I find the javascript solution:</p>
   
   <entry>
     <title type="html"><![CDATA[Export csv or excel by re-using existing HTML view]]></title>
-    <link href="http://lingceng.github.io/blog/2015/12/23/export-csv-or-excel-by-re-using-existing-html-view/"/>
+    <link href="https://lingceng.github.io/blog/2015/12/23/export-csv-or-excel-by-re-using-existing-html-view/"/>
     <updated>2015-12-23T19:34:00+08:00</updated>
-    <id>http://lingceng.github.io/blog/2015/12/23/export-csv-or-excel-by-re-using-existing-html-view</id>
+    <id>https://lingceng.github.io/blog/2015/12/23/export-csv-or-excel-by-re-using-existing-html-view</id>
     <content type="html"><![CDATA[<h2>The Normal Way</h2>
 
 <p>Ruby build-in supports CSV generation as CSV is so simple to compose.
@@ -897,9 +897,9 @@ So I write a version to export csv.</p>
   
   <entry>
     <title type="html"><![CDATA[Tips About Using AASM gem]]></title>
-    <link href="http://lingceng.github.io/blog/2015/12/19/tips-about-using-aasm-gem/"/>
+    <link href="https://lingceng.github.io/blog/2015/12/19/tips-about-using-aasm-gem/"/>
     <updated>2015-12-19T12:26:00+08:00</updated>
-    <id>http://lingceng.github.io/blog/2015/12/19/tips-about-using-aasm-gem</id>
+    <id>https://lingceng.github.io/blog/2015/12/19/tips-about-using-aasm-gem</id>
     <content type="html"><![CDATA[<p>Recently, I&rsquo;m using <a href="https://github.com/aasm/aasm">aasm gem</a> to do order production status control.
 Here I have some tips about using aasm gem.</p>
 
@@ -1044,9 +1044,9 @@ end
   
   <entry>
     <title type="html"><![CDATA[Put javascript library files together in Rails]]></title>
-    <link href="http://lingceng.github.io/blog/2015/12/15/put-javascript-library-files-together-in-rails/"/>
+    <link href="https://lingceng.github.io/blog/2015/12/15/put-javascript-library-files-together-in-rails/"/>
     <updated>2015-12-15T17:06:00+08:00</updated>
-    <id>http://lingceng.github.io/blog/2015/12/15/put-javascript-library-files-together-in-rails</id>
+    <id>https://lingceng.github.io/blog/2015/12/15/put-javascript-library-files-together-in-rails</id>
     <content type="html"><![CDATA[<p><strong>TLDR: Put all javascript library files under <code>app/assets/libfolder</code>.
 Refer the files without the <code>libfolder</code></strong></p>
 
@@ -1086,9 +1086,9 @@ assets. So we can refer the <code>sweet-alert.js</code> in our application.js as
   
   <entry>
     <title type="html"><![CDATA[Union select statements in Rails]]></title>
-    <link href="http://lingceng.github.io/blog/2015/10/10/union-select-statements-in-rails/"/>
+    <link href="https://lingceng.github.io/blog/2015/10/10/union-select-statements-in-rails/"/>
     <updated>2015-10-10T11:42:00+08:00</updated>
-    <id>http://lingceng.github.io/blog/2015/10/10/union-select-statements-in-rails</id>
+    <id>https://lingceng.github.io/blog/2015/10/10/union-select-statements-in-rails</id>
     <content type="html"><![CDATA[<p>Here we have a table named <code>user_statuses</code> like following</p>
 
 <pre><code> name    | status
@@ -1144,9 +1144,9 @@ good solution.</p>
   
   <entry>
     <title type="html"><![CDATA[When Rails InvalidAuthenticityToken Happens]]></title>
-    <link href="http://lingceng.github.io/blog/2014/11/26/when-rails-invalidauthenticitytoken-happens/"/>
+    <link href="https://lingceng.github.io/blog/2014/11/26/when-rails-invalidauthenticitytoken-happens/"/>
     <updated>2014-11-26T16:31:00+08:00</updated>
-    <id>http://lingceng.github.io/blog/2014/11/26/when-rails-invalidauthenticitytoken-happens</id>
+    <id>https://lingceng.github.io/blog/2014/11/26/when-rails-invalidauthenticitytoken-happens</id>
     <content type="html"><![CDATA[<p><code>InvalidAuthenticityToken</code> happens if you enabled <code>protect_from_forgery</code>
 but does not handle token well.</p>
 
@@ -1173,9 +1173,9 @@ And put <code>&lt;%= csrf_meta_tags %&gt;</code> in page head.</p>
   
   <entry>
     <title type="html"><![CDATA[Rails Time Best Practice]]></title>
-    <link href="http://lingceng.github.io/blog/2014/11/22/rails-time-best-practice/"/>
+    <link href="https://lingceng.github.io/blog/2014/11/22/rails-time-best-practice/"/>
     <updated>2014-11-22T18:38:00+08:00</updated>
-    <id>http://lingceng.github.io/blog/2014/11/22/rails-time-best-practice</id>
+    <id>https://lingceng.github.io/blog/2014/11/22/rails-time-best-practice</id>
     <content type="html"><![CDATA[<h3>Setup</h3>
 
 <p>Let&rsquo;s create a demo table and do some configurations in a rails project.
@@ -1275,9 +1275,9 @@ Thus we can keep all time class to TimeWithZone and get consistent behavior.</p>
   
   <entry>
     <title type="html"><![CDATA[Turbolink Best Practice]]></title>
-    <link href="http://lingceng.github.io/blog/2014/10/16/turbolink-best-practice/"/>
+    <link href="https://lingceng.github.io/blog/2014/10/16/turbolink-best-practice/"/>
     <updated>2014-10-16T12:12:00+08:00</updated>
-    <id>http://lingceng.github.io/blog/2014/10/16/turbolink-best-practice</id>
+    <id>https://lingceng.github.io/blog/2014/10/16/turbolink-best-practice</id>
     <content type="html"><![CDATA[<p>TLDR: Take care of global variables, global events binding.</p>
 
 <h3>What does Turbolink do?</h3>
@@ -1305,7 +1305,7 @@ $(document).ready -&gt;
 The javascript may diffs from page to page, you can put javascript at the end of body.</p>
 
 <pre><code>&lt;body&gt;
-  &lt;script type="text/javascript" src="http://lingceng.github.io/topics.js"&gt;&lt;/script&gt;
+  &lt;script type="text/javascript" src="https://lingceng.github.io/topics.js"&gt;&lt;/script&gt;
 &lt;body&gt;
 </code></pre>
 
@@ -1388,7 +1388,7 @@ The script tag will be ignored.</p>
 
 <p>You can add a <code>data-turbolinks-track</code> tag to make it work. But it has drawbacks.</p>
 
-<pre><code>&lt;script type="text/javascript" src="http://lingceng.github.io/hello.js" data-turbolinks-track&gt;&lt;/script&gt;
+<pre><code>&lt;script type="text/javascript" src="https://lingceng.github.io/hello.js" data-turbolinks-track&gt;&lt;/script&gt;
 </code></pre>
 
 <p>When this case, &lsquo;hello&rsquo; will be printed,
@@ -1446,9 +1446,9 @@ And then you will not benefit from turbolink speed boost.</p>
   
   <entry>
     <title type="html"><![CDATA[jQuery Source Structure Tip]]></title>
-    <link href="http://lingceng.github.io/blog/2014/03/26/jquery-source-structure-tip/"/>
+    <link href="https://lingceng.github.io/blog/2014/03/26/jquery-source-structure-tip/"/>
     <updated>2014-03-26T09:12:00+08:00</updated>
-    <id>http://lingceng.github.io/blog/2014/03/26/jquery-source-structure-tip</id>
+    <id>https://lingceng.github.io/blog/2014/03/26/jquery-source-structure-tip</id>
     <content type="html"><![CDATA[<p>I was puzzled when I first see the jQuery source code.
 But I finally find a clue.</p>
 
@@ -1525,9 +1525,9 @@ window.$ = window.jQuery = jQuery
   
   <entry>
     <title type="html"><![CDATA[Minitest Mock And Stud]]></title>
-    <link href="http://lingceng.github.io/blog/2014/03/18/minitest-mock-and-stud/"/>
+    <link href="https://lingceng.github.io/blog/2014/03/18/minitest-mock-and-stud/"/>
     <updated>2014-03-18T08:28:00+08:00</updated>
-    <id>http://lingceng.github.io/blog/2014/03/18/minitest-mock-and-stud</id>
+    <id>https://lingceng.github.io/blog/2014/03/18/minitest-mock-and-stud</id>
     <content type="html"><![CDATA[<h3>Capture IO</h3>
 
 <p>Use <code>capture_io</code> to test standard output.<br/>
@@ -1594,9 +1594,9 @@ end
   
   <entry>
     <title type="html"><![CDATA[Basics About Minitest]]></title>
-    <link href="http://lingceng.github.io/blog/2014/03/17/basics-about-minitest/"/>
+    <link href="https://lingceng.github.io/blog/2014/03/17/basics-about-minitest/"/>
     <updated>2014-03-17T07:58:00+08:00</updated>
-    <id>http://lingceng.github.io/blog/2014/03/17/basics-about-minitest</id>
+    <id>https://lingceng.github.io/blog/2014/03/17/basics-about-minitest</id>
     <content type="html"><![CDATA[<p>With Ruby 1.9, MiniTest entered standard lib.<br/>
 MiniTest is pretty small and readable, here are all source files:</p>
 
@@ -1707,9 +1707,9 @@ end
   
   <entry>
     <title type="html"><![CDATA[Vim Tips]]></title>
-    <link href="http://lingceng.github.io/blog/2014/03/14/vim-tips/"/>
+    <link href="https://lingceng.github.io/blog/2014/03/14/vim-tips/"/>
     <updated>2014-03-14T22:39:00+08:00</updated>
-    <id>http://lingceng.github.io/blog/2014/03/14/vim-tips</id>
+    <id>https://lingceng.github.io/blog/2014/03/14/vim-tips</id>
     <content type="html"><![CDATA[<p>HERE IS MY <a href="https://gist.github.com/lingceng/6097985">vimrc</a></p>
 
 <h3>Wonderful block insert</h3>
@@ -1794,9 +1794,9 @@ set nohlsearch
   
   <entry>
     <title type="html"><![CDATA[Git Get Started]]></title>
-    <link href="http://lingceng.github.io/blog/2014/03/13/git-get-start/"/>
+    <link href="https://lingceng.github.io/blog/2014/03/13/git-get-start/"/>
     <updated>2014-03-13T07:21:00+08:00</updated>
-    <id>http://lingceng.github.io/blog/2014/03/13/git-get-start</id>
+    <id>https://lingceng.github.io/blog/2014/03/13/git-get-start</id>
     <content type="html"><![CDATA[<p>Config name and email</p>
 
 <pre><code>git config --global user.name "John Doe"

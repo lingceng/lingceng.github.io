@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Category: linux | Lingceng's Blog]]></title>
-  <link href="http://lingceng.github.io/blog/categories/linux/atom.xml" rel="self"/>
-  <link href="http://lingceng.github.io/"/>
-  <updated>2017-07-30T10:20:31+08:00</updated>
-  <id>http://lingceng.github.io/</id>
+  <link href="https://lingceng.github.io/blog/categories/linux/atom.xml" rel="self"/>
+  <link href="https://lingceng.github.io/"/>
+  <updated>2017-07-30T10:26:49+08:00</updated>
+  <id>https://lingceng.github.io/</id>
   <author>
     <name><![CDATA[Lingceng]]></name>
     
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[Run Command Every 5 Hours On Linux]]></title>
-    <link href="http://lingceng.github.io/blog/2013/11/30/run-command-every-5-hours-on-linux/"/>
+    <link href="https://lingceng.github.io/blog/2013/11/30/run-command-every-5-hours-on-linux/"/>
     <updated>2013-11-30T16:56:00+08:00</updated>
-    <id>http://lingceng.github.io/blog/2013/11/30/run-command-every-5-hours-on-linux</id>
+    <id>https://lingceng.github.io/blog/2013/11/30/run-command-every-5-hours-on-linux</id>
     <content type="html"><![CDATA[<p>Here&rsquo;s my crontab on ubuntu12.04:</p>
 
 <pre><code>&gt; crontab -l

@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Category: git | Lingceng's Blog]]></title>
-  <link href="http://lingceng.github.io/blog/categories/git/atom.xml" rel="self"/>
-  <link href="http://lingceng.github.io/"/>
-  <updated>2017-07-30T10:20:31+08:00</updated>
-  <id>http://lingceng.github.io/</id>
+  <link href="https://lingceng.github.io/blog/categories/git/atom.xml" rel="self"/>
+  <link href="https://lingceng.github.io/"/>
+  <updated>2017-07-30T10:26:49+08:00</updated>
+  <id>https://lingceng.github.io/</id>
   <author>
     <name><![CDATA[Lingceng]]></name>
     
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[Git Get Started]]></title>
-    <link href="http://lingceng.github.io/blog/2014/03/13/git-get-start/"/>
+    <link href="https://lingceng.github.io/blog/2014/03/13/git-get-start/"/>
     <updated>2014-03-13T07:21:00+08:00</updated>
-    <id>http://lingceng.github.io/blog/2014/03/13/git-get-start</id>
+    <id>https://lingceng.github.io/blog/2014/03/13/git-get-start</id>
     <content type="html"><![CDATA[<p>Config name and email</p>
 
 <pre><code>git config --global user.name "John Doe"

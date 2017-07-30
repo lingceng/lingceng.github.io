@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Category: ruby | Lingceng's Blog]]></title>
-  <link href="http://lingceng.github.io/blog/categories/ruby/atom.xml" rel="self"/>
-  <link href="http://lingceng.github.io/"/>
-  <updated>2017-07-30T10:20:31+08:00</updated>
-  <id>http://lingceng.github.io/</id>
+  <link href="https://lingceng.github.io/blog/categories/ruby/atom.xml" rel="self"/>
+  <link href="https://lingceng.github.io/"/>
+  <updated>2017-07-30T10:26:49+08:00</updated>
+  <id>https://lingceng.github.io/</id>
   <author>
     <name><![CDATA[Lingceng]]></name>
     
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[Keep Learning As a Ruby Programmer]]></title>
-    <link href="http://lingceng.github.io/blog/2016/01/22/keep-learning-as-a-ruby-programmer/"/>
+    <link href="https://lingceng.github.io/blog/2016/01/22/keep-learning-as-a-ruby-programmer/"/>
     <updated>2016-01-22T09:27:00+08:00</updated>
-    <id>http://lingceng.github.io/blog/2016/01/22/keep-learning-as-a-ruby-programmer</id>
+    <id>https://lingceng.github.io/blog/2016/01/22/keep-learning-as-a-ruby-programmer</id>
     <content type="html"><![CDATA[<p>I started learning Ruby and Rails about 3 years ago.<br/>
 I always didn&rsquo;t know how to keep up with the community.<br/>
 I find some clues nowadays. So I share the tips with you here.</p>
@@ -69,9 +69,9 @@ Add their blogs to RSS reader.</p>
   
   <entry>
     <title type="html"><![CDATA[Save Your Time: Install ruby2.3.0 with RVM]]></title>
-    <link href="http://lingceng.github.io/blog/2016/01/19/save-your-time-install-ruby2-dot-3-0-with-rvm/"/>
+    <link href="https://lingceng.github.io/blog/2016/01/19/save-your-time-install-ruby2-dot-3-0-with-rvm/"/>
     <updated>2016-01-19T12:24:00+08:00</updated>
-    <id>http://lingceng.github.io/blog/2016/01/19/save-your-time-install-ruby2-dot-3-0-with-rvm</id>
+    <id>https://lingceng.github.io/blog/2016/01/19/save-your-time-install-ruby2-dot-3-0-with-rvm</id>
     <content type="html"><![CDATA[<p>Note that:  <strong>ruby-2.3.0</strong> is not present now when run <code>rvm list known</code> command in rvm 1.26.11.<br/>
 It may be available in next rvm version.
 See <a href="https://github.com/rvm/rvm/blob/1.26.11/config/known#L11">here</a> for more details.</p>
@@ -109,9 +109,9 @@ h = { a: 1, b: 2, c: 3, d: 4 }
   
   <entry>
     <title type="html"><![CDATA[Rails Time Best Practice]]></title>
-    <link href="http://lingceng.github.io/blog/2014/11/22/rails-time-best-practice/"/>
+    <link href="https://lingceng.github.io/blog/2014/11/22/rails-time-best-practice/"/>
     <updated>2014-11-22T18:38:00+08:00</updated>
-    <id>http://lingceng.github.io/blog/2014/11/22/rails-time-best-practice</id>
+    <id>https://lingceng.github.io/blog/2014/11/22/rails-time-best-practice</id>
     <content type="html"><![CDATA[<h3>Setup</h3>
 
 <p>Let&rsquo;s create a demo table and do some configurations in a rails project.
@@ -211,9 +211,9 @@ Thus we can keep all time class to TimeWithZone and get consistent behavior.</p>
   
   <entry>
     <title type="html"><![CDATA[Turbolink Best Practice]]></title>
-    <link href="http://lingceng.github.io/blog/2014/10/16/turbolink-best-practice/"/>
+    <link href="https://lingceng.github.io/blog/2014/10/16/turbolink-best-practice/"/>
     <updated>2014-10-16T12:12:00+08:00</updated>
-    <id>http://lingceng.github.io/blog/2014/10/16/turbolink-best-practice</id>
+    <id>https://lingceng.github.io/blog/2014/10/16/turbolink-best-practice</id>
     <content type="html"><![CDATA[<p>TLDR: Take care of global variables, global events binding.</p>
 
 <h3>What does Turbolink do?</h3>
@@ -241,7 +241,7 @@ $(document).ready -&gt;
 The javascript may diffs from page to page, you can put javascript at the end of body.</p>
 
 <pre><code>&lt;body&gt;
-  &lt;script type="text/javascript" src="http://lingceng.github.io/topics.js"&gt;&lt;/script&gt;
+  &lt;script type="text/javascript" src="https://lingceng.github.io/topics.js"&gt;&lt;/script&gt;
 &lt;body&gt;
 </code></pre>
 
@@ -324,7 +324,7 @@ The script tag will be ignored.</p>
 
 <p>You can add a <code>data-turbolinks-track</code> tag to make it work. But it has drawbacks.</p>
 
-<pre><code>&lt;script type="text/javascript" src="http://lingceng.github.io/hello.js" data-turbolinks-track&gt;&lt;/script&gt;
+<pre><code>&lt;script type="text/javascript" src="https://lingceng.github.io/hello.js" data-turbolinks-track&gt;&lt;/script&gt;
 </code></pre>
 
 <p>When this case, &lsquo;hello&rsquo; will be printed,
@@ -376,10 +376,10 @@ And then you will not benefit from turbolink speed boost.</p>
 <span class='line-number'>6</span>
 <span class='line-number'>7</span>
 <span class='line-number'>8</span>
-</pre></td><td class='code'><pre><code class='html'><span class='line'><span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">&quot;http://lingceng.github.io/&quot;</span><span class="nt">&gt;</span>Home (via Turbolinks)<span class="nt">&lt;/a&gt;&lt;/p&gt;</span>
+</pre></td><td class='code'><pre><code class='html'><span class='line'><span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">&quot;https://lingceng.github.io/&quot;</span><span class="nt">&gt;</span>Home (via Turbolinks)<span class="nt">&lt;/a&gt;&lt;/p&gt;</span>
 </span><span class='line'>
 </span><span class='line'><span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">&quot;some-div&quot;</span> <span class="na">data-no-turbolink</span><span class="nt">&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">&quot;http://lingceng.github.io/&quot;</span><span class="nt">&gt;</span>Home (without Turbolinks)<span class="nt">&lt;/a&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">&quot;https://lingceng.github.io/&quot;</span><span class="nt">&gt;</span>Home (without Turbolinks)<span class="nt">&lt;/a&gt;</span>
 </span><span class='line'><span class="nt">&lt;/div&gt;</span>
 </span><span class='line'>
 </span><span class='line'>
@@ -390,9 +390,9 @@ And then you will not benefit from turbolink speed boost.</p>
   
   <entry>
     <title type="html"><![CDATA[Minitest Mock And Stud]]></title>
-    <link href="http://lingceng.github.io/blog/2014/03/18/minitest-mock-and-stud/"/>
+    <link href="https://lingceng.github.io/blog/2014/03/18/minitest-mock-and-stud/"/>
     <updated>2014-03-18T08:28:00+08:00</updated>
-    <id>http://lingceng.github.io/blog/2014/03/18/minitest-mock-and-stud</id>
+    <id>https://lingceng.github.io/blog/2014/03/18/minitest-mock-and-stud</id>
     <content type="html"><![CDATA[<h3>Capture IO</h3>
 
 <p>Use <code>capture_io</code> to test standard output.<br/>

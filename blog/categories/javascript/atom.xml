@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Category: javascript | Lingceng's Blog]]></title>
-  <link href="http://lingceng.github.io/blog/categories/javascript/atom.xml" rel="self"/>
-  <link href="http://lingceng.github.io/"/>
-  <updated>2017-07-30T10:20:31+08:00</updated>
-  <id>http://lingceng.github.io/</id>
+  <link href="https://lingceng.github.io/blog/categories/javascript/atom.xml" rel="self"/>
+  <link href="https://lingceng.github.io/"/>
+  <updated>2017-07-30T10:26:49+08:00</updated>
+  <id>https://lingceng.github.io/</id>
   <author>
     <name><![CDATA[Lingceng]]></name>
     
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[Put javascript library files together in Rails]]></title>
-    <link href="http://lingceng.github.io/blog/2015/12/15/put-javascript-library-files-together-in-rails/"/>
+    <link href="https://lingceng.github.io/blog/2015/12/15/put-javascript-library-files-together-in-rails/"/>
     <updated>2015-12-15T17:06:00+08:00</updated>
-    <id>http://lingceng.github.io/blog/2015/12/15/put-javascript-library-files-together-in-rails</id>
+    <id>https://lingceng.github.io/blog/2015/12/15/put-javascript-library-files-together-in-rails</id>
     <content type="html"><![CDATA[<p><strong>TLDR: Put all javascript library files under <code>app/assets/libfolder</code>.
 Refer the files without the <code>libfolder</code></strong></p>
 
@@ -57,9 +57,9 @@ assets. So we can refer the <code>sweet-alert.js</code> in our application.js as
   
   <entry>
     <title type="html"><![CDATA[jQuery Source Structure Tip]]></title>
-    <link href="http://lingceng.github.io/blog/2014/03/26/jquery-source-structure-tip/"/>
+    <link href="https://lingceng.github.io/blog/2014/03/26/jquery-source-structure-tip/"/>
     <updated>2014-03-26T09:12:00+08:00</updated>
-    <id>http://lingceng.github.io/blog/2014/03/26/jquery-source-structure-tip</id>
+    <id>https://lingceng.github.io/blog/2014/03/26/jquery-source-structure-tip</id>
     <content type="html"><![CDATA[<p>I was puzzled when I first see the jQuery source code.
 But I finally find a clue.</p>
 

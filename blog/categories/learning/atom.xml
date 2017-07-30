@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Category: learning | Lingceng's Blog]]></title>
-  <link href="http://lingceng.github.io/blog/categories/learning/atom.xml" rel="self"/>
-  <link href="http://lingceng.github.io/"/>
-  <updated>2017-07-30T10:20:31+08:00</updated>
-  <id>http://lingceng.github.io/</id>
+  <link href="https://lingceng.github.io/blog/categories/learning/atom.xml" rel="self"/>
+  <link href="https://lingceng.github.io/"/>
+  <updated>2017-07-30T10:26:49+08:00</updated>
+  <id>https://lingceng.github.io/</id>
   <author>
     <name><![CDATA[Lingceng]]></name>
     
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[Keep Learning As a Ruby Programmer]]></title>
-    <link href="http://lingceng.github.io/blog/2016/01/22/keep-learning-as-a-ruby-programmer/"/>
+    <link href="https://lingceng.github.io/blog/2016/01/22/keep-learning-as-a-ruby-programmer/"/>
     <updated>2016-01-22T09:27:00+08:00</updated>
-    <id>http://lingceng.github.io/blog/2016/01/22/keep-learning-as-a-ruby-programmer</id>
+    <id>https://lingceng.github.io/blog/2016/01/22/keep-learning-as-a-ruby-programmer</id>
     <content type="html"><![CDATA[<p>I started learning Ruby and Rails about 3 years ago.<br/>
 I always didn&rsquo;t know how to keep up with the community.<br/>
 I find some clues nowadays. So I share the tips with you here.</p>

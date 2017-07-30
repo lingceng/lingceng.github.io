@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Category: test | Lingceng's Blog]]></title>
-  <link href="http://lingceng.github.io/blog/categories/test/atom.xml" rel="self"/>
-  <link href="http://lingceng.github.io/"/>
-  <updated>2017-07-30T10:20:31+08:00</updated>
-  <id>http://lingceng.github.io/</id>
+  <link href="https://lingceng.github.io/blog/categories/test/atom.xml" rel="self"/>
+  <link href="https://lingceng.github.io/"/>
+  <updated>2017-07-30T10:26:49+08:00</updated>
+  <id>https://lingceng.github.io/</id>
   <author>
     <name><![CDATA[Lingceng]]></name>
     
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[Minitest Mock And Stud]]></title>
-    <link href="http://lingceng.github.io/blog/2014/03/18/minitest-mock-and-stud/"/>
+    <link href="https://lingceng.github.io/blog/2014/03/18/minitest-mock-and-stud/"/>
     <updated>2014-03-18T08:28:00+08:00</updated>
-    <id>http://lingceng.github.io/blog/2014/03/18/minitest-mock-and-stud</id>
+    <id>https://lingceng.github.io/blog/2014/03/18/minitest-mock-and-stud</id>
     <content type="html"><![CDATA[<h3>Capture IO</h3>
 
 <p>Use <code>capture_io</code> to test standard output.<br/>
@@ -84,9 +84,9 @@ end
   
   <entry>
     <title type="html"><![CDATA[Basics About Minitest]]></title>
-    <link href="http://lingceng.github.io/blog/2014/03/17/basics-about-minitest/"/>
+    <link href="https://lingceng.github.io/blog/2014/03/17/basics-about-minitest/"/>
     <updated>2014-03-17T07:58:00+08:00</updated>
-    <id>http://lingceng.github.io/blog/2014/03/17/basics-about-minitest</id>
+    <id>https://lingceng.github.io/blog/2014/03/17/basics-about-minitest</id>
     <content type="html"><![CDATA[<p>With Ruby 1.9, MiniTest entered standard lib.<br/>
 MiniTest is pretty small and readable, here are all source files:</p>
 

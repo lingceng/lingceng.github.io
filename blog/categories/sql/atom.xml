@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Category: sql | Lingceng's Blog]]></title>
-  <link href="http://lingceng.github.io/blog/categories/sql/atom.xml" rel="self"/>
-  <link href="http://lingceng.github.io/"/>
-  <updated>2017-07-30T10:20:31+08:00</updated>
-  <id>http://lingceng.github.io/</id>
+  <link href="https://lingceng.github.io/blog/categories/sql/atom.xml" rel="self"/>
+  <link href="https://lingceng.github.io/"/>
+  <updated>2017-07-30T10:26:49+08:00</updated>
+  <id>https://lingceng.github.io/</id>
   <author>
     <name><![CDATA[Lingceng]]></name>
     
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[Migrate Legacy Data To Anthother Rails Project: Practical Tips About Using ActiveRecord]]></title>
-    <link href="http://lingceng.github.io/blog/2016/03/18/migrate-legacy-data-to-anthother-rails-project-practical-tips-about-using-activerecord/"/>
+    <link href="https://lingceng.github.io/blog/2016/03/18/migrate-legacy-data-to-anthother-rails-project-practical-tips-about-using-activerecord/"/>
     <updated>2016-03-18T20:38:00+08:00</updated>
-    <id>http://lingceng.github.io/blog/2016/03/18/migrate-legacy-data-to-anthother-rails-project-practical-tips-about-using-activerecord</id>
+    <id>https://lingceng.github.io/blog/2016/03/18/migrate-legacy-data-to-anthother-rails-project-practical-tips-about-using-activerecord</id>
     <content type="html"><![CDATA[<p>I migrated legacy data from one Rails project to its refactored Rails project
 recently. I&rsquo;ll share some tips while I&rsquo;m doing this job.</p>
 
@@ -143,9 +143,9 @@ Settlement.connection.select_all(sql)
   
   <entry>
     <title type="html"><![CDATA[Union select statements in Rails]]></title>
-    <link href="http://lingceng.github.io/blog/2015/10/10/union-select-statements-in-rails/"/>
+    <link href="https://lingceng.github.io/blog/2015/10/10/union-select-statements-in-rails/"/>
     <updated>2015-10-10T11:42:00+08:00</updated>
-    <id>http://lingceng.github.io/blog/2015/10/10/union-select-statements-in-rails</id>
+    <id>https://lingceng.github.io/blog/2015/10/10/union-select-statements-in-rails</id>
     <content type="html"><![CDATA[<p>Here we have a table named <code>user_statuses</code> like following</p>
 
 <pre><code> name    | status
