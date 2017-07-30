@@ -9,7 +9,8 @@
   <meta name="author" content="Lingceng">
 
   
-  <meta name="description" content="Here we have a table named user_statuses like following name | status --------+------- 'jack' | 1 'jack' | 2 'sam' | 6 'lucy' | 1 'toy' | 2 'toy' | 7 &hellip;">
+  <meta name="description" content="TLDR: Put all javascript library files under app/assets/libfolder.
+Refer the files without the libfolder We always need to import some javascript &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -81,7 +82,7 @@
       
   <header>
     
-      <h1 class="entry-title"><a href="/blog/2015/10/10/union-select-statements-in-rails/">Union Select Statements in Rails</a></h1>
+      <h1 class="entry-title"><a href="/blog/2015/12/15/put-javascript-library-files-together-in-rails/">Put Javascript Library Files Together in Rails</a></h1>
     
     
       <p class="meta">
@@ -97,63 +98,47 @@
   
 
 
-<time datetime="2015-10-10T11:42:00+08:00" pubdate data-updated="true">Oct 10<span>th</span>, 2015</time>
+<time datetime="2015-12-15T17:06:00+08:00" pubdate data-updated="true">Dec 15<span>th</span>, 2015</time>
         
       </p>
     
   </header>
 
 
-  <div class="entry-content"><p>Here we have a table named <code>user_statuses</code> like following</p>
+  <div class="entry-content"><p><strong>TLDR: Put all javascript library files under <code>app/assets/libfolder</code>.
+Refer the files without the <code>libfolder</code></strong></p>
 
-<pre><code> name    | status
- --------+-------
-  'jack' |   1
-  'jack' |   2
-  'sam'  |   6
-  'lucy' |   1
-  'toy'  |   2
-  'toy'  |   7
-  'jack' |   7
+<p>We always need to import some javascript libs to our Rails application.
+Some libs has correspondent gems.
+For example, <strong>jquery.js</strong> has a <strong>jquery-rails gem</strong>.</p>
+
+<p>But some other libs may not have the correspondent gems.
+What&rsquo;s more, it may be a waste to use a &ldquo;wrapper gem&rdquo; to just import a javascript file.
+Some wrapper gem may not up-to-date to the origin javascript lib.
+So we need to import javascript libs manually in some cases.</p>
+
+<p>Rails default use <a href="https://github.com/sstephenson/sprockets">sprockets</a> to
+manage assets.
+And we always split assets into <code>javascripts</code>, <code>stylesheets</code>, <code>images</code> and <code>fonts</code> folders.
+But if we split a javascript library into these files, it maybe a little messy.</p>
+
+<p><strong>Actually we can put the files together in a same foler.</strong></p>
+
+<p>For example, I want to import <a href="https://github.com/lipis/bootstrap-sweetalert">bootstrap-sweetalert</a>  into
+my Rails app.
+I download the <code>sweet-alert.less</code> and <code>sweet-alert.js</code>.
+Then put the two files into <code>vender/assets/sweet-alert</code>.
+<code>sweet-alert</code> here is a new created folder.</p>
+
+<p>The <code>vender/assets/sweet-alert</code> folder will be treat as base path to query
+assets. So we can refer the <code>sweet-alert.js</code> in our application.js as following:</p>
+
+<pre><code> //= require sweet-alert
 </code></pre>
 
-<p>I want to collect the status with follwing rule:</p>
+<p>We can do the same for <code>sweet-alert.less</code> in our application.less.</p>
 
-<ul>
-<li>Keep all [1-2] statuses</li>
-<li>Ignore other status above 2 if one has any [1-2] status</li>
-<li>keep only one ohter status above 2 if one do not has any [1-2] status</li>
-</ul>
-
-
-<p>So the result should like following:</p>
-
-<pre><code> name    | status
- --------+-------
-  'jack' |   1
-  'jack' |   2
-  'sam'  |   6
-  'lucy' |   1
-  'toy'  |   2
-</code></pre>
-
-<p>The real life case is more complicated. I want to achieve this rule in SQL.
-As a result I can do some group or something else later.</p>
-
-<p>After some searches, I found out <code>union all</code> can do the job.
-But call <code>union</code> on ActiveRelation returns a Arel::Nodes::Union but ActiveRelation.
-Gem <a href="https://github.com/brianhempel/active_record_union">active record union</a> get a
-good solution.</p>
-
-<p>Here&rsquo;s my demo sulution:</p>
-
-<pre><code>  statuses = [1, 2]
-  left = UserStatus.where(status: statuses).select(:name, :status)
-  right = UserStatus.select(:name, 'MIN(status) as status').
-    group(:name).
-    having('MIN(status) &gt; 2')
-  query = left.union_all(right)
-</code></pre>
+<p>Note that we have <a href="https://www.codefellows.org/blog/5-ways-to-manage-front-end-assets-in-rails">other ways to manage the assets</a>. But it&rsquo;s another topic then.</p>
 </div>
   
   
@@ -178,6 +163,10 @@ good solution.</p>
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2017/07/29/understand-capistrano/">Understand Capistrano</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2017/06/08/upgrade-mysql-with-docker/">Upgrade MySQL With Docker</a>
       </li>
     
@@ -191,10 +180,6 @@ good solution.</p>
     
       <li class="post">
         <a href="/blog/2016/01/19/save-your-time-install-ruby2-dot-3-0-with-rvm/">Save Your Time: Install ruby2.3.0 With RVM</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2016/01/18/dive-into-the-source-code-find-more-information-besides-the-doc/">Dive Into the Source Code: Find More Information Besides the Doc</a>
       </li>
     
   </ul>

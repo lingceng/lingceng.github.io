@@ -9,10 +9,8 @@
   <meta name="author" content="Lingceng">
 
   
-  <meta name="description" content="With Ruby 1.9, MiniTest entered standard lib.
-MiniTest is pretty small and readable, here are all source files: lib:
-hoe minitest lib/hoe:
-minitest. &hellip;">
+  <meta name="description" content="Capture IO Use capture_io to test standard output.
+capture_io uses StringIO to wrap $stdout and $stderr. out, err = capture_io do puts "Some info" &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -84,7 +82,7 @@ minitest. &hellip;">
       
   <header>
     
-      <h1 class="entry-title"><a href="/blog/2014/03/17/basics-about-minitest/">Basics About Minitest</a></h1>
+      <h1 class="entry-title"><a href="/blog/2014/03/18/minitest-mock-and-stud/">Minitest Mock and Stud</a></h1>
     
     
       <p class="meta">
@@ -100,118 +98,74 @@ minitest. &hellip;">
   
 
 
-<time datetime="2014-03-17T07:58:00+08:00" pubdate data-updated="true">Mar 17<span>th</span>, 2014</time>
+<time datetime="2014-03-18T08:28:00+08:00" pubdate data-updated="true">Mar 18<span>th</span>, 2014</time>
         
       </p>
     
   </header>
 
 
-  <div class="entry-content"><p>With Ruby 1.9, MiniTest entered standard lib.<br/>
-MiniTest is pretty small and readable, here are all source files:</p>
+  <div class="entry-content"><h3>Capture IO</h3>
 
-<pre><code>lib:
-hoe  minitest
+<p>Use <code>capture_io</code> to test standard output.<br/>
+<code>capture_io</code> uses StringIO to wrap $stdout and $stderr.</p>
 
-lib/hoe:
-minitest.rb
+<pre><code>out, err = capture_io do
+  puts "Some info"
+  warn "You did a bad thing"
+end
 
-lib/minitest:
-autorun.rb  benchmark.rb  hell.rb  mock.rb  parallel_each.rb  pride.rb  spec.rb  unit.rb
+assert_match /info/, out
+assert_match /bad/, err
 </code></pre>
 
-<h3>Assert Methods</h3>
+<h3>Mock</h3>
 
-<p>See Minitest::Assertions doc or unit.rb source</p>
-
-<pre><code>assert assert_equal assert_raises
-capture_io
-refute refute_empty
-...
-</code></pre>
-
-<h3>Specs Expections</h3>
-
-<p>See Minitest::Expectations doc or spec.rb source</p>
-
-<pre><code>must_be must_be_close_to
-wont_be_empty
-...
-</code></pre>
-
-<p>Most methods just redirect to assert methods internally.</p>
-
-<h3>Simple Start</h3>
-
-<p>Given that you&rsquo;d like to test the following class:</p>
-
-<pre><code>class Meme
-  def i_can_has_cheezburger?
-    "OHAI!"
+<pre><code>class Stupidc
+  def initialize(input=STDIN, output=STDOUT)
+    @input = input
+    @output = output
   end
 
-  def will_it_blend?
-    "YES!"
+  def say_hello()
+    @output.puts 'hello'
   end
 end
-</code></pre>
 
-<p>Unit tests</p>
-
-<pre><code>require 'minitest/autorun'
-
-class TestMeme &lt; MiniTest::Unit::TestCase
-  def setup
-    @meme = Meme.new
-  end
-
-  def test_that_kitty_can_eat
-    assert_equal "OHAI!", @meme.i_can_has_cheezburger?
-  end
-
-  def test_that_it_will_not_blend
-    refute_match /^no/i, @meme.will_it_blend?
-  end
-
-  def test_that_will_be_skipped
-    skip "test this later"
-  end
-end
-</code></pre>
-
-<p>Specs</p>
-
-<pre><code># require 'minitest/unit'
-# require 'minitest/spec'
-# require 'minitest/mock'
 
 require 'minitest/autorun'
 
-describe Meme do
+describe Stupidc do
   before do
-    @meme = Meme.new
+    @input = MiniTest::Mock.new
+    @output = MiniTest::Mock.new
+
+    @stupidc = Stupidc.new(@input, @output)
   end
 
-  describe "when asked about cheeseburgers" do
-    it "must respond positively" do
-      @meme.i_can_has_cheezburger?.must_equal "OHAI!"
-    end
-  end
 
-  describe "when asked about blending possibilities" do
-    it "won't say no" do
-      @meme.will_it_blend?.wont_match /^no/i
-    end
+  it "should copy file to source when file is target" do
+    @output.expect :puts, nil, ['hello']
+    @stupidc.say_hello()
+    @output.verify
   end
 end
 </code></pre>
 
-<ul>
-<li>home :: <a href="https://github.com/seattlerb/minitest">https://github.com/seattlerb/minitest</a></li>
-<li>rdoc :: <a href="http://docs.seattlerb.org/minitest">http://docs.seattlerb.org/minitest</a></li>
-<li>vim  :: <a href="https://github.com/sunaku/vim-ruby-minitest">https://github.com/sunaku/vim-ruby-minitest</a></li>
-</ul>
+<h3>Stub</h3>
 
+<p>see <a href="https://github.com/seattlerb/minitest/blob/master/test/minitest/test_minitest_mock.rb">test</a></p>
+
+<pre><code>def test_stub_yield_self
+  obj = "foo"
+
+  val = obj.stub :to_s, "bar" do |s|
+    s.to_s
+  end
+
+  @tc.assert_equal "bar", val
+end
+</code></pre>
 </div>
   
   
@@ -236,6 +190,10 @@ end
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2017/07/29/understand-capistrano/">Understand Capistrano</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2017/06/08/upgrade-mysql-with-docker/">Upgrade MySQL With Docker</a>
       </li>
     
@@ -249,10 +207,6 @@ end
     
       <li class="post">
         <a href="/blog/2016/01/19/save-your-time-install-ruby2-dot-3-0-with-rvm/">Save Your Time: Install ruby2.3.0 With RVM</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2016/01/18/dive-into-the-source-code-find-more-information-besides-the-doc/">Dive Into the Source Code: Find More Information Besides the Doc</a>
       </li>
     
   </ul>

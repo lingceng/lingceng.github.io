@@ -4,7 +4,7 @@
   <title><![CDATA[Category: rails | Lingceng's Blog]]></title>
   <link href="http://lingceng.github.io/blog/categories/rails/atom.xml" rel="self"/>
   <link href="http://lingceng.github.io/"/>
-  <updated>2017-06-14T19:56:44+08:00</updated>
+  <updated>2017-07-30T10:20:31+08:00</updated>
   <id>http://lingceng.github.io/</id>
   <author>
     <name><![CDATA[Lingceng]]></name>
@@ -12,6 +12,107 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Understand Capistrano]]></title>
+    <link href="http://lingceng.github.io/blog/2017/07/29/understand-capistrano/"/>
+    <updated>2017-07-29T19:00:00+08:00</updated>
+    <id>http://lingceng.github.io/blog/2017/07/29/understand-capistrano</id>
+    <content type="html"><![CDATA[<p><a href="https://github.com/capistrano/capistrano">Capistrano</a> is based on <strong>Rake</strong> and <strong>SSHKit</strong>.</p>
+
+<p>Capistrano adds some DSL to <strong>Rake</strong>, such as <code>on roles(:app)</code>, <code>within release_path</code> and <code>with rails_env: fetch(:rails_env)</code>.
+<code>cap -T</code> can list all Capistrano tasks, which is similar with <code>rake -T</code>. Capistrano executes commands with <strong>SSHKit</strong>.</p>
+
+<p>When we run <code>cap install STAGE=feature</code>. It generates three files:</p>
+
+<pre><code>./Capfile
+./config/deploy.rb
+./config/deploy/feature.rb
+</code></pre>
+
+<p>Capistrano first load <em>Capfile</em>, then <em>deploy.rb</em> and last <em>feature.rb</em>.</p>
+
+<h3>Lazy set the configuration</h3>
+
+<p>See code below.
+Things goes wrong if you set <strong>deploy_to</strong> (shared_path depends on deploy_to) at <em>feature.rb</em>.
+You should use a block to do a <strong>lazy set</strong>.</p>
+
+<pre><code># ./config/deploy/stage.rb
+set :deploy_to, "/home/develop/#{fetch(:application)}/production"
+
+
+# ./config/deploy.rb
+# WRONG
+set :puma_bind, "unix://#{shared_path}/tmp/sockets/#{fetch(:application)}-puma.sock"
+
+# OK
+set :puma_bind, -&gt; { "unix://#{shared_path}/tmp/sockets/#{fetch(:application)}-puma.sock" }
+</code></pre>
+
+<h3>Custom tasks</h3>
+
+<p>Let&rsquo;s say, we want to start some program after deploy. How to mount the task?<br/>
+The <em>lib/capistrano/tasks/framework.rake</em> in Capistrano source has defined the structure.</p>
+
+<pre><code>deploy:starting
+deploy:started
+deploy:updating
+deploy:updated
+deploy:publishing
+deploy:published
+deploy:finishing
+deploy:finished
+</code></pre>
+
+<p>Here&rsquo;s an example.
+The <code>ruby scripts/ctrl_process_accuse.rb restart</code> will be executed after deploy.</p>
+
+<pre><code>namespace :deploy do
+  desc "Restart process accuse"
+  task :restart_process_accuse do
+    on roles(:db) do
+      within release_path do
+        with rails_env: fetch(:rails_env) do
+          execute :ruby, "scripts/ctrl_process_accuse.rb restart"
+        end
+      end
+    end
+  end
+
+  after :finished, :restart_process_accuse
+end
+</code></pre>
+
+<p>Here the generated commands.
+I used <strong>capistrano-rvm</strong> which will wrap commands like <em>ruby</em>, <em>gem</em> or <em>rake</em>.</p>
+
+<pre><code>DEBUG [6dfb3053] Command: cd /home/develop/cms/production/releases/20170
+729094810 &amp;&amp; ( export RAILS_ENV="production" ; ~/.rvm/bin/rvm default do
+ ruby scripts/ctrl_process_accuse.rb restart )
+</code></pre>
+
+<p>You can also run the task alone. Option &lsquo;&mdash;trace&rsquo; is to show task invoke details.</p>
+
+<pre><code>rake feature deploy:restart_process_accuse --trace
+</code></pre>
+
+<h3>The roles</h3>
+
+<p>The most used roles are: <strong>app, web and db</strong>. Here&rsquo;s some default roles.</p>
+
+<pre><code>plugin                      | default role
+---                         - ---
+capistrano/puma             | app
+capistrano/rails/assets     | web
+capistrano/rails/migrations | db
+whenever/capistrano         | db
+</code></pre>
+
+<p>We often set only one server with role <strong>db</strong>.
+So you can specify some tasks that can only run once with <strong>db</strong> role.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Upgrade MySQL With Docker]]></title>
@@ -559,127 +660,6 @@ Is it a historical reason?</p>
 <h2>How to avoid converts?</h2>
 
 <p><a href="https://www.reinteractive.net/posts/158-form-objects-in-rails">Use form object</a> to always use form_for style.</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Query Date Range with Ransack]]></title>
-    <link href="http://lingceng.github.io/blog/2015/12/28/query-date-range-with-ransack/"/>
-    <updated>2015-12-28T19:42:00+08:00</updated>
-    <id>http://lingceng.github.io/blog/2015/12/28/query-date-range-with-ransack</id>
-    <content type="html"><![CDATA[<h3>The Traditional Way</h3>
-
-<p>Here I have a table of change records in my rails app.
-And I have added a query for <em>created_at</em> with <a href="https://github.com/activerecord-hackery/ransack">ransack</a>.</p>
-
-<p><div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span>app/controllers/production_status_changes_controller.rb </span></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">ProductionStatusChangesController</span> <span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span> <span class="no">PlainController</span>
-</span><span class='line'>  <span class="k">def</span> <span class="nf">index</span><span class="o">&lt;</span><span class="sr">/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="sr">&lt;pre&gt;&lt;code&gt;@q = ProductionStatusChange.ransack(params[:q])</span>
-</span><span class='line'><span class="sr">@orders = @q.result.includes(:order).page(params[:page]).per(params[:per])</span>
-</span><span class='line'><span class="sr">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;</span><span class="sr">/pre&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="sr">&lt;p&gt;  end</span>
-</span><span class='line'><span class="sr">end</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div></p>
-
-<p><div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span>app/views/production_status_changes/index.html.erb </span></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class='erb'><span class='line'><span class="x">&amp;lt;%= search_form_for @q, url: production_status_changes_path, class: &amp;lsquo;form-inline&amp;rsquo; do |f| </span><span class="err">%&gt;</span><span class="x"></span>
-</span><span class='line'><span class="x">  &amp;lt;%=  f.label &amp;lsquo;Create At&amp;rsquo; </span><span class="err">%&gt;</span><span class="x"></span>
-</span><span class='line'><span class="x">  &amp;lt;%= f.search_field :created_at_gteq, class: &amp;lsquo;form-control input-sm&amp;rsquo;, &amp;lsquo;datepicker&amp;rsquo; =&gt; true </span><span class="err">%&gt;</span><span class="x"></span>
-</span><span class='line'><span class="x">  &amp;lt;%= f.search_field :created_at_lteq, class: &amp;lsquo;form-control input-sm&amp;rsquo;, &amp;lsquo;datepicker&amp;rsquo; =&gt; true </span><span class="err">%&gt;</span><span class="x"></span>
-</span><span class='line'><span class="x">&amp;lt;% end </span><span class="err">%&gt;</span><span class="x"></span>
-</span></code></pre></td></tr></table></div></figure></notextile></div></p>
-
-<h3>The Problem</h3>
-
-<p>Everything works fine until users start to use it.
-They are surpised that, when query with &ldquo;2015-01-01&rdquo; and &ldquo;2015-01-01&rdquo;, nothing comes out.</p>
-
-<p>Certainly there&rsquo;s nothing between &lsquo;2015-01-01 00:00&rsquo; and &lsquo;2015-01-01 00:00&rsquo;.
-But our users don&rsquo;t think so.
-They shout that there is a whole day from 2015-01-01 to 2015-01-01!</p>
-
-<h3>Direct solution</h3>
-
-<p>OK. Users are gods. So I add some codes in my controller:</p>
-
-<p><div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span>app/controllers/production_status_changes_controller.rb </span></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">def</span> <span class="nf">index</span>
-</span><span class='line'>  <span class="n">params</span><span class="o">[</span><span class="ss">:q</span><span class="o">]</span> <span class="o">||=</span> <span class="p">{}</span>
-</span><span class='line'>  <span class="k">if</span> <span class="n">params</span><span class="o">[</span><span class="ss">:q</span><span class="o">][</span><span class="ss">:created_at_lteq</span><span class="o">].</span><span class="n">present?</span><span class="o">&lt;</span><span class="sr">/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="sr">&lt;pre&gt;&lt;code&gt;params[:q][:created_at_lteq] = params[:q][:created_at_lteq].to_date.end_of_day</span>
-</span><span class='line'><span class="sr">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;</span><span class="sr">/pre&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="sr">&lt;p&gt;  end</span>
-</span><span class='line'><span class="sr">  @q = ProductionStatusChange.ransack(params[:q])</span>
-</span><span class='line'><span class="sr">  @orders = @q.result.includes(:order).page(params[:page]).per(params[:per])</span>
-</span><span class='line'><span class="sr">end</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div></p>
-
-<p>The <em>created_at_lteq</em> will convert to &lsquo;2015-01-01 23:59&rsquo;.</p>
-
-<h3>DRY</h3>
-
-<p>I customed the ransack predicates to avoid duplication.
-So I can just write the view like following:</p>
-
-<script src="https://gist.github.com/lingceng/65c58512d9bbb50799c7.js"></script>
-
-
-<h3>Maybe Another Way</h3>
-
-<p>Maybe we can change the js datepicker to set time to 59:59 by default.
-I use <a href="http://eonasdan.github.io/bootstrap-datetimepicker/">bootstrap-datetimepicker</a>.
-I find the javascript solution:</p>
-
-<pre><code>= hidden_field_tag 'q[created_at_lteq]', params[:q].try(:[], :created_at_lteq)
-= date_field_tag '', params[:q].try(:[], :created_at_lteq).to_s.sub(/ .+/, ''), onchange: "$(this).prev().val($(this).val() != '' ? $(this).val() + ' 23:59:59' : '')"
-</code></pre>
-
-<h3>One Thing More</h3>
-
-<p>Following make query in one day more convenient.</p>
-
-<p>```ruby
-class ProductionStatusChange &lt; ActiveRecord::Base
-  ransacker :created_on do</p>
-
-<pre><code>Arel.sql("DATE(#{table_name}.created_at)")
-</code></pre>
-
-<p>  end
-end</p>
-
-<p>@q = ProductionStatusChange.ransack(created_on: &lsquo;2016-01-01&rsquo;)
-```</p>
 ]]></content>
   </entry>
   

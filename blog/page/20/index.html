@@ -9,8 +9,9 @@
   <meta name="author" content="Lingceng">
 
   
-  <meta name="description" content="Here&rsquo;s my crontab on ubuntu12.04: &gt; crontab -l
-PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin # m h dom mon dow &hellip;">
+  <meta name="description" content="Config name and email git config --global user.name "John Doe"
+git config --global user.email "johndoe@example.com" Get help git config --help
+git &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -82,7 +83,7 @@ PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin # m h dom mon 
       
   <header>
     
-      <h1 class="entry-title"><a href="/blog/2013/11/30/run-command-every-5-hours-on-linux/">Run Command Every 5 Hours on Linux</a></h1>
+      <h1 class="entry-title"><a href="/blog/2014/03/13/git-get-start/">Git Get Started</a></h1>
     
     
       <p class="meta">
@@ -98,35 +99,81 @@ PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin # m h dom mon 
   
 
 
-<time datetime="2013-11-30T16:56:00+08:00" pubdate data-updated="true">Nov 30<span>th</span>, 2013</time>
+<time datetime="2014-03-13T07:21:00+08:00" pubdate data-updated="true">Mar 13<span>th</span>, 2014</time>
         
       </p>
     
   </header>
 
 
-  <div class="entry-content"><p>Here&rsquo;s my crontab on ubuntu12.04:</p>
+  <div class="entry-content"><p>Config name and email</p>
 
-<pre><code>&gt; crontab -l
-PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
-
-# m h dom mon dow usercommand
-0 */5 * * * /path/test.sh &gt;&gt; /path/test.log 2&gt;&amp;1
+<pre><code>git config --global user.name "John Doe"
+git config --global user.email "johndoe@example.com"
 </code></pre>
 
-<p>I set <strong>PATH</strong> variable here as crontab <strong>PATH</strong> is different with <strong>PATH</strong> in login shell.<br/>
-It seems that crontab ignores ~/.bashrc or ~/.profile.<br/>
-Here&rsquo;s the result of <code>env</code> command in crontab:</p>
+<p>Get help</p>
 
-<pre><code>HOME=/home/lingceng
-LOGNAME=lingceng
-PATH=/usr/bin:/bin
-LANG=en_US.UTF-8
-SHELL=/bin/sh
-PWD=/home/lingceng
+<pre><code>git config --help
+git help config
+man git-config
 </code></pre>
 
-<p>And more, the comamnd runs at <strong>0, 5, 15, 20 o&#8217;clock</strong>, not 5 hours after the crontab set.</p>
+<p>Start up</p>
+
+<pre><code>git init
+git add .
+git commit -m "Depot Scaffold"
+
+add and commit
+git commit -a -m "Depot Scaffold"
+</code></pre>
+
+<p>Compare</p>
+
+<pre><code>git diff HEAD^ HEAD
+
+# show diff stat
+git diff --stat
+
+# show the tree-like view
+git log --graph --oneline --all
+</code></pre>
+
+<p>Specify the file path</p>
+
+<pre><code>git diff HEAD^ HEAD app/models/product.rb
+</code></pre>
+
+<p>Git ammend the last commit</p>
+
+<pre><code>git commit -amend
+</code></pre>
+
+<p>Powerful edit commit command</p>
+
+<pre><code>git rebase --interactive HEAD^5
+</code></pre>
+
+<p>Git include delelted files</p>
+
+<pre><code>git add -A
+</code></pre>
+
+<p>Creates a remote named &ldquo;origin&rdquo; pointing at your GitHub repository</p>
+
+<pre><code>git remote add origin https://github.com/username/Hello-World.git
+</code></pre>
+
+<p>Sends your commits in the &ldquo;master&rdquo; branch to GitHub</p>
+
+<pre><code>git push origin master
+</code></pre>
+
+<p>Pull down changes</p>
+
+<pre><code>git pull orgin master
+</code></pre>
 </div>
   
   
@@ -151,6 +198,10 @@ PWD=/home/lingceng
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2017/07/29/understand-capistrano/">Understand Capistrano</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2017/06/08/upgrade-mysql-with-docker/">Upgrade MySQL With Docker</a>
       </li>
     
@@ -164,10 +215,6 @@ PWD=/home/lingceng
     
       <li class="post">
         <a href="/blog/2016/01/19/save-your-time-install-ruby2-dot-3-0-with-rvm/">Save Your Time: Install ruby2.3.0 With RVM</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2016/01/18/dive-into-the-source-code-find-more-information-besides-the-doc/">Dive Into the Source Code: Find More Information Besides the Doc</a>
       </li>
     
   </ul>

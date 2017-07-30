@@ -9,9 +9,7 @@
   <meta name="author" content="Lingceng">
 
   
-  <meta name="description" content="The search problem Recently a friend and I made a comic App.
-I crawled about 70,000 comics and saved them into MySQL.
-Search for comic name started &hellip;">
+  <meta name="description" content="Capistrano is based on Rake and SSHKit. Capistrano adds some DSL to Rake, such as on roles(:app), within release_path and with rails_env: fetch(: &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -83,7 +81,7 @@ Search for comic name started &hellip;">
       
   <header>
     
-      <h1 class="entry-title"><a href="/blog/2017/06/08/upgrade-mysql-with-docker/">Upgrade MySQL With Docker</a></h1>
+      <h1 class="entry-title"><a href="/blog/2017/07/29/understand-capistrano/">Understand Capistrano</a></h1>
     
     
       <p class="meta">
@@ -99,103 +97,106 @@ Search for comic name started &hellip;">
   
 
 
-<time datetime="2017-06-08T23:18:00+08:00" pubdate data-updated="true">Jun 8<span>th</span>, 2017</time>
+<time datetime="2017-07-29T19:00:00+08:00" pubdate data-updated="true">Jul 29<span>th</span>, 2017</time>
         
       </p>
     
   </header>
 
 
-  <div class="entry-content"><h3>The search problem</h3>
+  <div class="entry-content"><p><a href="https://github.com/capistrano/capistrano">Capistrano</a> is based on <strong>Rake</strong> and <strong>SSHKit</strong>.</p>
 
-<p>Recently a friend and I made <a href="http://www.cookacg.com">a comic App</a>.
-I crawled about 70,000 comics and saved them into MySQL.
-Search for comic name started to slow down.
-It takes about 2000ms.</p>
+<p>Capistrano adds some DSL to <strong>Rake</strong>, such as <code>on roles(:app)</code>, <code>within release_path</code> and <code>with rails_env: fetch(:rails_env)</code>.
+<code>cap -T</code> can list all Capistrano tasks, which is similar with <code>rake -T</code>. Capistrano executes commands with <strong>SSHKit</strong>.</p>
 
-<pre><code>SELECT `comics`.* FROM `comics` WHERE `comics`.`name` LIKE '%text%' LIMIT 21 OFFSET 0
+<p>When we run <code>cap install STAGE=feature</code>. It generates three files:</p>
+
+<pre><code>./Capfile
+./config/deploy.rb
+./config/deploy/feature.rb
 </code></pre>
 
-<p>I had added an index for name field.
-But an index won&rsquo;t help text matching with a leading wildcard, an index can be used for:</p>
+<p>Capistrano first load <em>Capfile</em>, then <em>deploy.rb</em> and last <em>feature.rb</em>.</p>
 
-<pre><code>LIKE 'text%'
+<h3>Lazy set the configuration</h3>
+
+<p>See code below.
+Things goes wrong if you set <strong>deploy_to</strong> (shared_path depends on deploy_to) at <em>feature.rb</em>.
+You should use a block to do a <strong>lazy set</strong>.</p>
+
+<pre><code># ./config/deploy/stage.rb
+set :deploy_to, "/home/develop/#{fetch(:application)}/production"
+
+
+# ./config/deploy.rb
+# WRONG
+set :puma_bind, "unix://#{shared_path}/tmp/sockets/#{fetch(:application)}-puma.sock"
+
+# OK
+set :puma_bind, -&gt; { "unix://#{shared_path}/tmp/sockets/#{fetch(:application)}-puma.sock" }
 </code></pre>
 
-<p>Query with <code>LIKE 'text%'</code> is much faster. But comic name such as &ldquo;sometext&rdquo; won&rsquo;t match.
-It does not fit my need.</p>
+<h3>Custom tasks</h3>
 
-<p><strong>I found out, that the same query was much faster on my MacBook, which only took about 200ms.</strong>
-Here was the difference:</p>
+<p>Let&rsquo;s say, we want to start some program after deploy. How to mount the task?<br/>
+The <em>lib/capistrano/tasks/framework.rake</em> in Capistrano source has defined the structure.</p>
 
-<pre><code>EVN        | CPU                   | Memory | OS           | MySQL Version
----        | ---                   | ---    | ---          | ---
-MacBook    | 2.7 GHz Intel Core i5 | 8G     | MacOS Sierra | 5.7.17
-Production | 2.6 GHZ 1 Core        | 2G     | CentOS 6.5   | 5.1.73
+<pre><code>deploy:starting
+deploy:started
+deploy:updating
+deploy:updated
+deploy:publishing
+deploy:published
+deploy:finishing
+deploy:finished
 </code></pre>
 
-<p><strong>After some tests, I found out MySQL Version was the key point.</strong>
-Why 5.7 is so much faster than 5.1? I don&rsquo;t know.</p>
+<p>Here&rsquo;s an example.
+The <code>ruby scripts/ctrl_process_accuse.rb restart</code> will be executed after deploy.</p>
 
-<h3>Try to upgrade MySQL</h3>
+<pre><code>namespace :deploy do
+  desc "Restart process accuse"
+  task :restart_process_accuse do
+    on roles(:db) do
+      within release_path do
+        with rails_env: fetch(:rails_env) do
+          execute :ruby, "scripts/ctrl_process_accuse.rb restart"
+        end
+      end
+    end
+  end
 
-<p>So I needed to upgrade MySQL from 5.1 to 5.7.
-I had 3 choices:</p>
-
-<ul>
-<li>Using mysql_upgrade</li>
-<li>Installing MySQL5.7 manually on the same machine</li>
-<li>Installing MySQL5.7 in docker</li>
-</ul>
-
-
-<p>Installing MySQL.7 in docker seemed much safer and simpler for me.
-And docker is an useful tool to help deploying.
-<strong>I tried to install the latest stable docker but failed, as the latest Docker CE is only supported on CentOS 7.3 64-bit.</strong>
-I installed the <a href="https://docs.docker.com/v1.7/docker/installation/centos/">docker 1.7</a> which is supported on CentOS 6.5.</p>
-
-<p>Run MySQL in docker and publish to host port 6603:</p>
-
-<pre><code>sudo docker run --detach --name=comic-mysql --env="MYSQL_ROOT_PASSWORD=mypassword" --publish 6603:3306 mysql
+  after :finished, :restart_process_accuse
+end
 </code></pre>
 
-<p>Connect MySQL in docker with host MySQL client:</p>
+<p>Here the generated commands.
+I used <strong>capistrano-rvm</strong> which will wrap commands like <em>ruby</em>, <em>gem</em> or <em>rake</em>.</p>
 
-<pre><code>mysql -uroot -p -h 127.0.0.1 -P 6603
+<pre><code>DEBUG [6dfb3053] Command: cd /home/develop/cms/production/releases/20170
+729094810 &amp;&amp; ( export RAILS_ENV="production" ; ~/.rvm/bin/rvm default do
+ ruby scripts/ctrl_process_accuse.rb restart )
 </code></pre>
 
-<p>Create database:</p>
+<p>You can also run the task alone. Option &lsquo;&mdash;trace&rsquo; is to show task invoke details.</p>
 
-<pre><code>CREATE DATABASE comic_production CHARACTER SET utf8 COLLATE utf8_general_ci;
+<pre><code>rake feature deploy:restart_process_accuse --trace
 </code></pre>
 
-<p>Import sql.gz file:</p>
+<h3>The roles</h3>
 
-<pre><code>zcat ~/backup/comic_production.20170606112459.sql.gz  | sudo docker exec -i comic-mysql mysql -uroot -pmypassword comic_production
+<p>The most used roles are: <strong>app, web and db</strong>. Here&rsquo;s some default roles.</p>
+
+<pre><code>plugin                      | default role
+---                         - ---
+capistrano/puma             | app
+capistrano/rails/assets     | web
+capistrano/rails/migrations | db
+whenever/capistrano         | db
 </code></pre>
 
-<p>Configure my rails database.yml:</p>
-
-<pre><code>default: &amp;default
-  adapter: mysql2
-  pool: 5
-  username: root
-  password: mypassword
-  host: 127.0.0.1
-  port: 6603
-</code></pre>
-
-<p>It worked!
-I restarted the rails server, the database changed.
-The users got much faster response for searching.</p>
-
-<h3>References</h3>
-
-<ul>
-<li><a href="https://stackoverflow.com/questions/2042269/how-to-speed-up-select-like-queries-in-mysql-on-multiple-columns">https://stackoverflow.com/questions/2042269/how-to-speed-up-select-like-queries-in-mysql-on-multiple-columns</a></li>
-<li><a href="https://dev.mysql.com/doc/refman/5.7/en/multiple-servers.html">https://dev.mysql.com/doc/refman/5.7/en/multiple-servers.html</a></li>
-</ul>
-
+<p>We often set only one server with role <strong>db</strong>.
+So you can specify some tasks that can only run once with <strong>db</strong> role.</p>
 </div>
   
   
@@ -218,6 +219,10 @@ The users got much faster response for searching.</p>
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2017/07/29/understand-capistrano/">Understand Capistrano</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2017/06/08/upgrade-mysql-with-docker/">Upgrade MySQL With Docker</a>
       </li>
     
@@ -231,10 +236,6 @@ The users got much faster response for searching.</p>
     
       <li class="post">
         <a href="/blog/2016/01/19/save-your-time-install-ruby2-dot-3-0-with-rvm/">Save Your Time: Install ruby2.3.0 With RVM</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2016/01/18/dive-into-the-source-code-find-more-information-besides-the-doc/">Dive Into the Source Code: Find More Information Besides the Doc</a>
       </li>
     
   </ul>

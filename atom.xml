@@ -4,7 +4,7 @@
   <title><![CDATA[Lingceng's Blog]]></title>
   <link href="http://lingceng.github.io/atom.xml" rel="self"/>
   <link href="http://lingceng.github.io/"/>
-  <updated>2017-06-14T19:56:44+08:00</updated>
+  <updated>2017-07-30T10:20:31+08:00</updated>
   <id>http://lingceng.github.io/</id>
   <author>
     <name><![CDATA[Lingceng]]></name>
@@ -12,6 +12,107 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Understand Capistrano]]></title>
+    <link href="http://lingceng.github.io/blog/2017/07/29/understand-capistrano/"/>
+    <updated>2017-07-29T19:00:00+08:00</updated>
+    <id>http://lingceng.github.io/blog/2017/07/29/understand-capistrano</id>
+    <content type="html"><![CDATA[<p><a href="https://github.com/capistrano/capistrano">Capistrano</a> is based on <strong>Rake</strong> and <strong>SSHKit</strong>.</p>
+
+<p>Capistrano adds some DSL to <strong>Rake</strong>, such as <code>on roles(:app)</code>, <code>within release_path</code> and <code>with rails_env: fetch(:rails_env)</code>.
+<code>cap -T</code> can list all Capistrano tasks, which is similar with <code>rake -T</code>. Capistrano executes commands with <strong>SSHKit</strong>.</p>
+
+<p>When we run <code>cap install STAGE=feature</code>. It generates three files:</p>
+
+<pre><code>./Capfile
+./config/deploy.rb
+./config/deploy/feature.rb
+</code></pre>
+
+<p>Capistrano first load <em>Capfile</em>, then <em>deploy.rb</em> and last <em>feature.rb</em>.</p>
+
+<h3>Lazy set the configuration</h3>
+
+<p>See code below.
+Things goes wrong if you set <strong>deploy_to</strong> (shared_path depends on deploy_to) at <em>feature.rb</em>.
+You should use a block to do a <strong>lazy set</strong>.</p>
+
+<pre><code># ./config/deploy/stage.rb
+set :deploy_to, "/home/develop/#{fetch(:application)}/production"
+
+
+# ./config/deploy.rb
+# WRONG
+set :puma_bind, "unix://#{shared_path}/tmp/sockets/#{fetch(:application)}-puma.sock"
+
+# OK
+set :puma_bind, -&gt; { "unix://#{shared_path}/tmp/sockets/#{fetch(:application)}-puma.sock" }
+</code></pre>
+
+<h3>Custom tasks</h3>
+
+<p>Let&rsquo;s say, we want to start some program after deploy. How to mount the task?<br/>
+The <em>lib/capistrano/tasks/framework.rake</em> in Capistrano source has defined the structure.</p>
+
+<pre><code>deploy:starting
+deploy:started
+deploy:updating
+deploy:updated
+deploy:publishing
+deploy:published
+deploy:finishing
+deploy:finished
+</code></pre>
+
+<p>Here&rsquo;s an example.
+The <code>ruby scripts/ctrl_process_accuse.rb restart</code> will be executed after deploy.</p>
+
+<pre><code>namespace :deploy do
+  desc "Restart process accuse"
+  task :restart_process_accuse do
+    on roles(:db) do
+      within release_path do
+        with rails_env: fetch(:rails_env) do
+          execute :ruby, "scripts/ctrl_process_accuse.rb restart"
+        end
+      end
+    end
+  end
+
+  after :finished, :restart_process_accuse
+end
+</code></pre>
+
+<p>Here the generated commands.
+I used <strong>capistrano-rvm</strong> which will wrap commands like <em>ruby</em>, <em>gem</em> or <em>rake</em>.</p>
+
+<pre><code>DEBUG [6dfb3053] Command: cd /home/develop/cms/production/releases/20170
+729094810 &amp;&amp; ( export RAILS_ENV="production" ; ~/.rvm/bin/rvm default do
+ ruby scripts/ctrl_process_accuse.rb restart )
+</code></pre>
+
+<p>You can also run the task alone. Option &lsquo;&mdash;trace&rsquo; is to show task invoke details.</p>
+
+<pre><code>rake feature deploy:restart_process_accuse --trace
+</code></pre>
+
+<h3>The roles</h3>
+
+<p>The most used roles are: <strong>app, web and db</strong>. Here&rsquo;s some default roles.</p>
+
+<pre><code>plugin                      | default role
+---                         - ---
+capistrano/puma             | app
+capistrano/rails/assets     | web
+capistrano/rails/migrations | db
+whenever/capistrano         | db
+</code></pre>
+
+<p>We often set only one server with role <strong>db</strong>.
+So you can specify some tasks that can only run once with <strong>db</strong> role.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Upgrade MySQL With Docker]]></title>
@@ -1764,36 +1865,6 @@ git log --graph --oneline --all
 
 <pre><code>git pull orgin master
 </code></pre>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Run Command Every 5 Hours On Linux]]></title>
-    <link href="http://lingceng.github.io/blog/2013/11/30/run-command-every-5-hours-on-linux/"/>
-    <updated>2013-11-30T16:56:00+08:00</updated>
-    <id>http://lingceng.github.io/blog/2013/11/30/run-command-every-5-hours-on-linux</id>
-    <content type="html"><![CDATA[<p>Here&rsquo;s my crontab on ubuntu12.04:</p>
-
-<pre><code>&gt; crontab -l
-PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
-
-# m h dom mon dow usercommand
-0 */5 * * * /path/test.sh &gt;&gt; /path/test.log 2&gt;&amp;1
-</code></pre>
-
-<p>I set <strong>PATH</strong> variable here as crontab <strong>PATH</strong> is different with <strong>PATH</strong> in login shell.<br/>
-It seems that crontab ignores ~/.bashrc or ~/.profile.<br/>
-Here&rsquo;s the result of <code>env</code> command in crontab:</p>
-
-<pre><code>HOME=/home/lingceng
-LOGNAME=lingceng
-PATH=/usr/bin:/bin
-LANG=en_US.UTF-8
-SHELL=/bin/sh
-PWD=/home/lingceng
-</code></pre>
-
-<p>And more, the comamnd runs at <strong>0, 5, 15, 20 o&#8217;clock</strong>, not 5 hours after the crontab set.</p>
 ]]></content>
   </entry>
   
