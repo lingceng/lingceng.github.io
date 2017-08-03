@@ -9,8 +9,8 @@
   <meta name="author" content="Lingceng">
 
   
-  <meta name="description" content="TLDR: Put all javascript library files under app/assets/libfolder.
-Refer the files without the libfolder We always need to import some javascript &hellip;">
+  <meta name="description" content="Recently, I&rsquo;m using aasm gem to do order production status control.
+Here I have some tips about using aasm gem. I&rsquo;m using aasm 4.5.0 and &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -82,7 +82,7 @@ Refer the files without the libfolder We always need to import some javascript &
       
   <header>
     
-      <h1 class="entry-title"><a href="/blog/2015/12/15/put-javascript-library-files-together-in-rails/">Put Javascript Library Files Together in Rails</a></h1>
+      <h1 class="entry-title"><a href="/blog/2015/12/19/tips-about-using-aasm-gem/">Tips About Using AASM Gem</a></h1>
     
     
       <p class="meta">
@@ -98,47 +98,152 @@ Refer the files without the libfolder We always need to import some javascript &
   
 
 
-<time datetime="2015-12-15T17:06:00+08:00" pubdate data-updated="true">Dec 15<span>th</span>, 2015</time>
+<time datetime="2015-12-19T12:26:00+08:00" pubdate data-updated="true">Dec 19<span>th</span>, 2015</time>
         
       </p>
     
   </header>
 
 
-  <div class="entry-content"><p><strong>TLDR: Put all javascript library files under <code>app/assets/libfolder</code>.
-Refer the files without the <code>libfolder</code></strong></p>
+  <div class="entry-content"><p>Recently, I&rsquo;m using <a href="https://github.com/aasm/aasm">aasm gem</a> to do order production status control.
+Here I have some tips about using aasm gem.</p>
 
-<p>We always need to import some javascript libs to our Rails application.
-Some libs has correspondent gems.
-For example, <strong>jquery.js</strong> has a <strong>jquery-rails gem</strong>.</p>
+<p>I&rsquo;m using aasm 4.5.0 and rails 4.2.0. First, I post a snippet here for better explaination.</p>
 
-<p>But some other libs may not have the correspondent gems.
-What&rsquo;s more, it may be a waste to use a &ldquo;wrapper gem&rdquo; to just import a javascript file.
-Some wrapper gem may not up-to-date to the origin javascript lib.
-So we need to import javascript libs manually in some cases.</p>
+<figure class='code'><figcaption><span>order.rb </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">Order</span>
+</span><span class='line'>  <span class="kp">include</span> <span class="no">AASM</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">aasm</span> <span class="ss">column</span><span class="p">:</span> <span class="ss">:production_status</span> <span class="k">do</span>
+</span><span class='line'>    <span class="n">state</span> <span class="ss">:idle</span><span class="p">,</span> <span class="ss">initial</span><span class="p">:</span> <span class="kp">true</span>
+</span><span class='line'>    <span class="n">state</span> <span class="ss">:at_center</span>
+</span><span class='line'>    <span class="n">state</span> <span class="ss">:ready</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">after_all_transitions</span> <span class="ss">:_save_production_status_change</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">event</span> <span class="ss">:check_in</span><span class="p">,</span> <span class="ss">before</span><span class="p">:</span> <span class="ss">:set_current_step_to_center</span><span class="p">,</span> <span class="ss">guard</span><span class="p">:</span> <span class="ss">:_status_fit</span> <span class="k">do</span>
+</span><span class='line'>      <span class="n">transitions</span> <span class="ss">from</span><span class="p">:</span> <span class="o">[</span><span class="ss">:idle</span><span class="o">]</span><span class="p">,</span> <span class="ss">to</span><span class="p">:</span> <span class="ss">:at_center</span><span class="p">,</span> <span class="ss">after</span><span class="p">:</span> <span class="ss">:_change_status_to_repairing</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">event</span> <span class="ss">:to_ready</span><span class="p">,</span> <span class="ss">before</span><span class="p">:</span> <span class="ss">:set_current_step</span><span class="p">,</span> <span class="ss">guard</span><span class="p">:</span> <span class="ss">:_status_fit</span> <span class="k">do</span>
+</span><span class='line'>      <span class="n">transitions</span> <span class="ss">from</span><span class="p">:</span> <span class="o">[</span><span class="ss">:at_center</span><span class="p">,</span> <span class="ss">:idle</span><span class="o">]</span><span class="p">,</span> <span class="ss">to</span><span class="p">:</span> <span class="ss">:ready</span><span class="p">,</span> <span class="ss">after</span><span class="p">:</span> <span class="ss">:_change_status_to_repairing</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>    <span class="o">.</span><span class="n">.</span><span class="o">.</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="o">.</span><span class="n">.</span><span class="o">.</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
 
-<p>Rails default use <a href="https://github.com/sstephenson/sprockets">sprockets</a> to
-manage assets.
-And we always split assets into <code>javascripts</code>, <code>stylesheets</code>, <code>images</code> and <code>fonts</code> folders.
-But if we split a javascript library into these files, it maybe a little messy.</p>
 
-<p><strong>Actually we can put the files together in a same foler.</strong></p>
+<h2>How to keep actions in transaction?</h2>
 
-<p>For example, I want to import <a href="https://github.com/lipis/bootstrap-sweetalert">bootstrap-sweetalert</a>  into
-my Rails app.
-I download the <code>sweet-alert.less</code> and <code>sweet-alert.js</code>.
-Then put the two files into <code>vender/assets/sweet-alert</code>.
-<code>sweet-alert</code> here is a new created folder.</p>
+<p>Of course, you can acheive it by wrapping actions in a transaction. eg.</p>
 
-<p>The <code>vender/assets/sweet-alert</code> folder will be treat as base path to query
-assets. So we can refer the <code>sweet-alert.js</code> in our application.js as following:</p>
-
-<pre><code> //= require sweet-alert
+<pre><code>Order.transaction do
+  order.check_in
+  order.save
+end
 </code></pre>
 
-<p>We can do the same for <code>sweet-alert.less</code> in our application.less.</p>
+<p>However, aasm also provide a bang method to acheive it. eg.</p>
 
-<p>Note that we have <a href="https://www.codefellows.org/blog/5-ways-to-manage-front-end-assets-in-rails">other ways to manage the assets</a>. But it&rsquo;s another topic then.</p>
+<pre><code>order.check_in!
+</code></pre>
+
+<p>But the two forms is not the same.</p>
+
+<p>Please take care the save point if you choose to use <code>order.check_in!</code>.
+<code>order.check_in!</code> internally calls save after <code>new_state enter</code> callback.
+So, changes in callbacks after <code>new_state enter</code>  will not auto-save.</p>
+
+<p>See the list of callbacks.</p>
+
+<pre><code>begin
+  event           before
+  event           guards
+  transition      guards
+  old_state       before_exit
+  old_state       exit
+                  after_all_transitions
+  transition      after
+  new_state       before_enter
+  new_state       enter
+  ...update state...               # here is the save point
+  event         success            # if persist successful
+  old_state       after_exit
+  new_state       after_enter
+  event           after
+rescue
+  event           error
+end
+</code></pre>
+
+<p>Let&rsquo;s see a example. If I wrote the <code>check_in</code> event like following:</p>
+
+<pre><code>event :check_in, before: :set_current_step_to_center, guard: :_status_fit,
+  after: :_change_status_to_repairing do
+  transitions from: [:idle], to: :at_center
+end
+
+def _change_status_to_repairing
+  status = 'repairing'
+end
+</code></pre>
+
+<p>The <code>_change_status_to_repairing</code> is at <code>event after</code> callback.
+So, when I run <code>order.check_in!</code>, <code>order.status</code> will not persist.</p>
+
+<pre><code>order.check_in!
+order.reload.status == 'repairing'
+# =&gt; false
+</code></pre>
+
+<p>Of cause, you can call save in <code>_change_status_to_repairing</code>
+But the order will be persisted even when you run non-bang method
+<code>order.check_in</code>.</p>
+
+<pre><code>def _change_status_to_repairing
+  status = 'repairing'
+  save
+end
+</code></pre>
+
+<p>Oh. Maybe you should choose to use the first form.</p>
+
+<h2>Avoid using Proc.new with optional argument in guards and callbacks</h2>
+
+<p>See <a href="https://github.com/aasm/aasm/issues/293">https://github.com/aasm/aasm/issues/293</a></p>
+
+<h2>Take care of before event filter</h2>
+
+<p>See <a href="https://github.com/aasm/aasm/issues/294">https://github.com/aasm/aasm/issues/294</a></p>
+
+<h2>duplicate global callbacks caused by after_all_transitions</h2>
+
+<p>See <a href="https://github.com/aasm/aasm/issues/297">https://github.com/aasm/aasm/issues/297</a></p>
 </div>
   
   
@@ -167,6 +272,10 @@ assets. So we can refer the <code>sweet-alert.js</code> in our application.js as
       </li>
     
       <li class="post">
+        <a href="/blog/2017/07/29/rails-helper-magic/">Rails Helper Magic</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2017/06/08/upgrade-mysql-with-docker/">Upgrade MySQL With Docker</a>
       </li>
     
@@ -176,10 +285,6 @@ assets. So we can refer the <code>sweet-alert.js</code> in our application.js as
     
       <li class="post">
         <a href="/blog/2016/01/22/keep-learning-as-a-ruby-programmer/">Keep Learning as a Ruby Programmer</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2016/01/19/save-your-time-install-ruby2-dot-3-0-with-rvm/">Save Your Time: Install ruby2.3.0 With RVM</a>
       </li>
     
   </ul>

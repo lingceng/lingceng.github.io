@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: helper | Lingceng's Blog]]></title>
+  <link href="https://lingceng.github.io/blog/categories/helper/atom.xml" rel="self"/>
+  <link href="https://lingceng.github.io/"/>
+  <updated>2017-08-03T21:11:00+08:00</updated>
+  <id>https://lingceng.github.io/</id>
+  <author>
+    <name><![CDATA[Lingceng]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Rails Helper Magic]]></title>
+    <link href="https://lingceng.github.io/blog/2017/07/29/rails-helper-magic/"/>
+    <updated>2017-07-29T19:00:00+08:00</updated>
+    <id>https://lingceng.github.io/blog/2017/07/29/rails-helper-magic</id>
+    <content type="html"><![CDATA[<h3>Rails view helpers default value magic</h3>
+
+<p>Following will set default value for <em>:first_name</em> field if an instance variable @person present.</p>
+
+<pre><code>form_for :person do |f|
+  First name: &lt;%= f.text_field :first_name %&gt;&lt;br /&gt;
+end
+</code></pre>
+
+<p>Actually the following will set the default value too.</p>
+
+<pre><code>First name: &lt;%= text_field :person, :first_name %&gt;&lt;br /&gt;
+</code></pre>
+
+<p>The magic is hidden in <em>retrieve_object</em> method in <em>lib/action_view/helpers/tags/base.rb</em>.
+The @template_object is the view context here.</p>
+
+<pre><code>def retrieve_object(object)
+  if object
+    object
+  elsif @template_object.instance_variable_defined?("@#{@object_name}")
+    @template_object.instance_variable_get("@#{@object_name}")
+  end
+  ...
+end
+</code></pre>
+
+<p>Most form helpers such as <em>text_field</em>, <em>check_box</em> and <em>select</em>, is based on <em>Helpers:Tags::Base</em>.
+So the magic works for them too.</p>
+
+<h3>Rails helpers has two similar definitions</h3>
+
+<p>There are always two similar definitions for most view helpers.
+Such as <em>check_box</em> and <em>select</em>.</p>
+
+<p>One is in <strong>ActionView::Helpers::[Some]Helper</strong>.</p>
+
+<pre><code>check_box(object_name, method, options = {}, checked_value = "1", unchecked_value = "0")
+</code></pre>
+
+<p>The other is in <strong>ActionView::Helpers::FormBuilder</strong>.</p>
+
+<pre><code>check_box(method, options = {}, checked_value = "1", unchecked_value = "0")
+</code></pre>
+
+<p>The difference is the first definition needs to specify the <strong>object_name</strong>.</p>
+
+<p>The truth is most helpers provide a wrapper for <strong>FormBuilder</strong> class.</p>
+
+<p>See the <strong>check_box</strong> in <strong>FormBuilder</strong> below.
+The <strong>@template</strong> is the view context here.
+The <strong>objectify_options</strong> will pass in the current object of the form.</p>
+
+<pre><code>def check_box(method, options = {}, checked_value = "1", unchecked_value = "0")
+  @template.check_box(@object_name, method, objectify_options(options), checked_value, unchecked_value)
+end
+</code></pre>
+
+<p>By the way, helpers ends with &lsquo;tag&rsquo;, such as <strong>check_box_tag</strong> and <strong>select_tag</strong>, have another implement.  They have much different usage.</p>
+
+<h3>Difference between form_for and fields_for</h3>
+
+<p>Both are helpers and very similar.
+<strong>form_for</strong> handles more options for URL and methods.</p>
+
+<pre><code>def form_for(record, options = {}, &amp;block)
+  ...
+  builder = instantiate_builder(object_name, object, options)
+  output  = capture(builder, &amp;block)
+  form_tag(options[:url] || {}, html_options) { output }
+end
+
+def fields_for(record_name, record_object = nil, options = {}, &amp;block)
+  builder = instantiate_builder(record_name, record_object, options)
+  capture(builder, &amp;block)
+end
+</code></pre>
+
+<p>But <strong>fields_for</strong> also defined in FormBuilder class while <strong>form_for</strong> did not.
+So we can use fields_for as following:</p>
+
+<pre><code>f.fields_for :orders do |order_form|
+end
+</code></pre>
+
+<p>The FormBuilder#fields_for handle some details about <strong>accepts_nested_attributes_for</strong>.</p>
+]]></content>
+  </entry>
+  
+</feed>
