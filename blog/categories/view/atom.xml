@@ -4,7 +4,7 @@
   <title><![CDATA[Category: view | Lingceng's Blog]]></title>
   <link href="https://lingceng.github.io/blog/categories/view/atom.xml" rel="self"/>
   <link href="https://lingceng.github.io/"/>
-  <updated>2017-08-03T21:11:00+08:00</updated>
+  <updated>2017-08-03T21:13:16+08:00</updated>
   <id>https://lingceng.github.io/</id>
   <author>
     <name><![CDATA[Lingceng]]></name>
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[Rails Helper Magic]]></title>
-    <link href="https://lingceng.github.io/blog/2017/07/29/rails-helper-magic/"/>
-    <updated>2017-07-29T19:00:00+08:00</updated>
-    <id>https://lingceng.github.io/blog/2017/07/29/rails-helper-magic</id>
+    <link href="https://lingceng.github.io/blog/2017/08/03/rails-helper-magic/"/>
+    <updated>2017-08-03T21:00:00+08:00</updated>
+    <id>https://lingceng.github.io/blog/2017/08/03/rails-helper-magic</id>
     <content type="html"><![CDATA[<h3>Rails view helpers default value magic</h3>
 
 <p>Following will set default value for <em>:first_name</em> field if an instance variable @person present.</p>

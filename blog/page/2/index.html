@@ -9,7 +9,7 @@
   <meta name="author" content="Lingceng">
 
   
-  <meta name="description" content="Rails view helpers default value magic Following will set default value for :first_name field if an instance variable @person present. form_for : &hellip;">
+  <meta name="description" content="Capistrano is based on Rake and SSHKit. Capistrano adds some DSL to Rake, such as on roles(:app), within release_path and with rails_env: fetch(: &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -81,7 +81,7 @@
       
   <header>
     
-      <h1 class="entry-title"><a href="/blog/2017/07/29/rails-helper-magic/">Rails Helper Magic</a></h1>
+      <h1 class="entry-title"><a href="/blog/2017/07/29/understand-capistrano/">Understand Capistrano</a></h1>
     
     
       <p class="meta">
@@ -104,92 +104,99 @@
   </header>
 
 
-  <div class="entry-content"><h3>Rails view helpers default value magic</h3>
+  <div class="entry-content"><p><a href="https://github.com/capistrano/capistrano">Capistrano</a> is based on <strong>Rake</strong> and <strong>SSHKit</strong>.</p>
 
-<p>Following will set default value for <em>:first_name</em> field if an instance variable @person present.</p>
+<p>Capistrano adds some DSL to <strong>Rake</strong>, such as <code>on roles(:app)</code>, <code>within release_path</code> and <code>with rails_env: fetch(:rails_env)</code>.
+<code>cap -T</code> can list all Capistrano tasks, which is similar with <code>rake -T</code>. Capistrano executes commands with <strong>SSHKit</strong>.</p>
 
-<pre><code>form_for :person do |f|
-  First name: &lt;%= f.text_field :first_name %&gt;&lt;br /&gt;
-end
+<p>When we run <code>cap install STAGE=feature</code>. It generates three files:</p>
+
+<pre><code>./Capfile
+./config/deploy.rb
+./config/deploy/feature.rb
 </code></pre>
 
-<p>Actually the following will set the default value too.</p>
+<p>Capistrano first load <em>Capfile</em>, then <em>deploy.rb</em> and last <em>feature.rb</em>.</p>
 
-<pre><code>First name: &lt;%= text_field :person, :first_name %&gt;&lt;br /&gt;
+<h3>Lazy set the configuration</h3>
+
+<p>See code below.
+Things goes wrong if you set <strong>deploy_to</strong> (shared_path depends on deploy_to) at <em>feature.rb</em>.
+You should use a block to do a <strong>lazy set</strong>.</p>
+
+<pre><code># ./config/deploy/stage.rb
+set :deploy_to, "/home/develop/#{fetch(:application)}/production"
+
+
+# ./config/deploy.rb
+# WRONG
+set :puma_bind, "unix://#{shared_path}/tmp/sockets/#{fetch(:application)}-puma.sock"
+
+# OK
+set :puma_bind, -&gt; { "unix://#{shared_path}/tmp/sockets/#{fetch(:application)}-puma.sock" }
 </code></pre>
 
-<p>The magic is hidden in <em>retrieve_object</em> method in <em>lib/action_view/helpers/tags/base.rb</em>.
-The @template_object is the view context here.</p>
+<h3>Custom tasks</h3>
 
-<pre><code>def retrieve_object(object)
-  if object
-    object
-  elsif @template_object.instance_variable_defined?("@#{@object_name}")
-    @template_object.instance_variable_get("@#{@object_name}")
+<p>Let&rsquo;s say, we want to start some program after deploy. How to mount the task?<br/>
+The <em>lib/capistrano/tasks/framework.rake</em> in Capistrano source has defined the structure.</p>
+
+<pre><code>deploy:starting
+deploy:started
+deploy:updating
+deploy:updated
+deploy:publishing
+deploy:published
+deploy:finishing
+deploy:finished
+</code></pre>
+
+<p>Here&rsquo;s an example.
+The <code>ruby scripts/ctrl_process_accuse.rb restart</code> will be executed after deploy.</p>
+
+<pre><code>namespace :deploy do
+  desc "Restart process accuse"
+  task :restart_process_accuse do
+    on roles(:db) do
+      within release_path do
+        with rails_env: fetch(:rails_env) do
+          execute :ruby, "scripts/ctrl_process_accuse.rb restart"
+        end
+      end
+    end
   end
-  ...
+
+  after :finished, :restart_process_accuse
 end
 </code></pre>
 
-<p>Most form helpers such as <em>text_field</em>, <em>check_box</em> and <em>select</em>, is based on <em>Helpers:Tags::Base</em>.
-So the magic works for them too.</p>
+<p>Here the generated commands.
+I used <strong>capistrano-rvm</strong> which will wrap commands like <em>ruby</em>, <em>gem</em> or <em>rake</em>.</p>
 
-<h3>Rails helpers has two similar definitions</h3>
-
-<p>There are always two similar definitions for most view helpers.
-Such as <em>check_box</em> and <em>select</em>.</p>
-
-<p>One is in <strong>ActionView::Helpers::[Some]Helper</strong>.</p>
-
-<pre><code>check_box(object_name, method, options = {}, checked_value = "1", unchecked_value = "0")
+<pre><code>DEBUG [6dfb3053] Command: cd /home/develop/cms/production/releases/20170
+729094810 &amp;&amp; ( export RAILS_ENV="production" ; ~/.rvm/bin/rvm default do
+ ruby scripts/ctrl_process_accuse.rb restart )
 </code></pre>
 
-<p>The other is in <strong>ActionView::Helpers::FormBuilder</strong>.</p>
+<p>You can also run the task alone. Option &lsquo;&mdash;trace&rsquo; is to show task invoke details.</p>
 
-<pre><code>check_box(method, options = {}, checked_value = "1", unchecked_value = "0")
+<pre><code>rake feature deploy:restart_process_accuse --trace
 </code></pre>
 
-<p>The difference is the first definition needs to specify the <strong>object_name</strong>.</p>
+<h3>The roles</h3>
 
-<p>The truth is most helpers provide a wrapper for <strong>FormBuilder</strong> class.</p>
+<p>The most used roles are: <strong>app, web and db</strong>. Here&rsquo;s some default roles.</p>
 
-<p>See the <strong>check_box</strong> in <strong>FormBuilder</strong> below.
-The <strong>@template</strong> is the view context here.
-The <strong>objectify_options</strong> will pass in the current object of the form.</p>
-
-<pre><code>def check_box(method, options = {}, checked_value = "1", unchecked_value = "0")
-  @template.check_box(@object_name, method, objectify_options(options), checked_value, unchecked_value)
-end
+<pre><code>plugin                      | default role
+---                         - ---
+capistrano/puma             | app
+capistrano/rails/assets     | web
+capistrano/rails/migrations | db
+whenever/capistrano         | db
 </code></pre>
 
-<p>By the way, helpers ends with &lsquo;tag&rsquo;, such as <strong>check_box_tag</strong> and <strong>select_tag</strong>, have another implement.  They have much different usage.</p>
-
-<h3>Difference between form_for and fields_for</h3>
-
-<p>Both are helpers and very similar.
-<strong>form_for</strong> handles more options for URL and methods.</p>
-
-<pre><code>def form_for(record, options = {}, &amp;block)
-  ...
-  builder = instantiate_builder(object_name, object, options)
-  output  = capture(builder, &amp;block)
-  form_tag(options[:url] || {}, html_options) { output }
-end
-
-def fields_for(record_name, record_object = nil, options = {}, &amp;block)
-  builder = instantiate_builder(record_name, record_object, options)
-  capture(builder, &amp;block)
-end
-</code></pre>
-
-<p>But <strong>fields_for</strong> also defined in FormBuilder class while <strong>form_for</strong> did not.
-So we can use fields_for as following:</p>
-
-<pre><code>f.fields_for :orders do |order_form|
-end
-</code></pre>
-
-<p>The FormBuilder#fields_for handle some details about <strong>accepts_nested_attributes_for</strong>.</p>
+<p>We often set only one server with role <strong>db</strong>.
+So you can specify some tasks that can only run once with <strong>db</strong> role.</p>
 </div>
   
   
@@ -214,11 +221,11 @@ end
   <ul id="recent_posts">
     
       <li class="post">
-        <a href="/blog/2017/07/29/understand-capistrano/">Understand Capistrano</a>
+        <a href="/blog/2017/08/03/rails-helper-magic/">Rails Helper Magic</a>
       </li>
     
       <li class="post">
-        <a href="/blog/2017/07/29/rails-helper-magic/">Rails Helper Magic</a>
+        <a href="/blog/2017/07/29/understand-capistrano/">Understand Capistrano</a>
       </li>
     
       <li class="post">
