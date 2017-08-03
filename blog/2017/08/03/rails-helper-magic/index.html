@@ -9,7 +9,7 @@
   <meta name="author" content="Lingceng">
 
   
-  <meta name="description" content="Rails view helpers default value magic Following will set default value for :first_name field if an instance variable @person present. form_for : &hellip;">
+  <meta name="description" content="Rails view helpers default value magic Following will set default value for :first_name field if an instance variable @person present. &lt;%= &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -105,9 +105,9 @@
 
 <p>Following will set default value for <em>:first_name</em> field if an instance variable @person present.</p>
 
-<pre><code>form_for :person do |f|
+<pre><code>&lt;%= form_for :person do |f| %&gt;
   First name: &lt;%= f.text_field :first_name %&gt;&lt;br /&gt;
-end
+&lt;% end %&gt;
 </code></pre>
 
 <p>Actually the following will set the default value too.</p>

@@ -4,7 +4,7 @@
   <title><![CDATA[Category: view | Lingceng's Blog]]></title>
   <link href="https://lingceng.github.io/blog/categories/view/atom.xml" rel="self"/>
   <link href="https://lingceng.github.io/"/>
-  <updated>2017-08-03T21:13:16+08:00</updated>
+  <updated>2017-08-03T21:16:17+08:00</updated>
   <id>https://lingceng.github.io/</id>
   <author>
     <name><![CDATA[Lingceng]]></name>
@@ -22,9 +22,9 @@
 
 <p>Following will set default value for <em>:first_name</em> field if an instance variable @person present.</p>
 
-<pre><code>form_for :person do |f|
+<pre><code>&lt;%= form_for :person do |f| %&gt;
   First name: &lt;%= f.text_field :first_name %&gt;&lt;br /&gt;
-end
+&lt;% end %&gt;
 </code></pre>
 
 <p>Actually the following will set the default value too.</p>
