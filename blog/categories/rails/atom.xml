@@ -4,7 +4,7 @@
   <title><![CDATA[Category: rails | Lingceng's Blog]]></title>
   <link href="https://lingceng.github.io/blog/categories/rails/atom.xml" rel="self"/>
   <link href="https://lingceng.github.io/"/>
-  <updated>2017-08-03T21:16:17+08:00</updated>
+  <updated>2018-03-28T15:11:35+08:00</updated>
   <id>https://lingceng.github.io/</id>
   <author>
     <name><![CDATA[Lingceng]]></name>
@@ -198,6 +198,7 @@ I used <strong>capistrano-rvm</strong> which will wrap commands like <em>ruby</e
 <pre><code>plugin                      | default role
 ---                         - ---
 capistrano/puma             | app
+capistrano/sidekiq          | app
 capistrano/rails/assets     | web
 capistrano/rails/migrations | db
 whenever/capistrano         | db

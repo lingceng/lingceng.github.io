@@ -9,8 +9,7 @@
   <meta name="author" content="Lingceng">
 
   
-  <meta name="description" content="InvalidAuthenticityToken happens if you enabled protect_from_forgery
-but does not handle token well. If you use the jquery-ujs library the content of &hellip;">
+  <meta name="description" content="Here we have a table named user_statuses like following name | status --------+------- 'jack' | 1 'jack' | 2 'sam' | 6 'lucy' | 1 'toy' | 2 'toy' | 7 &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -82,7 +81,7 @@ but does not handle token well. If you use the jquery-ujs library the content of
       
   <header>
     
-      <h1 class="entry-title"><a href="/blog/2014/11/26/when-rails-invalidauthenticitytoken-happens/">When Rails InvalidAuthenticityToken Happens</a></h1>
+      <h1 class="entry-title"><a href="/blog/2015/10/10/union-select-statements-in-rails/">Union Select Statements in Rails</a></h1>
     
     
       <p class="meta">
@@ -98,34 +97,63 @@ but does not handle token well. If you use the jquery-ujs library the content of
   
 
 
-<time datetime="2014-11-26T16:31:00+08:00" pubdate data-updated="true">Nov 26<span>th</span>, 2014</time>
+<time datetime="2015-10-10T11:42:00+08:00" pubdate data-updated="true">Oct 10<span>th</span>, 2015</time>
         
       </p>
     
   </header>
 
 
-  <div class="entry-content"><p><code>InvalidAuthenticityToken</code> happens if you enabled <code>protect_from_forgery</code>
-but does not handle token well.</p>
+  <div class="entry-content"><p>Here we have a table named <code>user_statuses</code> like following</p>
 
-<p>If you use the jquery-ujs library the content of that meta tag is automatically
-added (as a request header) to any ajax requests made.</p>
-
-<p><code>jquery-ujs</code> add a ajax filter to append token to parameter</p>
-
-<pre><code>// ajaxPrefilter is a jquery method
-$.ajaxPrefilter(function(options, originalOptions, xhr) {
-  if ( !options.crossDomain ) { rails.CSRFProtection(xhr); }
-});
+<pre><code> name    | status
+ --------+-------
+  'jack' |   1
+  'jack' |   2
+  'sam'  |   6
+  'lucy' |   1
+  'toy'  |   2
+  'toy'  |   7
+  'jack' |   7
 </code></pre>
 
-<p>Note: Only HTML and JavaScript requests are checked.
-See more about <code>ActionController::RequestForgeryProtection</code> in rails API.</p>
+<p>I want to collect the status with follwing rule:</p>
 
-<h3>Conclusion</h3>
+<ul>
+<li>Keep all [1-2] statuses</li>
+<li>Ignore other status above 2 if one has any [1-2] status</li>
+<li>keep only one ohter status above 2 if one do not has any [1-2] status</li>
+</ul>
 
-<p>Always import <code>jquery-ujs</code> when enabled <code>protect_from_forgery</code>
-And put <code>&lt;%= csrf_meta_tags %&gt;</code> in page head.</p>
+
+<p>So the result should like following:</p>
+
+<pre><code> name    | status
+ --------+-------
+  'jack' |   1
+  'jack' |   2
+  'sam'  |   6
+  'lucy' |   1
+  'toy'  |   2
+</code></pre>
+
+<p>The real life case is more complicated. I want to achieve this rule in SQL.
+As a result I can do some group or something else later.</p>
+
+<p>After some searches, I found out <code>union all</code> can do the job.
+But call <code>union</code> on ActiveRelation returns a Arel::Nodes::Union but ActiveRelation.
+Gem <a href="https://github.com/brianhempel/active_record_union">active record union</a> get a
+good solution.</p>
+
+<p>Here&rsquo;s my demo sulution:</p>
+
+<pre><code>  statuses = [1, 2]
+  left = UserStatus.where(status: statuses).select(:name, :status)
+  right = UserStatus.select(:name, 'MIN(status) as status').
+    group(:name).
+    having('MIN(status) &gt; 2')
+  query = left.union_all(right)
+</code></pre>
 </div>
   
   
@@ -150,6 +178,10 @@ And put <code>&lt;%= csrf_meta_tags %&gt;</code> in page head.</p>
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2018/03/28/custom-quill-dot-js-to-add-more-attributes-to-image/">Custom Quill.js to Add More Attributes to Image</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2017/08/03/rails-helper-magic/">Rails Helper Magic</a>
       </li>
     
@@ -165,10 +197,6 @@ And put <code>&lt;%= csrf_meta_tags %&gt;</code> in page head.</p>
         <a href="/blog/2016/03/18/migrate-legacy-data-to-anthother-rails-project-practical-tips-about-using-activerecord/">Migrate Legacy Data to Anthother Rails Project: Practical Tips About Using ActiveRecord</a>
       </li>
     
-      <li class="post">
-        <a href="/blog/2016/01/22/keep-learning-as-a-ruby-programmer/">Keep Learning as a Ruby Programmer</a>
-      </li>
-    
   </ul>
 </section>
 
@@ -178,7 +206,7 @@ And put <code>&lt;%= csrf_meta_tags %&gt;</code> in page head.</p>
     </div>
   </div>
   <footer role="contentinfo"><p>
-  Copyright &copy; 2017 - Lingceng -
+  Copyright &copy; 2018 - Lingceng -
   <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
 </p>
 

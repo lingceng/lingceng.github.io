@@ -4,7 +4,7 @@
   <title><![CDATA[Category: javascript | Lingceng's Blog]]></title>
   <link href="https://lingceng.github.io/blog/categories/javascript/atom.xml" rel="self"/>
   <link href="https://lingceng.github.io/"/>
-  <updated>2017-08-03T21:16:17+08:00</updated>
+  <updated>2018-03-28T15:11:35+08:00</updated>
   <id>https://lingceng.github.io/</id>
   <author>
     <name><![CDATA[Lingceng]]></name>
@@ -12,6 +12,151 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Custom Quill.js To Add More Attributes To Image]]></title>
+    <link href="https://lingceng.github.io/blog/2018/03/28/custom-quill-dot-js-to-add-more-attributes-to-image/"/>
+    <updated>2018-03-28T15:02:00+08:00</updated>
+    <id>https://lingceng.github.io/blog/2018/03/28/custom-quill-dot-js-to-add-more-attributes-to-image</id>
+    <content type="html"><![CDATA[<p>Quill.js image default only allow &lsquo;src&rsquo;, &lsquo;alt&rsquo; &lsquo;height&rsquo; and &lsquo;width&rsquo; attribute.<br/>
+Here are the solutions to add more attributes to image when initializing from fulltext html.</p>
+
+<p>Solution1:
+<div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kr">class</span> <span class="nx">ImageBlot</span> <span class="kr">extends</span> <span class="nx">Image</span> <span class="p">{</span>
+</span><span class='line'>  <span class="kr">static</span> <span class="nx">create</span><span class="p">(</span><span class="nx">value</span><span class="p">)</span> <span class="p">{</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="k">if</span> <span class="p">(</span><span class="k">typeof</span> <span class="nx">value</span> <span class="o">==</span> <span class="s1">&#39;string&#39;</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="k">return</span> <span class="kr">super</span><span class="p">.</span><span class="nx">create</span><span class="p">(</span><span class="nx">value</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span><span class='line'>  <span class="k">return</span> <span class="nx">value</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="o">&lt;</span><span class="err">/code&gt;&lt;/pre&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="p">}</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="kr">static</span> <span class="nx">value</span><span class="p">(</span><span class="nx">domNode</span><span class="p">)</span> <span class="p">{</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="k">return</span> <span class="nx">domNode</span><span class="p">;</span>
+</span><span class='line'><span class="o">&lt;</span><span class="err">/code&gt;&lt;/pre&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="nx">Quill</span><span class="p">.</span><span class="nx">register</span><span class="p">(</span><span class="nx">ImageBlot</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<p>Solution2:
+<div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kr">class</span> <span class="nx">ImageBlot</span> <span class="kr">extends</span> <span class="nx">Image</span> <span class="p">{</span>
+</span><span class='line'>  <span class="kr">static</span> <span class="nx">get</span> <span class="nx">ATTRIBUTES</span><span class="p">()</span> <span class="p">{</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="k">return</span> <span class="p">[</span> <span class="s1">&#39;alt&#39;</span><span class="p">,</span> <span class="s1">&#39;height&#39;</span><span class="p">,</span> <span class="s1">&#39;width&#39;</span><span class="p">,</span> <span class="s1">&#39;class&#39;</span><span class="p">,</span> <span class="s1">&#39;data-original&#39;</span><span class="p">,</span> <span class="s1">&#39;data-width&#39;</span><span class="p">,</span> <span class="s1">&#39;data-height&#39;</span><span class="p">,</span> <span class="s1">&#39;style-data&#39;</span> <span class="p">]</span>
+</span><span class='line'><span class="o">&lt;</span><span class="err">/code&gt;&lt;/pre&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="p">}</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="kr">static</span> <span class="nx">formats</span><span class="p">(</span><span class="nx">domNode</span><span class="p">)</span> <span class="p">{</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">ATTRIBUTES</span><span class="p">.</span><span class="nx">reduce</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">formats</span><span class="p">,</span> <span class="nx">attribute</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="k">if</span> <span class="p">(</span><span class="nx">domNode</span><span class="p">.</span><span class="nx">hasAttribute</span><span class="p">(</span><span class="nx">attribute</span><span class="p">))</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">formats</span><span class="p">[</span><span class="nx">attribute</span><span class="p">]</span> <span class="o">=</span> <span class="nx">domNode</span><span class="p">.</span><span class="nx">getAttribute</span><span class="p">(</span><span class="nx">attribute</span><span class="p">);</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>  <span class="k">return</span> <span class="nx">formats</span><span class="p">;</span>
+</span><span class='line'><span class="p">},</span> <span class="p">{});</span>
+</span><span class='line'><span class="o">&lt;</span><span class="err">/code&gt;&lt;/pre&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="p">}</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="nx">format</span><span class="p">(</span><span class="nx">name</span><span class="p">,</span> <span class="nx">value</span><span class="p">)</span> <span class="p">{</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">constructor</span><span class="p">.</span><span class="nx">ATTRIBUTES</span><span class="p">.</span><span class="nx">indexOf</span><span class="p">(</span><span class="nx">name</span><span class="p">)</span> <span class="o">&amp;</span><span class="nx">gt</span><span class="p">;</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="k">if</span> <span class="p">(</span><span class="nx">value</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">this</span><span class="p">.</span><span class="nx">domNode</span><span class="p">.</span><span class="nx">setAttribute</span><span class="p">(</span><span class="nx">name</span><span class="p">,</span> <span class="nx">value</span><span class="p">);</span>
+</span><span class='line'>  <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">this</span><span class="p">.</span><span class="nx">domNode</span><span class="p">.</span><span class="nx">removeAttribute</span><span class="p">(</span><span class="nx">name</span><span class="p">);</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'><span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span><span class='line'>  <span class="kr">super</span><span class="p">.</span><span class="nx">format</span><span class="p">(</span><span class="nx">name</span><span class="p">,</span> <span class="nx">value</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="o">&lt;</span><span class="err">/code&gt;&lt;/pre&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>  <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="nx">Quill</span><span class="p">.</span><span class="nx">register</span><span class="p">(</span><span class="nx">ImageBlot</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<p>You can specify the whitelist for attributes with solution2.</p>
+
+<p>The quill.js depends on parchment and quill-delta.<br/>
+Parchment is Quill&rsquo;s document model. You can find Parchment.Embed here.<br/>
+Deltas are a simple, yet expressive format that can be used to describe contents and changes.</p>
+
+<p>I find the steps of initializing after diving into the source code and some debug:<br/>
+constructor in core/quill.js &ndash;> clipboard.convert &ndash;> clipboard.matchBlot &ndash;> setContents &ndash;> applyDelta &ndash;> insertAt and formatAt<br/>
+The matchBlot is key step for my solutions. It explains how quill compose the delta instance.</p>
+
+<pre><code>let value = match.value(node);
+embed[match.blotName] = value;
+delta = new Delta().insert(embed, match.formats(node));
+</code></pre>
+
+<p><a href="https://github.com/quilljs/quill/">https://github.com/quilljs/quill/</a></p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Put javascript library files together in Rails]]></title>

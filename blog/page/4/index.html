@@ -9,8 +9,9 @@
   <meta name="author" content="Lingceng">
 
   
-  <meta name="description" content="I migrated legacy data from one Rails project to its refactored Rails project
-recently. I&rsquo;ll share some tips while I&rsquo;m doing this job. I &hellip;">
+  <meta name="description" content="The search problem Recently a friend and I made a comic App.
+I crawled about 70,000 comics and saved them into MySQL.
+Search for comic name started &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -82,7 +83,7 @@ recently. I&rsquo;ll share some tips while I&rsquo;m doing this job. I &hellip;"
       
   <header>
     
-      <h1 class="entry-title"><a href="/blog/2016/03/18/migrate-legacy-data-to-anthother-rails-project-practical-tips-about-using-activerecord/">Migrate Legacy Data to Anthother Rails Project: Practical Tips About Using ActiveRecord</a></h1>
+      <h1 class="entry-title"><a href="/blog/2017/06/08/upgrade-mysql-with-docker/">Upgrade MySQL With Docker</a></h1>
     
     
       <p class="meta">
@@ -98,133 +99,103 @@ recently. I&rsquo;ll share some tips while I&rsquo;m doing this job. I &hellip;"
   
 
 
-<time datetime="2016-03-18T20:38:00+08:00" pubdate data-updated="true">Mar 18<span>th</span>, 2016</time>
+<time datetime="2017-06-08T23:18:00+08:00" pubdate data-updated="true">Jun 8<span>th</span>, 2017</time>
         
       </p>
     
   </header>
 
 
-  <div class="entry-content"><p>I migrated legacy data from one Rails project to its refactored Rails project
-recently. I&rsquo;ll share some tips while I&rsquo;m doing this job.</p>
+  <div class="entry-content"><h3>The search problem</h3>
 
-<p>I fetched the legacy data directly from old DB and then save into new DB in a
-rake task. I used following code to connect the old DB:</p>
+<p>Recently a friend and I made <a href="http://www.cookacg.com">a comic App</a>.
+I crawled about 70,000 comics and saved them into MySQL.
+Search for comic name started to slow down.
+It takes about 2000ms.</p>
 
-<pre><code>class DB &lt; ActiveRecord::Base
-  self.abstract_class = true
-  if ENV['DEBUG']
-    self.logger = Logger.new(STDOUT)
-  end
-
-  establish_connection adapter: 'mysql2', encoding: 'utf8',
-    host: '127.0.0.1', port: '3306', database: 'databasename', 
-    username: 'username'
-end
+<pre><code>SELECT `comics`.* FROM `comics` WHERE `comics`.`name` LIKE '%text%' LIMIT 21 OFFSET 0
 </code></pre>
 
-<p>Then select result with raw SQL by using <code>select_all</code> method</p>
+<p>I had added an index for name field.
+But an index won&rsquo;t help text matching with a leading wildcard, an index can be used for:</p>
 
-<pre><code>DB.connection.select_all("select * from users").each do |user|
-  record = OpenStruct.new(record)
-  new = UserInNewDB.find_or_initialize_by(id: record.id)
-  user.attributes = record.to_h.slice(*%i[ phone name created_at updated_at])
-  user.save! if user.changed?
-end
+<pre><code>LIKE 'text%'
 </code></pre>
 
-<p>But it&rsquo;s hard while doing some complicated query with raw SQL. So I tried to
-copy models in old project to new one. To keep new project clean, I mainly
-reproduced the relations between models.</p>
+<p>Query with <code>LIKE 'text%'</code> is much faster. But comic name such as &ldquo;sometext&rdquo; won&rsquo;t match.
+It does not fit my need.</p>
 
-<pre><code>class User &lt; DB
-  has_many :orders
-end
+<p><strong>I found out, that the same query was much faster on my MacBook, which only took about 200ms.</strong>
+Here was the difference:</p>
 
-class Order &lt; DB
-  belongs_to :user
-end
+<pre><code>EVN        | CPU                   | Memory | OS           | MySQL Version
+---        | ---                   | ---    | ---          | ---
+MacBook    | 2.7 GHz Intel Core i5 | 8G     | MacOS Sierra | 5.7.17
+Production | 2.6 GHZ 1 Core        | 2G     | CentOS 6.5   | 5.1.73
 </code></pre>
 
-<p>Then life gets better. I can do queries with ActiveRecord model and get all the
-benefits.</p>
+<p><strong>After some tests, I found out MySQL Version was the key point.</strong>
+Why 5.7 is so much faster than 5.1? I don&rsquo;t know.</p>
 
-<pre><code>User.find_each do |record|
-  # Do the migration
-end
+<h3>Try to upgrade MySQL</h3>
+
+<p>So I needed to upgrade MySQL from 5.1 to 5.7.
+I had 3 choices:</p>
+
+<ul>
+<li>Using mysql_upgrade</li>
+<li>Installing MySQL5.7 manually on the same machine</li>
+<li>Installing MySQL5.7 in docker</li>
+</ul>
+
+
+<p>Installing MySQL.7 in docker seemed much safer and simpler for me.
+And docker is an useful tool to help deploying.
+<strong>I tried to install the latest stable docker but failed, as the latest Docker CE is only supported on CentOS 7.3 64-bit.</strong>
+I installed the <a href="https://docs.docker.com/v1.7/docker/installation/centos/">docker 1.7</a> which is supported on CentOS 6.5.</p>
+
+<p>Run MySQL in docker and publish to host port 6603:</p>
+
+<pre><code>sudo docker run --detach --name=comic-mysql --env="MYSQL_ROOT_PASSWORD=mypassword" --publish 6603:3306 mysql
 </code></pre>
 
-<h2>Tip0 Skip some callback</h2>
+<p>Connect MySQL in docker with host MySQL client:</p>
 
-<pre><code>Process.skip_callback(:save, :before, :log_changes)
+<pre><code>mysql -uroot -p -h 127.0.0.1 -P 6603
 </code></pre>
 
-<h2>Tip1 Skip some validation</h2>
+<p>Create database:</p>
 
-<pre><code>if new.invalid? &amp;&amp; 1 == new.errors.size &amp;&amp; new.errors[:batch_id]
-  new.save!(validate: false)
-else
-  new.save!
-end
+<pre><code>CREATE DATABASE comic_production CHARACTER SET utf8 COLLATE utf8_general_ci;
 </code></pre>
 
-<h2>Tip2 Cache basic table in a hash</h2>
+<p>Import sql.gz file:</p>
 
-<pre><code>brands = Brand.all.index_by(&amp;:name)
-Order.find_each do |record|
-  new = NewOrder.find_or_initialize_by(id: record.id)
-  new.brand = brands[name]
-  new.save!
-end
+<pre><code>zcat ~/backup/comic_production.20170606112459.sql.gz  | sudo docker exec -i comic-mysql mysql -uroot -pmypassword comic_production
 </code></pre>
 
-<h2>Tip3 Show current progress</h2>
+<p>Configure my rails database.yml:</p>
 
-<pre><code>def show_process(name, total, index)
-  printf "%s %.2f %%, %d / %d\r", name, index * 100.0 / total, index, total
-end
+<pre><code>default: &amp;default
+  adapter: mysql2
+  pool: 5
+  username: root
+  password: mypassword
+  host: 127.0.0.1
+  port: 6603
 </code></pre>
 
-<h2>Tip4 Find out records with no associated records</h2>
+<p>It worked!
+I restarted the rails server, the database changed.
+The users got much faster response for searching.</p>
 
-<pre><code>Settlement.joins("left join orders on orders.settlement_id = settlements.id").
-  where("orders.id is null")
-</code></pre>
+<h3>References</h3>
 
-<h2>Tip5 Update column without triggering callbacks</h2>
+<ul>
+<li><a href="https://stackoverflow.com/questions/2042269/how-to-speed-up-select-like-queries-in-mysql-on-multiple-columns">https://stackoverflow.com/questions/2042269/how-to-speed-up-select-like-queries-in-mysql-on-multiple-columns</a></li>
+<li><a href="https://dev.mysql.com/doc/refman/5.7/en/multiple-servers.html">https://dev.mysql.com/doc/refman/5.7/en/multiple-servers.html</a></li>
+</ul>
 
-<pre><code>PayRecord.find(10059).update_column(:amount, 5986)
-</code></pre>
-
-<h2>Tip6 Do nested inner joins with ActiveRecord</h2>
-
-<pre><code>query = ProcessesChange.joins(process: [:technic, batch: :workgroup])
-</code></pre>
-
-<h2>Tip7 Use <strong>squeel</strong> to do outer join</h2>
-
-<pre><code>User.joins{recharges.outer}
-</code></pre>
-
-<h2>Tip8 Use <code>pluck</code> method to return array of data</h2>
-
-<pre><code>Order.joins(:item).group('items.brand').pluck("items.brand, count(orders.id) as order_count")
-</code></pre>
-
-<h2>Tip9 Use Mysql <code>GROUP_CONCAT</code> to return all items in a group</h2>
-
-<pre><code>sql =  Settlement.joins(:orders).group(:id).
-  having("sum(orders.final_price) != sum(settlements.amount)").
-  select("settlements.id, GROUP_CONCAT(orders.number),
-  GROUP_CONCAT(orders.final_price), MIN(settlements.amount)").to_sql
-
-Settlement.connection.select_all(sql)
-</code></pre>
-
-<h2>Tip10 Manage rake task dependencies with an empty task</h2>
-
-<pre><code>task :user_module =&gt; [:users, :sources, :customers, :operators]
-</code></pre>
 </div>
   
   
@@ -249,6 +220,10 @@ Settlement.connection.select_all(sql)
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2018/03/28/custom-quill-dot-js-to-add-more-attributes-to-image/">Custom Quill.js to Add More Attributes to Image</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2017/08/03/rails-helper-magic/">Rails Helper Magic</a>
       </li>
     
@@ -264,10 +239,6 @@ Settlement.connection.select_all(sql)
         <a href="/blog/2016/03/18/migrate-legacy-data-to-anthother-rails-project-practical-tips-about-using-activerecord/">Migrate Legacy Data to Anthother Rails Project: Practical Tips About Using ActiveRecord</a>
       </li>
     
-      <li class="post">
-        <a href="/blog/2016/01/22/keep-learning-as-a-ruby-programmer/">Keep Learning as a Ruby Programmer</a>
-      </li>
-    
   </ul>
 </section>
 
@@ -277,7 +248,7 @@ Settlement.connection.select_all(sql)
     </div>
   </div>
   <footer role="contentinfo"><p>
-  Copyright &copy; 2017 - Lingceng -
+  Copyright &copy; 2018 - Lingceng -
   <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
 </p>
 

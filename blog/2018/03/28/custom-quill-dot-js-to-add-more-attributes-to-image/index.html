@@ -5,7 +5,7 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Lingceng's Blog</title>
+  <title>Custom Quill.js To Add More Attributes To Image - Lingceng's Blog</title>
   <meta name="author" content="Lingceng">
 
   
@@ -19,7 +19,7 @@ Here are the solutions &hellip;">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="https://lingceng.github.io">
+  <link rel="canonical" href="https://lingceng.github.io/blog/2018/03/28/custom-quill-dot-js-to-add-more-attributes-to-image">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/atom.xml" rel="alternate" title="Lingceng's Blog" type="application/atom+xml">
@@ -74,15 +74,12 @@ Here are the solutions &hellip;">
 </nav>
   <div id="main">
     <div id="content">
-      <div class="blog-index">
+      <div>
+<article class="hentry" role="article">
   
-  
-  
-    <article>
-      
   <header>
     
-      <h1 class="entry-title"><a href="/blog/2018/03/28/custom-quill-dot-js-to-add-more-attributes-to-image/">Custom Quill.js to Add More Attributes to Image</a></h1>
+      <h1 class="entry-title">Custom Quill.js to Add More Attributes to Image</h1>
     
     
       <p class="meta">
@@ -105,7 +102,7 @@ Here are the solutions &hellip;">
   </header>
 
 
-  <div class="entry-content"><p>Quill.js image default only allow &lsquo;src&rsquo;, &lsquo;alt&rsquo; &lsquo;height&rsquo; and &lsquo;width&rsquo; attribute.<br/>
+<div class="entry-content"><p>Quill.js image default only allow &lsquo;src&rsquo;, &lsquo;alt&rsquo; &lsquo;height&rsquo; and &lsquo;width&rsquo; attribute.<br/>
 Here are the solutions to add more attributes to image when initializing from fulltext html.</p>
 
 <p>Solution1:</p>
@@ -217,20 +214,63 @@ delta = new Delta().insert(embed, match.formats(node));
 
 <p><a href="https://github.com/quilljs/quill/">https://github.com/quilljs/quill/</a></p>
 </div>
+
+
+  <footer>
+    <p class="meta">
+      
   
+
+<span class="byline author vcard">Posted by <span class="fn">Lingceng</span></span>
+
+      
+
+
+
+
+
+
+
+
   
 
 
-    </article>
+<time datetime="2018-03-28T15:02:00+08:00" pubdate data-updated="true">Mar 28<span>th</span>, 2018</time>
+      
+
+<span class="categories">
   
-  <div class="pagination">
+    <a class='category' href='/blog/categories/javascript/'>javascript</a>
+  
+</span>
+
+
+    </p>
     
-      <a class="prev" href="/blog/page/2/">&larr; Older</a>
-    
-    <a href="/blog/archives">Blog Archives</a>
-    
-  </div>
+      <div class="sharing">
+  
+  
+  
 </div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2017/08/03/rails-helper-magic/" title="Previous Post: Rails Helper Magic">&laquo; Rails Helper Magic</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
 <aside class="sidebar">
   
     <section>
@@ -260,8 +300,13 @@ delta = new Delta().insert(embed, match.formats(node));
   </ul>
 </section>
 
+
+
+
+
   
 </aside>
+
 
     </div>
   </div>
@@ -277,7 +322,10 @@ delta = new Delta().insert(embed, match.formats(node));
       var disqus_shortname = 'lingceng';
       
         
-        var disqus_script = 'count.js';
+        // var disqus_developer = 1;
+        var disqus_identifier = 'https://lingceng.github.io/blog/2018/03/28/custom-quill-dot-js-to-add-more-attributes-to-image/';
+        var disqus_url = 'https://lingceng.github.io/blog/2018/03/28/custom-quill-dot-js-to-add-more-attributes-to-image/';
+        var disqus_script = 'embed.js';
       
     (function () {
       var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;

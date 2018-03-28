@@ -9,8 +9,8 @@
   <meta name="author" content="Lingceng">
 
   
-  <meta name="description" content="Hello everyone! Here&rsquo;s my first post on my blog!
-">
+  <meta name="description" content="Here&rsquo;s my crontab on ubuntu12.04: &gt; crontab -l
+PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin # m h dom mon dow &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -82,7 +82,7 @@
       
   <header>
     
-      <h1 class="entry-title"><a href="/blog/2013/10/08/hello-world/">Hello World</a></h1>
+      <h1 class="entry-title"><a href="/blog/2013/11/30/run-command-every-5-hours-on-linux/">Run Command Every 5 Hours on Linux</a></h1>
     
     
       <p class="meta">
@@ -98,14 +98,35 @@
   
 
 
-<time datetime="2013-10-08T13:41:00+08:00" pubdate data-updated="true">Oct 8<span>th</span>, 2013</time>
+<time datetime="2013-11-30T16:56:00+08:00" pubdate data-updated="true">Nov 30<span>th</span>, 2013</time>
         
       </p>
     
   </header>
 
 
-  <div class="entry-content"><p>Hello everyone! Here&rsquo;s my first post on my blog!</p>
+  <div class="entry-content"><p>Here&rsquo;s my crontab on ubuntu12.04:</p>
+
+<pre><code>&gt; crontab -l
+PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+
+# m h dom mon dow usercommand
+0 */5 * * * /path/test.sh &gt;&gt; /path/test.log 2&gt;&amp;1
+</code></pre>
+
+<p>I set <strong>PATH</strong> variable here as crontab <strong>PATH</strong> is different with <strong>PATH</strong> in login shell.<br/>
+It seems that crontab ignores ~/.bashrc or ~/.profile.<br/>
+Here&rsquo;s the result of <code>env</code> command in crontab:</p>
+
+<pre><code>HOME=/home/lingceng
+LOGNAME=lingceng
+PATH=/usr/bin:/bin
+LANG=en_US.UTF-8
+SHELL=/bin/sh
+PWD=/home/lingceng
+</code></pre>
+
+<p>And more, the comamnd runs at <strong>0, 5, 15, 20 o&#8217;clock</strong>, not 5 hours after the crontab set.</p>
 </div>
   
   
@@ -114,6 +135,8 @@
     </article>
   
   <div class="pagination">
+    
+      <a class="prev" href="/blog/page/24/">&larr; Older</a>
     
     <a href="/blog/archives">Blog Archives</a>
     
@@ -126,6 +149,10 @@
     <section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2018/03/28/custom-quill-dot-js-to-add-more-attributes-to-image/">Custom Quill.js to Add More Attributes to Image</a>
+      </li>
     
       <li class="post">
         <a href="/blog/2017/08/03/rails-helper-magic/">Rails Helper Magic</a>
@@ -143,10 +170,6 @@
         <a href="/blog/2016/03/18/migrate-legacy-data-to-anthother-rails-project-practical-tips-about-using-activerecord/">Migrate Legacy Data to Anthother Rails Project: Practical Tips About Using ActiveRecord</a>
       </li>
     
-      <li class="post">
-        <a href="/blog/2016/01/22/keep-learning-as-a-ruby-programmer/">Keep Learning as a Ruby Programmer</a>
-      </li>
-    
   </ul>
 </section>
 
@@ -156,7 +179,7 @@
     </div>
   </div>
   <footer role="contentinfo"><p>
-  Copyright &copy; 2017 - Lingceng -
+  Copyright &copy; 2018 - Lingceng -
   <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
 </p>
 

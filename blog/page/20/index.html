@@ -9,9 +9,10 @@
   <meta name="author" content="Lingceng">
 
   
-  <meta name="description" content="HERE IS MY vimrc Wonderful block insert in Visual block mode:
-|v_b_I| I insert the same text in front of all the selected lines
-|v_b_A| A append the &hellip;">
+  <meta name="description" content="With Ruby 1.9, MiniTest entered standard lib.
+MiniTest is pretty small and readable, here are all source files: lib:
+hoe minitest lib/hoe:
+minitest. &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -83,7 +84,7 @@
       
   <header>
     
-      <h1 class="entry-title"><a href="/blog/2014/03/14/vim-tips/">Vim Tips</a></h1>
+      <h1 class="entry-title"><a href="/blog/2014/03/17/basics-about-minitest/">Basics About Minitest</a></h1>
     
     
       <p class="meta">
@@ -99,92 +100,118 @@
   
 
 
-<time datetime="2014-03-14T22:39:00+08:00" pubdate data-updated="true">Mar 14<span>th</span>, 2014</time>
+<time datetime="2014-03-17T07:58:00+08:00" pubdate data-updated="true">Mar 17<span>th</span>, 2014</time>
         
       </p>
     
   </header>
 
 
-  <div class="entry-content"><p>HERE IS MY <a href="https://gist.github.com/lingceng/6097985">vimrc</a></p>
+  <div class="entry-content"><p>With Ruby 1.9, MiniTest entered standard lib.<br/>
+MiniTest is pretty small and readable, here are all source files:</p>
 
-<h3>Wonderful block insert</h3>
+<pre><code>lib:
+hoe  minitest
 
-<pre><code>in Visual block mode:
-|v_b_I|    I insert the same text in front of all the selected lines
-|v_b_A|    A append the same text after all the selected lines
+lib/hoe:
+minitest.rb
+
+lib/minitest:
+autorun.rb  benchmark.rb  hell.rb  mock.rb  parallel_each.rb  pride.rb  spec.rb  unit.rb
 </code></pre>
 
-<h3>Search word under cursor</h3>
+<h3>Assert Methods</h3>
 
-<pre><code>* to search current word, n to next, N to previous
+<p>See Minitest::Assertions doc or unit.rb source</p>
+
+<pre><code>assert assert_equal assert_raises
+capture_io
+refute refute_empty
+...
 </code></pre>
 
-<h3>Srround tag</h3>
+<h3>Specs Expections</h3>
 
-<pre><code>:help v_a
-at  # arround tag
-it  # inner tag
+<p>See Minitest::Expectations doc or spec.rb source</p>
+
+<pre><code>must_be must_be_close_to
+wont_be_empty
+...
 </code></pre>
 
-<h3>Use mark</h3>
+<p>Most methods just redirect to assert methods internally.</p>
 
-<pre><code>ma # mark a
-`a # go to a
-`A # go to A between buffers
+<h3>Simple Start</h3>
+
+<p>Given that you&rsquo;d like to test the following class:</p>
+
+<pre><code>class Meme
+  def i_can_has_cheezburger?
+    "OHAI!"
+  end
+
+  def will_it_blend?
+    "YES!"
+  end
+end
 </code></pre>
 
-<h3>Autocomplete with filesystem</h3>
+<p>Unit tests</p>
 
-<pre><code>ctrl-x ctrl-f
+<pre><code>require 'minitest/autorun'
+
+class TestMeme &lt; MiniTest::Unit::TestCase
+  def setup
+    @meme = Meme.new
+  end
+
+  def test_that_kitty_can_eat
+    assert_equal "OHAI!", @meme.i_can_has_cheezburger?
+  end
+
+  def test_that_it_will_not_blend
+    refute_match /^no/i, @meme.will_it_blend?
+  end
+
+  def test_that_will_be_skipped
+    skip "test this later"
+  end
+end
 </code></pre>
 
-<h3>Jump between windows</h3>
+<p>Specs</p>
 
-<pre><code>:help window
+<pre><code># require 'minitest/unit'
+# require 'minitest/spec'
+# require 'minitest/mock'
 
-# make the only window
-CTRL-W o
+require 'minitest/autorun'
 
-# split
-CTRL-W s
-# split vertically
-CTRL-W v
+describe Meme do
+  before do
+    @meme = Meme.new
+  end
 
-# navigate with h j k l
-# go to left
-CTRL-W h
+  describe "when asked about cheeseburgers" do
+    it "must respond positively" do
+      @meme.i_can_has_cheezburger?.must_equal "OHAI!"
+    end
+  end
 
-# resize with &lt; &gt; + -
-# add 10 width
-CTRL-W 10&gt;
+  describe "when asked about blending possibilities" do
+    it "won't say no" do
+      @meme.will_it_blend?.wont_match /^no/i
+    end
+  end
+end
 </code></pre>
 
-<h3>Show whitespace characters</h3>
+<ul>
+<li>home :: <a href="https://github.com/seattlerb/minitest">https://github.com/seattlerb/minitest</a></li>
+<li>rdoc :: <a href="http://docs.seattlerb.org/minitest">http://docs.seattlerb.org/minitest</a></li>
+<li>vim  :: <a href="https://github.com/sunaku/vim-ruby-minitest">https://github.com/sunaku/vim-ruby-minitest</a></li>
+</ul>
 
-<pre><code>:set list
-
-# close list
-:set nolist
-</code></pre>
-
-<h3>Buffer change</h3>
-
-<pre><code>CTRL-I
-CTRL-O
-</code></pre>
-
-<h3>Scroll page</h3>
-
-<pre><code>N  CTRL-D   window N lines Downwards (default: 1/2 window)
-N  CTRL-U   window N lines Upwards (default: 1/2 window)
-</code></pre>
-
-<h3>Set highlight when search</h3>
-
-<pre><code>set hlsearch
-set nohlsearch
-</code></pre>
 </div>
   
   
@@ -209,6 +236,10 @@ set nohlsearch
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2018/03/28/custom-quill-dot-js-to-add-more-attributes-to-image/">Custom Quill.js to Add More Attributes to Image</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2017/08/03/rails-helper-magic/">Rails Helper Magic</a>
       </li>
     
@@ -224,10 +255,6 @@ set nohlsearch
         <a href="/blog/2016/03/18/migrate-legacy-data-to-anthother-rails-project-practical-tips-about-using-activerecord/">Migrate Legacy Data to Anthother Rails Project: Practical Tips About Using ActiveRecord</a>
       </li>
     
-      <li class="post">
-        <a href="/blog/2016/01/22/keep-learning-as-a-ruby-programmer/">Keep Learning as a Ruby Programmer</a>
-      </li>
-    
   </ul>
 </section>
 
@@ -237,7 +264,7 @@ set nohlsearch
     </div>
   </div>
   <footer role="contentinfo"><p>
-  Copyright &copy; 2017 - Lingceng -
+  Copyright &copy; 2018 - Lingceng -
   <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
 </p>
 
