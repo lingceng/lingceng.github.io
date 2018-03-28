@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "Rails Helper Magic"
-date: 2017-07-29 19:00 
+date: 2017-08-03 21:00 
 comments: true
 categories: ["rails", "helper", "view"]
 ---
@@ -9,9 +9,9 @@ categories: ["rails", "helper", "view"]
 ### Rails view helpers default value magic
 Following will set default value for *:first_name* field if an instance variable @person present.
 
-    form_for :person do |f|
+    <%= form_for :person do |f| %>
       First name: <%= f.text_field :first_name %><br />
-    end
+    <% end %>
 
 Actually the following will set the default value too.
 

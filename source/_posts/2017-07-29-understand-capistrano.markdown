@@ -85,6 +85,7 @@ The most used roles are: **app, web and db**. Here's some default roles.
     plugin                      | default role
     ---                         - ---
     capistrano/puma             | app
+    capistrano/sidekiq          | app
     capistrano/rails/assets     | web
     capistrano/rails/migrations | db
     whenever/capistrano         | db
