@@ -1,0 +1,19 @@
+<style>
+  .container-lg > h1:first-child a {
+    text-decoration: none;
+  }
+</style>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    var titleLink = document.querySelector(".container-lg > h1:first-child a");
+
+    if (!titleLink) {
+      return;
+    }
+
+    titleLink.href = "https://github.com/lingceng";
+    titleLink.target = "_blank";
+    titleLink.rel = "noopener noreferrer";
+  });
+</script>
