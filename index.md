@@ -2,7 +2,7 @@
 
 ### 🛠️ 最近做的小工具
 
-#### [打牌计分器](https://lingceng.github.io/scorecard/)
+#### [打牌计分器](https://pkscore.netlify.app)
 
 四人打牌记分工具。滚轮输入分数，输入三人后自动计算第四人，支持历史记录与撤销，数据本地保存，离线可用。
 
